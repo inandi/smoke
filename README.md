@@ -1,2 +1,2 @@
 # smoke
-Quite smoking app
+Quit smoking app
