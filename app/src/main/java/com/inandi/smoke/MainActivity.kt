@@ -12,15 +12,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.inandi.smoke.ui.theme.SmokeTheme
 import android.widget.TextView
+import android.widget.Button
+import android.view.View
 //import androidx.appcompat.app.AppCompatActivity
+import android.widget.ImageButton
+
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main) // Ensure this matches your layout file's name.
         val topLabel = findViewById<TextView>(R.id.topLabel)
-        // Example: Change text programmatically
         topLabel.text = "Everyday you are wining!!!"
+
+
+
+        val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
+        aboutButton.setOnClickListener {
+            // Handle Home button click
+            // For example:
+            // startActivity(Intent(this, HomeActivity::class.java))
+        }
+
+        // You can also handle clicks programmatically
+        val homeButton = findViewById<ImageButton>(R.id.homeButton)
+        homeButton.setOnClickListener {
+            // Handle Home button click
+            // For example:
+            // startActivity(Intent(this, HomeActivity::class.java))
+        }
+
+        val badgeButton = findViewById<ImageButton>(R.id.badgeButton)
+        badgeButton.setOnClickListener {
+            // Handle Home button click
+            // For example:
+            // startActivity(Intent(this, HomeActivity::class.java))
+        }
+
 
 //        setContent {
 //            SmokeTheme {
@@ -34,6 +63,19 @@ class MainActivity : ComponentActivity() {
 //            }
 //        }
     }
+}
+
+// Handle button clicks defined in XML
+fun onHomeButtonClick(view: View) {
+    // Handle Home button click
+}
+
+fun onAboutButtonClick(view: View) {
+    // Handle About button click
+}
+
+fun onBadgeButtonClick(view: View) {
+    // Handle Badge button click
 }
 
 @Composable

@@ -1,0 +1,84 @@
+<!-- footer_layout.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/footerBackground">
+
+    <!-- Home -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:onClick="onHomeButtonClick">
+
+        <ImageButton
+            android:id="@+id/homeButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_home"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/home" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <!-- About -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:onClick="onAboutButtonClick">
+
+        <ImageButton
+            android:id="@+id/aboutButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_about"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/about" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <!-- Badge -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:onClick="onBadgeButtonClick">
+
+        <ImageButton
+            android:id="@+id/badgeButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_badge"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/badge" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/badge"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+</LinearLayout>
