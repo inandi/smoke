@@ -3,4 +3,5 @@
     <string name="home">Home</string>
     <string name="about">About</string>
     <string name="badge">Badge</string>
+    <string name="country_prompt">Country</string>
 </resources>

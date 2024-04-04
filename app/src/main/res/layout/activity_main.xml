@@ -25,6 +25,13 @@
     <!-- Your other UI components go here -->
 
 
+
+
+    <include layout="@layout/form_layout" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true" />
+
+
     <include layout="@layout/footer_layout" android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />

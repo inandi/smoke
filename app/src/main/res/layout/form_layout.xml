@@ -1,0 +1,85 @@
+<!-- activity_main.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Spinner
+        android:id="@+id/spinnerCountry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:prompt="@string/country_prompt"
+        android:entries="@array/countries"
+        android:padding="8dp" />
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Which year you started smoking" />
+
+
+    <EditText
+        android:id="@+id/editTextStartYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="e.g. 1988"
+        android:layout_below="@id/spinnerCountry"
+        android:padding="8dp"/>
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="How many you smoke in a day on average?" />
+
+
+    <EditText
+        android:id="@+id/editTextSmokesPerDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="e.g. 18"
+        android:layout_below="@id/editTextStartYear"
+        android:padding="8dp"/>
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Price of your cigarette" />
+
+
+    <EditText
+        android:id="@+id/editTextCigarettePrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="e.g. 17.12"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/editTextSmokesPerDay"
+        android:padding="8dp"/>
+
+
+
+
+    <TextView
+        android:id="@+id/textViewInformation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="The penalty doubles for each entry within 24 hours. For instance, if you smoke three cigarettes in a day, the penalties would accumulate as 2 + 4 + 6. The penalty resets to 0 after 24 hours."
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/buttonSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit" />
+
+</LinearLayout>
