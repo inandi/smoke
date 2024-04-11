@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-</LinearLayout> -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,25 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/topLabel"
+    <include layout="@layout/header_layout" android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#edebe6"
-        android:padding="16dp"
-        android:text="Top Label"
-        android:textAlignment="inherit"
-        android:textSize="18sp" />
-
-    <!-- Your other UI components go here -->
-
-
-
+        android:layout_alignParentTop="true" />
 
     <include layout="@layout/form_layout" android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true" />
-
 
     <include layout="@layout/footer_layout" android:layout_width="match_parent"
         android:layout_height="wrap_content"

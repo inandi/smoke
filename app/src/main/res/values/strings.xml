@@ -4,4 +4,7 @@
     <string name="about">About</string>
     <string name="badge">Badge</string>
     <string name="country_prompt">Country</string>
+    <string name="banner_msg">Everyday you are wining!!!</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</string>
+
 </resources>

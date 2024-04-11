@@ -62,8 +62,7 @@
         android:orientation="vertical"
         android:layout_margin="4dp"
         android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:onClick="onAboutButtonClick">
+        android:paddingBottom="4dp">
 
         <ImageButton
             android:id="@+id/aboutButton"
