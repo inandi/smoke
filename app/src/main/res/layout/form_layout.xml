@@ -11,22 +11,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:prompt="@string/country_prompt"
         android:entries="@array/countries"
-        android:padding="8dp" />
+        android:padding="12dp"
+        android:prompt="@string/country_prompt"
+        android:spinnerMode="dropdown" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Which year you started smoking" />
+        android:text="@string/form_q_year" />
 
     <EditText
         android:id="@+id/editTextStartYear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="e.g. 1988"
         android:layout_below="@id/spinnerCountry"
-        android:padding="8dp"/>
+        android:hint="@string/form_q_year_placeholder"
+        android:padding="12dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -37,9 +38,9 @@
         android:id="@+id/editTextSmokesPerDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="e.g. 18"
         android:layout_below="@id/editTextStartYear"
-        android:padding="8dp"/>
+        android:hint="e.g. 18"
+        android:padding="12dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -50,16 +51,16 @@
         android:id="@+id/editTextCigarettePrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/editTextSmokesPerDay"
         android:hint="e.g. 17.12"
         android:inputType="numberDecimal"
-        android:layout_below="@id/editTextSmokesPerDay"
-        android:padding="8dp"/>
+        android:padding="12dp" />
 
     <TextView
         android:id="@+id/textViewInformation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="The penalty doubles for each entry within 24 hours. For instance, if you smoke three cigarettes in a day, the penalties would accumulate as 2 + 4 + 6. The penalty resets to 0 after 24 hours."
+        android:text="@string/form_rule_info"
         android:textColor="@android:color/darker_gray"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp" />
@@ -68,6 +69,7 @@
         android:id="@+id/buttonSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:text="Submit"
+        android:visibility="visible" />
 
 </LinearLayout>
