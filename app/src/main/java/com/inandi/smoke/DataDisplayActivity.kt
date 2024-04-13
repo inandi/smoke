@@ -51,17 +51,17 @@ class DataDisplayActivity : ComponentActivity() {
         val formData = Gson().fromJson(savedData, MainActivity.FormData::class.java)
 
         // Display the data in TextViews or any other UI components
-        val countryTextView = findViewById<TextView>(R.id.countryTextView)
-        val startYearTextView = findViewById<TextView>(R.id.startYearTextView)
-        val smokesPerDayTextView = findViewById<TextView>(R.id.smokesPerDayTextView)
-        val cigarettePriceTextView = findViewById<TextView>(R.id.cigarettePriceTextView)
-        val createdOnTextView = findViewById<TextView>(R.id.createdOnTextView)
-
-        countryTextView.text = "Country: ${formData.country}"
-        startYearTextView.text = "Start Year: ${formData.startYear}"
-        smokesPerDayTextView.text = "Smokes per Day: ${formData.smokesPerDay}"
-        cigarettePriceTextView.text = "Cigarette Price: ${formData.cigarettePrice}"
-        createdOnTextView.text = "Created On: ${formData.created_on}"
+//        val countryTextView = findViewById<TextView>(R.id.countryTextView)
+//        val startYearTextView = findViewById<TextView>(R.id.startYearTextView)
+//        val smokesPerDayTextView = findViewById<TextView>(R.id.smokesPerDayTextView)
+//        val cigarettePriceTextView = findViewById<TextView>(R.id.cigarettePriceTextView)
+//        val createdOnTextView = findViewById<TextView>(R.id.createdOnTextView)
+//
+//        countryTextView.text = "Country: ${formData.country}"
+//        startYearTextView.text = "Start Year: ${formData.startYear}"
+//        smokesPerDayTextView.text = "Smokes per Day: ${formData.smokesPerDay}"
+//        cigarettePriceTextView.text = "Cigarette Price: ${formData.cigarettePrice}"
+//        createdOnTextView.text = "Created On: ${formData.created_on}"
 
     }
 
