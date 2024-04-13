@@ -12,6 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.inandi.smoke.ui.theme.SmokeTheme
 import android.widget.TextView
+import java.text.SimpleDateFormat
+import java.util.Date
+
 import android.widget.Button
 import android.view.View
 import android.widget.ImageButton
@@ -21,116 +24,96 @@ import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.Intent
+import com.google.gson.Gson
+import java.io.FileOutputStream
+import android.widget.Toast
+import java.io.FileInputStream
+import java.io.InputStreamReader
+import java.io.BufferedReader
+import java.util.TimeZone
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var spinnerCountry: Spinner
-    private lateinit var editTextStartYear: EditText
-    private lateinit var editTextSmokesPerDay: EditText
-    private lateinit var editTextCigarettePrice: EditText
-    private lateinit var buttonSubmit: Button
-    // SharedPreferences
-    private lateinit var sharedPreferences: SharedPreferences
+    data class FormData(
+        val country: String,
+        val startYear: Int,
+        val smokesPerDay: Int,
+        val cigarettePrice: Double,
+        val created_on: String
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main) // Ensure this matches your layout file's name.
 
-        val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
-        aboutButton.setOnClickListener {
-            startActivity(Intent(this@MainActivity, AboutActivity::class.java))
-        }
+        val formDataFile = getFileStreamPath("formData.json")
+        if (formDataFile != null && formDataFile.exists()) {
+            navigateToDataDisplayScreen()
+        } else {
+            setContentView(R.layout.activity_main) // Ensure this matches your layout file's name.
 
-        val badgeButton = findViewById<ImageButton>(R.id.badgeButton)
-        badgeButton.setOnClickListener {
-            startActivity(Intent(this@MainActivity, BadgeActivity::class.java))
-        }
+            val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
+            aboutButton.setOnClickListener {
+                startActivity(Intent(this@MainActivity, AboutActivity::class.java))
+            }
 
-        spinnerCountry = findViewById(R.id.spinnerCountry)
-        editTextStartYear = findViewById(R.id.editTextStartYear)
-        editTextSmokesPerDay = findViewById(R.id.editTextSmokesPerDay)
-        editTextCigarettePrice = findViewById(R.id.editTextCigarettePrice)
-        buttonSubmit = findViewById(R.id.buttonSubmit)
+            val badgeButton = findViewById<ImageButton>(R.id.badgeButton)
+            badgeButton.setOnClickListener {
+                startActivity(Intent(this@MainActivity, BadgeActivity::class.java))
+            }
 
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("FormData", Context.MODE_PRIVATE)
+            val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
+            buttonSubmit.setOnClickListener {
+                val country = findViewById<Spinner>(R.id.spinnerCountry).selectedItem.toString()
+                val startYear = findViewById<EditText>(R.id.editTextStartYear).text.toString().toInt()
+                val smokesPerDay = findViewById<EditText>(R.id.editTextSmokesPerDay).text.toString().toInt()
+                val cigarettePrice = findViewById<EditText>(R.id.editTextCigarettePrice).text.toString().toDouble()
+                val formData = FormData(country, startYear, smokesPerDay, cigarettePrice, getCurrentTimestamp())
+                val jsonData = Gson().toJson(formData)
+                saveDataToFile(jsonData)
 
-        // Load previously saved data, if available
-        loadFormData()
-
-        buttonSubmit.setOnClickListener {
-            // Handle form submission here
-            val country = spinnerCountry.selectedItem.toString()
-            val startYear = editTextStartYear.text.toString().toIntOrNull() ?: 0
-            val smokesPerDay = editTextSmokesPerDay.text.toString().toIntOrNull() ?: 0
-            val cigarettePrice = editTextCigarettePrice.text.toString().toFloatOrNull() ?: 0f
-
-            // Process the form data (e.g., send it to a server, save to a database, etc.)
-
-            // Save form data to SharedPreferences
-            saveFormData(country, startYear, smokesPerDay, cigarettePrice)
-        }
-    }
-
-    private fun saveFormData(country: String, startYear: Int, smokesPerDay: Int, cigarettePrice: Float) {
-        val editor = sharedPreferences.edit()
-        editor.putString("country", country)
-        editor.putInt("startYear", startYear)
-        editor.putInt("smokesPerDay", smokesPerDay)
-        editor.putFloat("cigarettePrice", cigarettePrice)
-        editor.apply()
-    }
-
-//    fun onAboutButtonClick(view: View) {
-//        val intent = Intent(this, AboutActivity::class.java)
-//        startActivity(intent)
-//    }
-
-    // Handle button clicks defined in XML
-//    fun onHomeButtonClick(view: View) {
-//        // Handle Home button click
-//    }
-//
-//    fun onBadgeButtonClick(view: View) {
-//        // Handle Badge button click
-//    }
-
-    private fun loadFormData() {
-        val savedCountry = sharedPreferences.getString("country", "")
-        val savedStartYear = sharedPreferences.getInt("startYear", 0)
-        val savedSmokesPerDay = sharedPreferences.getInt("smokesPerDay", 0)
-        val savedCigarettePrice = sharedPreferences.getFloat("cigarettePrice", 0f)
-
-        // Set the values to the views
-        spinnerCountry.setSelection(getIndex(spinnerCountry, savedCountry))
-        editTextStartYear.setText(savedStartYear.toString())
-        editTextSmokesPerDay.setText(savedSmokesPerDay.toString())
-        editTextCigarettePrice.setText(savedCigarettePrice.toString())
-    }
-
-    private fun getIndex(spinner: Spinner, value: String?): Int {
-        for (i in 0 until spinner.count) {
-            if (spinner.getItemAtPosition(i).toString() == value) {
-                return i
+//                // Verify the saved JSON data
+//                val savedData = readDataFromFile()
+//                val parsedObject = Gson().fromJson(savedData, FormData::class.java)
+//                println(parsedObject)
             }
         }
-        return 0 // Default to the first item if not found
     }
 
-}
+    private fun navigateToDataDisplayScreen() {
+        startActivity(Intent(this@MainActivity, DataDisplayActivity::class.java))
+    }
 
-//@Composable
-//fun Greeting(name: String, modifier: Modifier = Modifier) {
-//    Text(
-//        text = "Hello $name!",
-//        modifier = modifier
-//    )
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    SmokeTheme {
-//        Greeting("Android")
+    private fun saveDataToFile(data: String) {
+        val filename = "formData.json"
+        val fileOutputStream: FileOutputStream
+        try {
+            fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE)
+            fileOutputStream.write(data.toByteArray())
+            fileOutputStream.close()
+            Toast.makeText(this, "Data saved", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Failed to save data", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+//    private fun readDataFromFile(): String {
+//        val filename = "formData.json"
+//        val fileInputStream: FileInputStream = openFileInput(filename)
+//        val inputStreamReader = InputStreamReader(fileInputStream)
+//        val bufferedReader = BufferedReader(inputStreamReader)
+//        val stringBuilder = StringBuilder()
+//        var line: String?
+//        while (bufferedReader.readLine().also { line = it } != null) {
+//            stringBuilder.append(line)
+//        }
+//        return stringBuilder.toString()
 //    }
-//}
+
+    private fun getCurrentTimestamp(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        dateFormat.timeZone = TimeZone.getTimeZone("GMT") // Set timezone to GMT
+        val currentTimeStamp = Date()
+        return dateFormat.format(currentTimeStamp)
+    }
+}
