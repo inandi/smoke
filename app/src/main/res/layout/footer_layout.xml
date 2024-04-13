@@ -1,33 +1,32 @@
 <!-- footer_layout.xml -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@color/footerBackground"
+    android:background="@color/teal_700"
     android:gravity="center_vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:orientation="horizontal"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
 
     <!-- Badge -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:onClick="onBadgeButtonClick"
         android:orientation="vertical"
-        android:layout_margin="4dp"
         android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:onClick="onBadgeButtonClick">
+        android:paddingBottom="4dp">
 
         <ImageButton
             android:id="@+id/badgeButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_badge"
             android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="@string/badge" />
+            android:contentDescription="@string/badge"
+            android:src="@drawable/ic_badge" />
 
     </LinearLayout>
 
@@ -35,21 +34,21 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:onClick="onHomeButtonClick"
         android:orientation="vertical"
-        android:layout_margin="4dp"
         android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:onClick="onHomeButtonClick">
+        android:paddingBottom="4dp">
 
         <ImageButton
             android:id="@+id/homeButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_home"
             android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="@string/home" />
+            android:contentDescription="@string/home"
+            android:src="@drawable/ic_home" />
 
     </LinearLayout>
 
@@ -57,20 +56,20 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_margin="4dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp">
 
         <ImageButton
             android:id="@+id/aboutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_about"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="@string/about" />
+            android:contentDescription="@string/about"
+            android:src="@drawable/ic_about" />
 
     </LinearLayout>
 

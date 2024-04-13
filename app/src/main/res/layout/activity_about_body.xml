@@ -11,6 +11,7 @@ android:padding="16dp">
         android:layout_height="wrap_content"
         android:text="@string/about_title"
         android:textSize="24sp"
+        android:textColor="@color/black"
         android:textStyle="bold"
         android:gravity="center_horizontal"
         android:layout_marginBottom="16dp"/>
@@ -19,6 +20,7 @@ android:padding="16dp">
     <TextView
         android:id="@+id/loremIpsumTextView"
         android:layout_width="match_parent"
+        android:textColor="@color/black"
         android:layout_height="wrap_content"
         android:text="@string/lorem_ipsum"
         android:textSize="16sp" />

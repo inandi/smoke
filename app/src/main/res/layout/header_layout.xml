@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/teal_700"
     android:orientation="vertical">
 
     <!-- Banner Image -->
@@ -8,8 +9,9 @@
         android:id="@+id/topLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#edebe6"
+        android:textStyle="bold"
         android:padding="16dp"
+        android:textColor="@color/white"
         android:text="@string/banner_msg"
         android:textAlignment="inherit"
         android:textSize="18sp" />
