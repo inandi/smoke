@@ -36,7 +36,9 @@ import java.nio.charset.StandardCharsets
 
 class DataDisplayActivity : ComponentActivity() {
 
-    private lateinit var cigarettePriceTextView: TextView
+    private lateinit var textViewDisplayCount: TextView
+    private lateinit var textViewDisplayMoney: TextView
+    private lateinit var textViewDisplayDay: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +46,14 @@ class DataDisplayActivity : ComponentActivity() {
         // Call the function to update the TextView with cig count
 
         // Initialize cigarettePriceTextView
-        cigarettePriceTextView = findViewById(R.id.cigarettePrice)
+        textViewDisplayCount = findViewById(R.id.displayCount)
+        textViewDisplayMoney = findViewById(R.id.displayMoney)
+        textViewDisplayDay = findViewById(R.id.displayDay)
 
         println("---start.....")
         updateTextViewWithJsonValue("cigarettePrice")
+        updateTextViewWithJsonValue("smokesPerDay")
+        updateTextViewWithJsonValue("startYear")
         println("---end.....")
 
         val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
@@ -63,15 +69,31 @@ class DataDisplayActivity : ComponentActivity() {
 
     private fun updateTextViewWithJsonValue(elementName: String) {
         val formData = readDataFromFile()
-        Log.d("JSON", "formData: $formData")
+//        Log.d("JSON", "formData: $formData")
         val jsonObject = createJsonObjectFromFormData(formData)
-        Log.d("JSON", "jsonObject: $jsonObject")
-        val jsonValue = jsonObject.optString(elementName)
-        Log.d("JSON", "$elementName: $jsonValue")
-        cigarettePriceTextView.text = jsonValue
+//        Log.d("JSON", "jsonObject: $jsonObject")
+
+         when (elementName) {
+            "startYear" -> {
+                val cigarettesMissed = jsonObject.optString("startYear")
+                textViewDisplayCount.text=getString(R.string.displayCountMsgTemplate, cigarettesMissed, cigarettesMissed, cigarettesMissed)
+            }
+            "cigarettePrice" -> {
+                val cigarettesForAward = jsonObject.optString("cigarettePrice")
+                textViewDisplayMoney.text = getString(R.string.displayMoneyMsgTemplate, cigarettesForAward, cigarettesForAward,  cigarettesForAward, cigarettesForAward)
+            }
+            "smokesPerDay" -> {
+                val awardName = jsonObject.optString("smokesPerDay")
+                textViewDisplayDay.text=getString(R.string.displayDayMsgTemplate, awardName, awardName, awardName)
+            }
+        }
+
+
+
+
     }
 
-    private fun createJsonObjectFromFormData(formData: String): JSONObject {
+    private fun ______createJsonObjectFromFormData(formData: String): JSONObject {
         val jsonObject = JSONObject()
         val pattern = Regex("\"([^\":]+)\":([^\",]+)")
         pattern.findAll(formData).forEach { matchResult ->
@@ -80,6 +102,11 @@ class DataDisplayActivity : ComponentActivity() {
         }
         return jsonObject
     }
+
+    private fun createJsonObjectFromFormData(formData: String): JSONObject {
+        return JSONObject(formData)
+    }
+
 
     private fun readDataFromFile(): String {
         val fileInputStream: FileInputStream = openFileInput(MainActivity.FORM_DATA_FILENAME)

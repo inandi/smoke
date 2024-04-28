@@ -12,7 +12,7 @@
         app:cardBackgroundColor="#ECE9E9">
 
         <TextView
-            android:id="@+id/textViewProgress"
+            android:id="@+id/displayProgressBanner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -31,11 +31,11 @@
 
 
             <TextView
-                android:id="@+id/cigarettePrice"
+                android:id="@+id/displayCount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="10dp"
-                android:text="$2,3 cigarettes missed to kill you \n3211 more to get awarded with Tiger"
+                android:text="--"
                 android:textColor="#1A3EF6" />
         </androidx.cardview.widget.CardView>
 
@@ -48,11 +48,11 @@
             app:cardBackgroundColor="#EBE9E9">
 
             <TextView
-                android:id="@+id/textViewSecond"
+                android:id="@+id/displayMoney"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="10dp"
-                android:text="$212.12 we saved for your next trip \n$31.01 more to get awarded with Tiger"
+                android:text="--"
                 android:textColor="#1A3EF6" />
         </androidx.cardview.widget.CardView>
 
@@ -65,11 +65,11 @@
             app:cardBackgroundColor="#EBE9E9">
 
             <TextView
-                android:id="@+id/textViewThird"
+                android:id="@+id/displayDay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="10dp"
-                android:text="12.32 days cigarette/poison free\n3.21 more to get awarded with Tiger"
+                android:text="--"
                 android:textColor="#1A3EF6" />
         </androidx.cardview.widget.CardView>
 
