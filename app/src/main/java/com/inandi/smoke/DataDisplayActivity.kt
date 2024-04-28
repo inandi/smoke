@@ -57,9 +57,7 @@ class DataDisplayActivity : ComponentActivity() {
         textViewDisplayDay = findViewById(R.id.displayDay)
 
         println("---start.....")
-        updateTextViewWithJsonValue("cigarettePrice")
-        updateTextViewWithJsonValue("smokesPerDay")
-        updateTextViewWithJsonValue("startYear")
+        updateTextViewWithJsonValue()
         println("---end.....")
 
         val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
@@ -73,27 +71,31 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
-    private fun updateTextViewWithJsonValue(elementName: String) {
+    private fun updateTextViewWithJsonValue() {
         val formData = readDataFromFile()
-//        Log.d("JSON", "formData: $formData")
         val jsonObject = createJsonObjectFromFormData(formData)
         Log.d("JSON", "jsonObject: $jsonObject")
+
         // award
         val awardName = "Tiger"
         val dummyData = "NULL"
 
-        val varCigarettePrice = jsonObject.optDouble("cigarettePrice")
-        val varCountry = jsonObject.optString("country")
-        val varCreatedOn = jsonObject.optString("created_on")
-        val varSmokesPerDay = jsonObject.optInt("smokesPerDay")
-        val varStartYear = jsonObject.optString("startYear")
+        val varOriginalObject = jsonObject.optJSONObject("original")
+        val varCigarettePrice = varOriginalObject.optDouble("cigarettePrice")
+        val varCountryObject = varOriginalObject.optJSONObject("country")
+        val varCountryName = varCountryObject?.optString("country_name")
+        val varCurrencyName = varCountryObject?.optString("currency_name")
+        val varCountrySymbol = varCountryObject?.optString("currency_symbol")
+        val varCreatedOn = varOriginalObject.optString("created_on")
+        val varSmokesPerDay = varOriginalObject.optInt("smokesPerDay")
+        val varStartYear = varOriginalObject.optString("startYear")
         val perHourSpent = perHourSpentMoney(varSmokesPerDay, varCigarettePrice)
         val perHourSmoked = perHourSmokedCigarette(varSmokesPerDay)
         val pastDays = getDateDiff(varCreatedOn)
 
-        textViewDisplayCount.text=getString(R.string.displayCountMsgTemplate, perHourSmoked, dummyData, awardName)
-        textViewDisplayMoney.text = getString(R.string.displayMoneyMsgTemplate, varCountry, perHourSpent,  varCountry, dummyData, awardName)
-        textViewDisplayDay.text=getString(R.string.displayDayMsgTemplate, pastDays, awardName, awardName)
+        textViewDisplayCount.text=getString(R.string.displayCountMsgTemplate, formatNumberWithCommas(perHourSmoked), dummyData, awardName)
+        textViewDisplayMoney.text = getString(R.string.displayMoneyMsgTemplate, varCountrySymbol, formatNumberWithCommas(perHourSpent),  varCountrySymbol, dummyData, awardName)
+        textViewDisplayDay.text=getString(R.string.displayDayMsgTemplate, pastDays, dummyData, awardName)
 
     }
 
@@ -142,13 +144,13 @@ class DataDisplayActivity : ComponentActivity() {
         // Construct the result string
         val result = StringBuilder()
         if (days > 0) {
-            result.append("$days days ")
+            result.append("${formatNumberWithCommas(days)} days ")
         }
         if (hours > 0) {
-            result.append("$hours hour(s) ")
+            result.append("${formatNumberWithCommas(hours)} hour(s) ")
         }
         if (minutes > 0 && days.toInt() == 0 && hours.toInt() == 0) {
-            result.append("$minutes minute(s)")
+            result.append("${formatNumberWithCommas(minutes)} minute(s)")
         }
         return result.toString().trim()
     }
@@ -165,6 +167,15 @@ class DataDisplayActivity : ComponentActivity() {
         } else {
             Log.d("FileDeleted", "formData.json does not exist")
         }
+    }
+
+    private fun formatNumberWithCommas(number: Number): String {
+        val numberString = number.toString()
+        val parts = numberString.split(".")
+        val wholePart = parts[0]
+        val decimalPart = if (parts.size > 1) "." + parts[1] else ""
+        val pattern = Regex("\\B(?=(\\d{3})+(?!\\d))")
+        return wholePart.replace(pattern, ",") + decimalPart
     }
 
 }
