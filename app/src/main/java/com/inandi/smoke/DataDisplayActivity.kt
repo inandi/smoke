@@ -28,12 +28,27 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.io.BufferedReader
 import java.util.TimeZone
+import android.util.Log
+import org.json.JSONObject
+import java.io.IOException
+import java.io.FileNotFoundException
+import java.nio.charset.StandardCharsets
 
 class DataDisplayActivity : ComponentActivity() {
+
+    private lateinit var cigarettePriceTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_display)
+        // Call the function to update the TextView with cig count
+
+        // Initialize cigarettePriceTextView
+        cigarettePriceTextView = findViewById(R.id.cigarettePrice)
+
+        println("---start.....")
+        updateTextViewWithJsonValue("cigarettePrice")
+        println("---end.....")
 
         val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
         aboutButton.setOnClickListener {
@@ -44,30 +59,30 @@ class DataDisplayActivity : ComponentActivity() {
         badgeButton.setOnClickListener {
             startActivity(Intent(this@DataDisplayActivity, BadgeActivity::class.java))
         }
+    }
 
-        // Read the JSON data from the file
-        val savedData = readDataFromFile()
-        // Convert JSON data to FormData object
-        val formData = Gson().fromJson(savedData, MainActivity.FormData::class.java)
+    private fun updateTextViewWithJsonValue(elementName: String) {
+        val formData = readDataFromFile()
+        Log.d("JSON", "formData: $formData")
+        val jsonObject = createJsonObjectFromFormData(formData)
+        Log.d("JSON", "jsonObject: $jsonObject")
+        val jsonValue = jsonObject.optString(elementName)
+        Log.d("JSON", "$elementName: $jsonValue")
+        cigarettePriceTextView.text = jsonValue
+    }
 
-        // Display the data in TextViews or any other UI components
-//        val countryTextView = findViewById<TextView>(R.id.countryTextView)
-//        val startYearTextView = findViewById<TextView>(R.id.startYearTextView)
-//        val smokesPerDayTextView = findViewById<TextView>(R.id.smokesPerDayTextView)
-//        val cigarettePriceTextView = findViewById<TextView>(R.id.cigarettePriceTextView)
-//        val createdOnTextView = findViewById<TextView>(R.id.createdOnTextView)
-//
-//        countryTextView.text = "Country: ${formData.country}"
-//        startYearTextView.text = "Start Year: ${formData.startYear}"
-//        smokesPerDayTextView.text = "Smokes per Day: ${formData.smokesPerDay}"
-//        cigarettePriceTextView.text = "Cigarette Price: ${formData.cigarettePrice}"
-//        createdOnTextView.text = "Created On: ${formData.created_on}"
-
+    private fun createJsonObjectFromFormData(formData: String): JSONObject {
+        val jsonObject = JSONObject()
+        val pattern = Regex("\"([^\":]+)\":([^\",]+)")
+        pattern.findAll(formData).forEach { matchResult ->
+            val (key, value) = matchResult.destructured
+            jsonObject.put(key.trim(), value.trim())
+        }
+        return jsonObject
     }
 
     private fun readDataFromFile(): String {
-        val filename = "formData.json"
-        val fileInputStream: FileInputStream = openFileInput(filename)
+        val fileInputStream: FileInputStream = openFileInput(MainActivity.FORM_DATA_FILENAME)
         val inputStreamReader = InputStreamReader(fileInputStream)
         val bufferedReader = BufferedReader(inputStreamReader)
         val stringBuilder = StringBuilder()

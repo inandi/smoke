@@ -34,6 +34,10 @@ import java.util.TimeZone
 
 class MainActivity : ComponentActivity() {
 
+    companion object {
+        const val FORM_DATA_FILENAME = "formData.json"
+    }
+
     data class FormData(
         val country: String,
         val startYear: Int,
@@ -45,7 +49,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val formDataFile = getFileStreamPath("formData.json")
+        val formDataFile = getFileStreamPath(FORM_DATA_FILENAME)
         if (formDataFile != null && formDataFile.exists()) {
             navigateToDataDisplayScreen()
         } else {
@@ -70,11 +74,6 @@ class MainActivity : ComponentActivity() {
                 val formData = FormData(country, startYear, smokesPerDay, cigarettePrice, getCurrentTimestamp())
                 val jsonData = Gson().toJson(formData)
                 saveDataToFile(jsonData)
-
-//                // Verify the saved JSON data
-//                val savedData = readDataFromFile()
-//                val parsedObject = Gson().fromJson(savedData, FormData::class.java)
-//                println(parsedObject)
             }
         }
     }
@@ -84,10 +83,9 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun saveDataToFile(data: String) {
-        val filename = "formData.json"
         val fileOutputStream: FileOutputStream
         try {
-            fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE)
+            fileOutputStream = openFileOutput(FORM_DATA_FILENAME, Context.MODE_PRIVATE)
             fileOutputStream.write(data.toByteArray())
             fileOutputStream.close()
             Toast.makeText(this, "Data saved", Toast.LENGTH_SHORT).show()
@@ -96,19 +94,6 @@ class MainActivity : ComponentActivity() {
             Toast.makeText(this, "Failed to save data", Toast.LENGTH_SHORT).show()
         }
     }
-
-//    private fun readDataFromFile(): String {
-//        val filename = "formData.json"
-//        val fileInputStream: FileInputStream = openFileInput(filename)
-//        val inputStreamReader = InputStreamReader(fileInputStream)
-//        val bufferedReader = BufferedReader(inputStreamReader)
-//        val stringBuilder = StringBuilder()
-//        var line: String?
-//        while (bufferedReader.readLine().also { line = it } != null) {
-//            stringBuilder.append(line)
-//        }
-//        return stringBuilder.toString()
-//    }
 
     private fun getCurrentTimestamp(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
