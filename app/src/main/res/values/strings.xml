@@ -14,5 +14,13 @@
     <string name="displayCountMsgTemplate">%s cigarettes missed to kill you\n%s more to get awarded with %s</string>
     <string name="displayMoneyMsgTemplate">%s%s we saved for your next trip \n%s%s more to get awarded with %s</string>
     <string name="displayDayMsgTemplate">%s cigarette/poison free\n%s more to get awarded with %s</string>
+    <string name="progressMsg">Progress...</string>
+    <string name="dummyMsg">--</string>
+    <string name="penaltyButtonLevel">One Cigarette, add penalty</string>
+    <string name="submitButtonLevel">Submit</string>
+    <string name="priceEG">e.g. 17.12</string>
+    <string name="countEG">e.g. 18</string>
+    <string name="price_of_your_cigarette">Price of your cigarette</string>
+    <string name="how_many_you_smoke_in_a_day_on_average">How many you smoke in a day on average?</string>
 
 </resources>

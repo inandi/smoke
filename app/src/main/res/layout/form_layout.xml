@@ -32,27 +32,27 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="How many you smoke in a day on average?" />
+        android:text="@string/how_many_you_smoke_in_a_day_on_average" />
 
     <EditText
         android:id="@+id/editTextSmokesPerDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextStartYear"
-        android:hint="e.g. 18"
+        android:hint="@string/countEG"
         android:padding="12dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Price of your cigarette" />
+        android:text="@string/price_of_your_cigarette" />
 
     <EditText
         android:id="@+id/editTextCigarettePrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextSmokesPerDay"
-        android:hint="e.g. 17.12"
+        android:hint="@string/priceEG"
         android:inputType="numberDecimal"
         android:padding="12dp" />
 
@@ -69,7 +69,7 @@
         android:id="@+id/buttonSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit"
+        android:text="@string/submitButtonLevel"
         android:visibility="visible" />
 
 </LinearLayout>
