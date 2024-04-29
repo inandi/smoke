@@ -144,7 +144,7 @@ class DataDisplayActivity : ComponentActivity() {
         // Construct the result string
         val result = StringBuilder()
         if (days > 0) {
-            result.append("${formatNumberWithCommas(days)} days ")
+            result.append("${formatNumberWithCommas(days)} day(s) ")
         }
         if (hours > 0) {
             result.append("${formatNumberWithCommas(hours)} hour(s) ")
