@@ -149,7 +149,7 @@ class DataDisplayActivity : ComponentActivity() {
         if (hours > 0) {
             result.append("${formatNumberWithCommas(hours)} hour(s) ")
         }
-        if (minutes > 0 && days.toInt() == 0 && hours.toInt() == 0) {
+        if (minutes > 0) {
             result.append("${formatNumberWithCommas(minutes)} minute(s)")
         }
         return result.toString().trim()
