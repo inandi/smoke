@@ -1,0 +1,8 @@
+<!-- arrays.xml -->
+<resources>
+    <string-array name="countries">
+        <item>Country 1</item>
+        <item>Country 2</item>
+        <item>Country 3</item>
+    </string-array>
+</resources>

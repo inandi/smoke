@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">smoke</string>
+    <string name="home">Home</string>
+    <string name="about">About</string>
+    <string name="badge">Badge</string>
+    <string name="country_prompt">Country</string>
+    <string name="about_title">About</string>
+    <string name="badge_title">Badge</string>
+    <string name="form_q_year">Which year you started smoking?</string>
+    <string name="form_q_year_placeholder">e.g. 1988</string>
+    <string name="form_rule_info">The penalty doubles for each entry within 24 hours. For instance, if you smoke three cigarettes in a day, the penalties would accumulate as 2 + 4 + 6. The penalty resets to 0 after 24 hours.</string>
+    <string name="banner_msg">Everyday you are wining!!!</string>
+    <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="displayCountMsgTemplate">%s cigarettes missed to kill you\n%s more to get awarded with %s</string>
+    <string name="displayMoneyMsgTemplate">%s%s we saved for your next trip \n%s%s more to get awarded with %s</string>
+    <string name="displayDayMsgTemplate">%s cigarette/poison free\n%s more to get awarded with %s</string>
+    <string name="progressMsg">Progress...</string>
+    <string name="dummyMsg">--</string>
+    <string name="penaltyButtonLevel">One Cigarette, add penalty</string>
+    <string name="submitButtonLevel">Submit</string>
+    <string name="priceEG">e.g. 17.12</string>
+    <string name="countEG">e.g. 18</string>
+    <string name="price_of_your_cigarette">Price of your cigarette</string>
+    <string name="how_many_you_smoke_in_a_day_on_average">How many you smoke in a day on average?</string>
+
 </resources>

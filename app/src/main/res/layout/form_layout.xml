@@ -1,0 +1,75 @@
+<!-- activity_main.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Spinner
+        android:id="@+id/spinnerCountry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:entries="@array/countries"
+        android:padding="12dp"
+        android:prompt="@string/country_prompt"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/form_q_year" />
+
+    <EditText
+        android:id="@+id/editTextStartYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spinnerCountry"
+        android:hint="@string/form_q_year_placeholder"
+        android:padding="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/how_many_you_smoke_in_a_day_on_average" />
+
+    <EditText
+        android:id="@+id/editTextSmokesPerDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextStartYear"
+        android:hint="@string/countEG"
+        android:padding="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/price_of_your_cigarette" />
+
+    <EditText
+        android:id="@+id/editTextCigarettePrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextSmokesPerDay"
+        android:hint="@string/priceEG"
+        android:inputType="numberDecimal"
+        android:padding="12dp" />
+
+    <TextView
+        android:id="@+id/textViewInformation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/form_rule_info"
+        android:textColor="@android:color/darker_gray"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/buttonSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submitButtonLevel"
+        android:visibility="visible" />
+
+</LinearLayout>
