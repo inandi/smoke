@@ -1,3 +1,15 @@
+/**
+ * This file is part of Quit Smoking Android.
+ *
+ * Author: Gobinda Nandi
+ * Created: 2024
+ *
+ * Copyright (c) 2024 Gobinda Nandi
+ * This software is released under the MIT License.
+ * See the LICENSE file for details.
+ */
+
+
 package com.inandi.smoke
 
 import android.os.Bundle
