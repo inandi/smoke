@@ -37,4 +37,4 @@ Quit Smoking Android is released under the [MIT License](LICENSE). See the [LICE
 
 ## Support
 
-For support, bug reports, or feature requests, please [open an issue](link to issue tracker) here on GitHub.
+For support, bug reports, or feature requests, please [open an issue](https://github.com/inandi/smoke/issues) here on GitHub.
