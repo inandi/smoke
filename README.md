@@ -1,4 +1,4 @@
-# Quit Smoking Android App
+# Quit Smoking Android App [UNDER CONSTRUCTION]
 
 Quit Smoking Android is an application designed to help users quit smoking by providing helpful insights, tools, and resources.
 
