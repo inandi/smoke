@@ -5,24 +5,22 @@
     android:padding="16dp">
 
     <!-- Title -->
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:text="@string/badge_title"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="16dp"/>
+<!--    <TextView-->
+<!--        android:id="@+id/titleTextView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:text="@string/badge_title"-->
+<!--        android:textSize="24sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:gravity="center_horizontal"-->
+<!--        android:layout_marginBottom="16dp"/>-->
 
-    <!-- Lorem Ipsum Text -->
-    <TextView
-        android:id="@+id/loremIpsumTextView"
-        android:textColor="@color/black"
+    <!-- RecyclerView for milestones -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/lorem_ipsum"
-        android:textSize="16sp" />
+        android:layout_marginTop="1dp" />
 
 </LinearLayout>

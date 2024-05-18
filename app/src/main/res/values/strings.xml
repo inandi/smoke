@@ -22,6 +22,10 @@
     <string name="price_of_your_cigarette">Price of your cigarette</string>
     <string name="how_many_you_smoke_in_a_day_on_average">How many you smoke in a day on average?</string>
 
+    <string name="disclaimer_1">Thank you for using our app. Kindly note that this application tracks your smoking data based solely on the information provided by you. It employs basic mathematical calculations to determine your smoking status. However, it is important to understand that this app does not possess or claim any medical knowledge or expertise.</string>
+    <string name="disclaimer_2">For any medical assistance or advice regarding smoking cessation, please consult a qualified medical professional or seek guidance from a healthcare expert. Your health and well-being are of paramount importance.</string>
+    <string name="disclaimer_3">Wishing you all the best on your journey towards a healthier lifestyle. Stay motivated and prioritize your health.</string>
+
     <string name="about_title">About Us - Quit Smoking and Breathe Easy Again</string>
     <string name="about_description">Did you know smoking is the leading cause of preventable death globally? Every year, millions of people lose their lives due to smoking-related illnesses. Smoking damages nearly every organ in your body, leading to:</string>
     <string name="hope_message">But there\'s hope! Quitting smoking, no matter how long you\'ve been doing it, has immediate and long-term health benefits.</string>

@@ -211,6 +211,7 @@
             android:textColor="@color/black"
             android:layout_marginBottom="16dp" />
 
+
         <!-- Download App Button -->
         <Button
             android:id="@+id/download_app_button"
@@ -240,7 +241,38 @@
             android:textSize="16sp"
             android:textColor="@color/colorPrimary"
             android:clickable="true"
-            android:onClick="openCoffeeLink" />
+            android:onClick="openCoffeeLink"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Disclaimer -->
+        <TextView
+            android:id="@+id/disclaimer_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disclaimer_1"
+            android:textSize="16sp"
+            android:textColor="@color/red"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Disclaimer -->
+        <TextView
+            android:id="@+id/disclaimer_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disclaimer_2"
+            android:textSize="16sp"
+            android:textColor="@color/red"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Disclaimer -->
+        <TextView
+            android:id="@+id/disclaimer_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disclaimer_3"
+            android:textSize="16sp"
+            android:textColor="@color/red"
+            android:layout_marginBottom="8dp" />
 
     </LinearLayout>
 </ScrollView>
