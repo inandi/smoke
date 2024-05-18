@@ -1,28 +1,246 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-android:padding="16dp">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/about_title"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="16dp"/>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- Lorem Ipsum Text -->
-    <TextView
-        android:id="@+id/loremIpsumTextView"
-        android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:layout_height="wrap_content"
-        android:text="@string/lorem_ipsum"
-        android:textSize="16sp" />
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-</LinearLayout>
+        <!-- About Title -->
+        <TextView
+            android:id="@+id/about_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- About Description -->
+        <TextView
+            android:id="@+id/about_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_description"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Lung Cancer -->
+        <TextView
+            android:id="@+id/lung_cancer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lung_cancer"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp"/>
+
+        <!-- Heart Disease -->
+        <TextView
+            android:id="@+id/heart_disease"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/heart_disease"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp"/>
+
+        <!-- COPD -->
+        <TextView
+            android:id="@+id/copd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/copd"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp"/>
+
+        <!-- Other Cancers -->
+        <TextView
+            android:id="@+id/other_cancers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/other_cancers"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp"/>
+
+        <!-- Hope Message -->
+        <TextView
+            android:id="@+id/hope_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hope_message"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Partner Message -->
+        <TextView
+            android:id="@+id/partner_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/partner_message"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Track Progress -->
+        <TextView
+            android:id="@+id/track_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/track_progress"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Expand Lifeline -->
+        <TextView
+            android:id="@+id/expand_lifeline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/expand_lifeline"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Save Money -->
+        <TextView
+            android:id="@+id/save_money"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save_money"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Money Usage -->
+        <TextView
+            android:id="@+id/money_usage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/money_usage"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Vacation -->
+        <TextView
+            android:id="@+id/vacation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/vacation"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Tech Upgrade -->
+        <TextView
+            android:id="@+id/tech_upgrade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tech_upgrade"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp"/>
+
+        <!-- Savings Goal -->
+        <TextView
+            android:id="@+id/savings_goal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/savings_goal"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Price of Smoking -->
+        <TextView
+            android:id="@+id/price_of_smoking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/price_of_smoking"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Developer Passion -->
+        <TextView
+            android:id="@+id/developer_passion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/developer_passion"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Download App Button -->
+        <Button
+            android:id="@+id/download_app_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/download_app"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimary"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Feeling Generous -->
+        <TextView
+            android:id="@+id/feeling_generous"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/feeling_generous"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Coffee Link -->
+        <TextView
+            android:id="@+id/coffee_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/coffee_link"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimary"
+            android:clickable="true"
+            android:onClick="openCoffeeLink" />
+
+    </LinearLayout>
+</ScrollView>

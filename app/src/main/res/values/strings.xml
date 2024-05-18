@@ -4,7 +4,6 @@
     <string name="about">About</string>
     <string name="badge">Badge</string>
     <string name="country_prompt">Country</string>
-    <string name="about_title">About</string>
     <string name="badge_title">Badge</string>
     <string name="form_q_year">Which year you started smoking?</string>
     <string name="form_q_year_placeholder">e.g. 1988</string>
@@ -22,5 +21,26 @@
     <string name="countEG">e.g. 18</string>
     <string name="price_of_your_cigarette">Price of your cigarette</string>
     <string name="how_many_you_smoke_in_a_day_on_average">How many you smoke in a day on average?</string>
+
+    <string name="about_title">About Us - Quit Smoking and Breathe Easy Again</string>
+    <string name="about_description">Did you know smoking is the leading cause of preventable death globally? Every year, millions of people lose their lives due to smoking-related illnesses. Smoking damages nearly every organ in your body, leading to:</string>
+    <string name="hope_message">But there\'s hope! Quitting smoking, no matter how long you\'ve been doing it, has immediate and long-term health benefits.</string>
+    <string name="partner_message">This app is your partner on your journey to a smoke-free life. We provide tools and resources to help you:</string>
+    <string name="track_progress">• <b>Track your progress:</b> Monitor your cravings, smoke-free days, and money saved.</string>
+    <string name="expand_lifeline">• <b>Expand your lifeline:</b> See how quitting smoking can add years to your life expectancy.</string>
+    <string name="save_money">• <b>Save money:</b> Track the money you\'re saving by not buying cigarettes. You\'d be surprised how quickly it adds up!</string>
+    <string name="money_usage">The money you save by quitting smoking could be used for:</string>
+    <string name="vacation">• A dream vacation</string>
+    <string name="tech_upgrade">• Upgrading your tech gear</string>
+    <string name="savings_goal">• Contributing to your savings goals</string>
+    <string name="price_of_smoking">Death is not the only price you pay for smoking. It takes a toll on your finances, your energy levels, and your overall well-being. Quitting is an investment in yourself and your future.</string>
+    <string name="developer_passion">We, the developers, are passionate about helping people quit smoking and live healthier lives. We believe everyone deserves a chance to breathe easy and enjoy a longer, healthier life.</string>
+    <string name="download_app">Download the app today and start your journey to a smoke-free future! Share it with your friends and family who might also benefit. Every person who quits makes a difference.</string>
+    <string name="feeling_generous">Feeling generous? Consider buying me a coffee to support further development!</string>
+    <string name="coffee_link">buy me a coffee</string>
+    <string name="lung_cancer">• <b>Lung cancer:</b> The most common smoking-related cancer, claiming countless lives.</string>
+    <string name="heart_disease">• <b>Heart disease:</b> Smoking clogs arteries and increases the risk of heart attacks and strokes.</string>
+    <string name="copd">• <b>Chronic obstructive pulmonary disease (COPD):</b> This group of lung diseases makes it hard to breathe.</string>
+    <string name="other_cancers">• <b>Cancer of the mouth, throat, esophagus, bladder, and kidney:</b> Smoking increases the risk of these cancers.</string>
 
 </resources>

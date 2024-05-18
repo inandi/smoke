@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.Intent
+import android.net.Uri
 
 class AboutActivity : ComponentActivity() {
 
@@ -49,5 +50,16 @@ class AboutActivity : ComponentActivity() {
         badgeButton.setOnClickListener {
             startActivity(Intent(this@AboutActivity, BadgeActivity::class.java))
         }
+    }
+
+    /**
+     * Opens the Buy Me a Coffee link in a web browser.
+     *
+     * @param view The view that triggers the function.
+     */
+    fun openCoffeeLink(view: View) {
+        val url = "https://www.buymeacoffee.com/iGobinda"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
     }
 }
