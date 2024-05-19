@@ -15,6 +15,12 @@ Quit Smoking Android is an application designed to help users quit smoking by pr
 <img src="media/about.png" alt="About Screen" width="20%">
 <img src="media/about.png" alt="About Screen" width="20%">
 
+<p align="center">
+  <img src="media/about1.png" alt="About Screen 1" width="30%">
+  <img src="media/about2.png" alt="About Screen 2" width="30%">
+  <img src="media/about3.png" alt="About Screen 3" width="30%">
+</p>
+
 ## Getting Started
 
 To get started with Quit Smoking Android, follow these steps:
