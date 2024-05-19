@@ -41,6 +41,9 @@ class AboutActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
 
+        val versionTextView: TextView = findViewById(R.id.project_version)
+        versionTextView.text = MainActivity.PROJECT_VERSION
+
         val homeButton = findViewById<ImageButton>(R.id.homeButton)
         homeButton.setOnClickListener {
             startActivity(Intent(this@AboutActivity, MainActivity::class.java))

@@ -274,5 +274,16 @@
             android:textColor="@color/red"
             android:layout_marginBottom="8dp" />
 
+        <!-- version -->
+        <TextView
+            android:id="@+id/project_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/disclaimer_3"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
     </LinearLayout>
 </ScrollView>

@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         const val FORM_DATA_FILENAME = "formData.json"
+        const val PROJECT_VERSION = "v0.1"
     }
 
     private lateinit var spinnerCountry: Spinner
