@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding= true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -75,6 +76,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("com.google.code.gson:gson:2.8.9")
-
-
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.0")
+    implementation ("androidx.appcompat:appcompat:1.3.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.0.4")
+    implementation ("com.google.android.gms:play-services-ads:23.1.0")
+    implementation ("com.google.android.ump:user-messaging-platform:2.2.0")
 }

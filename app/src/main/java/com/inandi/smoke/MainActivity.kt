@@ -45,6 +45,18 @@ import java.util.TimeZone
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import org.json.JSONObject
+//import android.os.Build
+//import android.view.Menu
+//import android.view.MenuItem
+//import android.view.WindowMetrics
+//import android.widget.PopupMenu
+//import com.google.android.gms.ads.AdRequest
+//import com.google.android.gms.ads.AdSize
+//import com.google.android.gms.ads.AdView
+//import com.google.android.gms.ads.MobileAds
+//import com.google.android.gms.ads.RequestConfiguration
+//import com.inandi.smoke.databinding.ActivityMainBinding
+//import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity : ComponentActivity() {
 
