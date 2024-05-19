@@ -13,7 +13,7 @@
     <string name="displayCountMsgTemplate">%s cigarettes missed to kill you\n%s more to get awarded with %s</string>
     <string name="displayMoneyMsgTemplate">%s%s we saved for your next trip \n%s%s more to get awarded with %s</string>
     <string name="displayDayMsgTemplate">%s cigarette/poison free\n%s more to get awarded with %s</string>
-    <string name="progressMsg">Progress...</string>
+    <string name="progressMsg">progress...</string>
     <string name="dummyMsg">--</string>
     <string name="penaltyButtonLevel">One Cigarette, add penalty</string>
     <string name="submitButtonLevel">Submit</string>
@@ -46,5 +46,7 @@
     <string name="heart_disease">• <b>Heart disease:</b> Smoking clogs arteries and increases the risk of heart attacks and strokes.</string>
     <string name="copd">• <b>Chronic obstructive pulmonary disease (COPD):</b> This group of lung diseases makes it hard to breathe.</string>
     <string name="other_cancers">• <b>Cancer of the mouth, throat, esophagus, bladder, and kidney:</b> Smoking increases the risk of these cancers.</string>
-
+    <string name="dropdown_reset">Reset</string>
+    <string name="dropdown_dummy">Item 2</string>
+    <string name="action_dropdown_text">...</string>
 </resources>
