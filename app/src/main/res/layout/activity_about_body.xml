@@ -6,6 +6,7 @@
     <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/black"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -17,7 +18,7 @@
             android:text="@string/about_title"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:gravity="center_horizontal"
             android:layout_marginBottom="16dp"/>
 
@@ -28,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="@string/about_description"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
 
         <!-- Lung Cancer -->
@@ -38,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="@string/lung_cancer"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:text="@string/heart_disease"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -64,7 +65,7 @@
             android:layout_height="wrap_content"
             android:text="@string/copd"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -77,7 +78,7 @@
             android:layout_height="wrap_content"
             android:text="@string/other_cancers"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -90,7 +91,7 @@
             android:layout_height="wrap_content"
             android:text="@string/hope_message"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
 
         <!-- Partner Message -->
@@ -100,7 +101,7 @@
             android:layout_height="wrap_content"
             android:text="@string/partner_message"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
 
         <!-- Track Progress -->
@@ -110,7 +111,7 @@
             android:layout_height="wrap_content"
             android:text="@string/track_progress"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -123,7 +124,7 @@
             android:layout_height="wrap_content"
             android:text="@string/expand_lifeline"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -136,7 +137,7 @@
             android:layout_height="wrap_content"
             android:text="@string/save_money"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -149,7 +150,7 @@
             android:layout_height="wrap_content"
             android:text="@string/money_usage"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
 
         <!-- Vacation -->
@@ -159,7 +160,7 @@
             android:layout_height="wrap_content"
             android:text="@string/vacation"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -172,7 +173,7 @@
             android:layout_height="wrap_content"
             android:text="@string/tech_upgrade"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="8dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -185,7 +186,7 @@
             android:layout_height="wrap_content"
             android:text="@string/savings_goal"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -198,7 +199,7 @@
             android:layout_height="wrap_content"
             android:text="@string/price_of_smoking"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
 
         <!-- Developer Passion -->
@@ -208,7 +209,7 @@
             android:layout_height="wrap_content"
             android:text="@string/developer_passion"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
 
 
@@ -229,7 +230,7 @@
             android:layout_height="wrap_content"
             android:text="@string/feeling_generous"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="8dp" />
 
         <!-- Coffee Link -->
@@ -281,7 +282,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:text="@string/disclaimer_3"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginBottom="8dp" />
 
