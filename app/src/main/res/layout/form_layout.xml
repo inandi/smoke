@@ -1,5 +1,5 @@
 <!-- activity_main.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
@@ -12,13 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@android:color/darker_gray"
         android:entries="@array/countries"
-        android:padding="12dp"
+        android:padding="10dp"
         android:prompt="@string/country_prompt"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        android:textColor="@android:color/darker_gray" />
 
     <TextView
+        android:id="@+id/txtVWFormQYear"
         android:layout_width="match_parent"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/darker_gray"
+        android:layout_below="@id/spinnerCountry"
         android:layout_height="wrap_content"
         android:text="@string/form_q_year" />
 
@@ -26,40 +32,55 @@
         android:id="@+id/editTextStartYear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/spinnerCountry"
+        android:layout_below="@id/txtVWFormQYear"
+        android:backgroundTint="@android:color/darker_gray"
         android:hint="@string/form_q_year_placeholder"
+        android:textColorHint="@android:color/darker_gray"
         android:padding="12dp" />
 
     <TextView
+        android:id="@+id/txtVWFormQCigCount"
+        android:textColor="@android:color/darker_gray"
         android:layout_width="match_parent"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/editTextStartYear"
         android:layout_height="wrap_content"
         android:text="@string/how_many_you_smoke_in_a_day_on_average" />
 
     <EditText
         android:id="@+id/editTextSmokesPerDay"
         android:layout_width="match_parent"
+        android:backgroundTint="@android:color/darker_gray"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextStartYear"
+        android:layout_below="@id/txtVWFormQCigCount"
         android:hint="@string/countEG"
+        android:textColorHint="@android:color/darker_gray"
         android:padding="12dp" />
 
     <TextView
+        android:id="@+id/txtVWFormQCigPrice"
         android:layout_width="match_parent"
+        android:layout_below="@id/editTextSmokesPerDay"        android:layout_marginTop="16dp"
+
+        android:textColor="@android:color/darker_gray"
         android:layout_height="wrap_content"
         android:text="@string/price_of_your_cigarette" />
 
     <EditText
         android:id="@+id/editTextCigarettePrice"
         android:layout_width="match_parent"
+        android:backgroundTint="@android:color/darker_gray"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextSmokesPerDay"
+        android:layout_below="@id/txtVWFormQCigPrice"
         android:hint="@string/priceEG"
+        android:textColorHint="@android:color/darker_gray"
         android:inputType="numberDecimal"
         android:padding="12dp" />
 
     <TextView
         android:id="@+id/textViewInformation"
         android:layout_width="match_parent"
+        android:layout_below="@id/editTextCigarettePrice"
         android:layout_height="wrap_content"
         android:text="@string/form_rule_info"
         android:textColor="@android:color/darker_gray"
@@ -71,6 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/submitButtonLevel"
+        android:layout_below="@id/textViewInformation"
         android:visibility="visible" />
 
-</LinearLayout>
+</RelativeLayout>
