@@ -5,7 +5,7 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical"
-tools:context=".AboutActivity">
+tools:context=".MainActivity">
 
     <include layout="@layout/header_layout" android:id="@+id/header_layout"
         android:layout_width="match_parent"
