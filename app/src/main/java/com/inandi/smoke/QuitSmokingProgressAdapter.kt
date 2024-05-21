@@ -5,6 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+
+
 
 class QuitSmokingProgressAdapter(private val progressData: Array<Array<String>>) :
     RecyclerView.Adapter<QuitSmokingProgressAdapter.ProgressViewHolder>() {
@@ -13,6 +17,7 @@ class QuitSmokingProgressAdapter(private val progressData: Array<Array<String>>)
         val milestoneTextView: TextView = itemView.findViewById(R.id.milestoneTextView)
         val awardTextView: TextView = itemView.findViewById(R.id.awardTextView)
         val descriptionTextView: TextView = itemView.findViewById(R.id.descriptionTextView)
+        val imageView: ImageView = itemView.findViewById(R.id.imageView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProgressViewHolder {
@@ -32,6 +37,11 @@ class QuitSmokingProgressAdapter(private val progressData: Array<Array<String>>)
         holder.awardTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
         holder.descriptionTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
 
+
+        // Load the image (assuming you have a method to do this, e.g., using Glide or Picasso)
+        val imagePath = milestone[4]
+        // Example using Glide
+        Glide.with(holder.itemView.context).load(imagePath).into(holder.imageView)
     }
 
     override fun getItemCount(): Int {

@@ -10,6 +10,7 @@
     <string name="form_rule_info">NOTE: The penalty doubles for each entry within 24 hours. For instance, if you smoke three cigarettes in a day, the penalties would accumulate as 2 + 4 + 6. The penalty resets to 0 after 24 hours.</string>
     <string name="banner_msg">Everyday you are wining!!!</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="lorem_ipsum_small">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
     <string name="displayCountMsgTemplate">%s cigarettes missed to kill you\n%s more to get awarded with %s</string>
     <string name="displayMoneyMsgTemplate">%s%s we saved for your next trip \n%s%s more to get awarded with %s</string>
     <string name="displayDayMsgTemplate">%s cigarette/poison free\n%s more to get awarded with %s</string>
@@ -49,4 +50,5 @@
     <string name="dropdown_reset">Reset</string>
     <string name="dropdown_dummy">Item 2</string>
     <string name="action_dropdown_text">...</string>
+    <string name="todo">TODO</string>
 </resources>

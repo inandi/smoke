@@ -33,7 +33,7 @@
                 android:gravity="end"
                 android:textColor="@color/white" />
         </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/section_2"
@@ -61,21 +61,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="This is the first paragraph." />
+                android:text="@string/lorem_ipsum_small" />
 
             <TextView
                 android:id="@+id/displayMoney"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="This is the second paragraph." />
+                android:text="@string/lorem_ipsum_small" />
 
             <TextView
                 android:id="@+id/displayDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="This is the third paragraph." />
+                android:text="@string/lorem_ipsum_small" />
         </LinearLayout>
     </LinearLayout>
 
