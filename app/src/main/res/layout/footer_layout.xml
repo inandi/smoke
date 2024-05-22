@@ -1,5 +1,6 @@
 <!-- footer_layout.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/black"
@@ -7,7 +8,6 @@
     android:orientation="horizontal"
     android:paddingTop="4dp"
     android:paddingBottom="4dp">
-
     <!-- Badge -->
     <LinearLayout
         android:layout_width="0dp"
@@ -19,7 +19,6 @@
         android:orientation="vertical"
         android:paddingTop="4dp"
         android:paddingBottom="4dp">
-
         <ImageButton
             android:id="@+id/badgeButton"
             android:layout_width="60dp"
@@ -27,9 +26,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/badge"
             android:src="@drawable/ic_badge" />
-
     </LinearLayout>
-
     <!-- Home -->
     <LinearLayout
         android:layout_width="19dp"
@@ -41,7 +38,6 @@
         android:orientation="vertical"
         android:paddingTop="4dp"
         android:paddingBottom="4dp">
-
         <ImageButton
             android:id="@+id/homeButton"
             android:layout_width="60dp"
@@ -49,9 +45,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/home"
             android:src="@drawable/ic_home" />
-
     </LinearLayout>
-
     <!-- About -->
     <LinearLayout
         android:layout_width="0dp"
@@ -62,7 +56,6 @@
         android:orientation="vertical"
         android:paddingTop="4dp"
         android:paddingBottom="4dp">
-
         <ImageButton
             android:id="@+id/aboutButton"
             android:layout_width="60dp"
@@ -70,7 +63,5 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/about"
             android:src="@drawable/ic_about" />
-
     </LinearLayout>
-
 </LinearLayout>

@@ -1,11 +1,11 @@
-<!-- activity_main.xml -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- form.xml -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
     android:orientation="vertical"
     android:padding="16dp">
-
     <Spinner
         android:id="@+id/spinnerCountry"
         android:layout_width="match_parent"
@@ -18,7 +18,6 @@
         android:prompt="@string/country_prompt"
         android:spinnerMode="dropdown"
         android:textColor="@android:color/darker_gray" />
-
     <TextView
         android:id="@+id/txtVWFormQYear"
         android:layout_width="match_parent"
@@ -27,7 +26,6 @@
         android:layout_below="@id/spinnerCountry"
         android:layout_height="wrap_content"
         android:text="@string/form_q_year" />
-
     <EditText
         android:id="@+id/editTextStartYear"
         android:layout_width="match_parent"
@@ -37,7 +35,6 @@
         android:hint="@string/form_q_year_placeholder"
         android:textColorHint="@android:color/darker_gray"
         android:padding="12dp" />
-
     <TextView
         android:id="@+id/txtVWFormQCigCount"
         android:textColor="@android:color/darker_gray"
@@ -46,7 +43,6 @@
         android:layout_below="@id/editTextStartYear"
         android:layout_height="wrap_content"
         android:text="@string/how_many_you_smoke_in_a_day_on_average" />
-
     <EditText
         android:id="@+id/editTextSmokesPerDay"
         android:layout_width="match_parent"
@@ -56,16 +52,14 @@
         android:hint="@string/countEG"
         android:textColorHint="@android:color/darker_gray"
         android:padding="12dp" />
-
     <TextView
         android:id="@+id/txtVWFormQCigPrice"
         android:layout_width="match_parent"
-        android:layout_below="@id/editTextSmokesPerDay"        android:layout_marginTop="16dp"
-
+        android:layout_below="@id/editTextSmokesPerDay"
+        android:layout_marginTop="16dp"
         android:textColor="@android:color/darker_gray"
         android:layout_height="wrap_content"
         android:text="@string/price_of_your_cigarette" />
-
     <EditText
         android:id="@+id/editTextCigarettePrice"
         android:layout_width="match_parent"
@@ -76,7 +70,6 @@
         android:textColorHint="@android:color/darker_gray"
         android:inputType="numberDecimal"
         android:padding="12dp" />
-
     <TextView
         android:id="@+id/textViewInformation"
         android:layout_width="match_parent"
@@ -86,7 +79,6 @@
         android:textColor="@android:color/darker_gray"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp" />
-
     <Button
         android:id="@+id/buttonSubmit"
         android:layout_width="match_parent"
@@ -94,5 +86,4 @@
         android:text="@string/submitButtonLevel"
         android:layout_below="@id/textViewInformation"
         android:visibility="visible" />
-
 </RelativeLayout>

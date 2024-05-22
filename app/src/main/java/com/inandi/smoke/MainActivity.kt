@@ -13,16 +13,6 @@ package com.inandi.smoke
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.inandi.smoke.ui.theme.SmokeTheme
-import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.Date
 import android.widget.Button
@@ -30,33 +20,14 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.EditText
 import android.widget.Spinner
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.Intent
-import com.google.gson.Gson
 import java.io.FileOutputStream
 import android.widget.Toast
-import java.io.FileInputStream
-import java.io.InputStreamReader
-import java.io.BufferedReader
 import java.util.TimeZone
-
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import org.json.JSONObject
-//import android.os.Build
-//import android.view.Menu
-//import android.view.MenuItem
-//import android.view.WindowMetrics
-//import android.widget.PopupMenu
-//import com.google.android.gms.ads.AdRequest
-//import com.google.android.gms.ads.AdSize
-//import com.google.android.gms.ads.AdView
-//import com.google.android.gms.ads.MobileAds
-//import com.google.android.gms.ads.RequestConfiguration
-//import com.inandi.smoke.databinding.ActivityMainBinding
-//import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity : ComponentActivity() {
 

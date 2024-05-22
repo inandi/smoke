@@ -1,27 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/black"
     android:padding="16dp">
-
-    <!-- Title -->
-<!--    <TextView-->
-<!--        android:id="@+id/titleTextView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:text="@string/badge_title"-->
-<!--        android:textSize="24sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:gravity="center_horizontal"-->
-<!--        android:layout_marginBottom="16dp"/>-->
-
     <!-- RecyclerView for milestones -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp" />
-
 </LinearLayout>

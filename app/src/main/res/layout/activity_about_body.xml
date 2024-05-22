@@ -1,15 +1,13 @@
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/black"
-    android:orientation="vertical"
-    android:padding="16dp">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:orientation="vertical"
+        android:padding="16dp">
         <!-- About Title -->
         <TextView
             android:id="@+id/about_title"
@@ -21,7 +19,6 @@
             android:textColor="@color/white"
             android:gravity="center_horizontal"
             android:layout_marginBottom="16dp"/>
-
         <!-- About Description -->
         <TextView
             android:id="@+id/about_description"
@@ -31,7 +28,6 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
-
         <!-- Lung Cancer -->
         <TextView
             android:id="@+id/lung_cancer"
@@ -44,7 +40,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp"/>
-
         <!-- Heart Disease -->
         <TextView
             android:id="@+id/heart_disease"
@@ -57,7 +52,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp"/>
-
         <!-- COPD -->
         <TextView
             android:id="@+id/copd"
@@ -70,7 +64,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp"/>
-
         <!-- Other Cancers -->
         <TextView
             android:id="@+id/other_cancers"
@@ -83,7 +76,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp"/>
-
         <!-- Hope Message -->
         <TextView
             android:id="@+id/hope_message"
@@ -93,7 +85,6 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
-
         <!-- Partner Message -->
         <TextView
             android:id="@+id/partner_message"
@@ -103,7 +94,6 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
-
         <!-- Track Progress -->
         <TextView
             android:id="@+id/track_progress"
@@ -116,7 +106,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp" />
-
         <!-- Expand Lifeline -->
         <TextView
             android:id="@+id/expand_lifeline"
@@ -129,7 +118,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp" />
-
         <!-- Save Money -->
         <TextView
             android:id="@+id/save_money"
@@ -142,7 +130,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp" />
-
         <!-- Money Usage -->
         <TextView
             android:id="@+id/money_usage"
@@ -152,7 +139,6 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
-
         <!-- Vacation -->
         <TextView
             android:id="@+id/vacation"
@@ -165,7 +151,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp" />
-
         <!-- Tech Upgrade -->
         <TextView
             android:id="@+id/tech_upgrade"
@@ -178,7 +163,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp"/>
-
         <!-- Savings Goal -->
         <TextView
             android:id="@+id/savings_goal"
@@ -191,7 +175,6 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:lineSpacingExtra="4dp" />
-
         <!-- Price of Smoking -->
         <TextView
             android:id="@+id/price_of_smoking"
@@ -201,7 +184,6 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
-
         <!-- Developer Passion -->
         <TextView
             android:id="@+id/developer_passion"
@@ -211,8 +193,6 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
-
-
         <!-- Download App Button -->
         <Button
             android:id="@+id/download_app_button"
@@ -222,7 +202,6 @@
             android:textColor="@color/white"
             android:background="@color/colorPrimary"
             android:layout_marginBottom="16dp" />
-
         <!-- Feeling Generous -->
         <TextView
             android:id="@+id/feeling_generous"
@@ -232,19 +211,18 @@
             android:textSize="16sp"
             android:textColor="@color/white"
             android:layout_marginBottom="8dp" />
-
         <!-- Coffee Link -->
         <TextView
             android:id="@+id/coffee_link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="true"
             android:text="@string/coffee_link"
             android:textSize="16sp"
             android:textColor="@color/colorPrimary"
             android:clickable="true"
             android:onClick="openCoffeeLink"
             android:layout_marginBottom="16dp"/>
-
         <!-- Disclaimer -->
         <TextView
             android:id="@+id/disclaimer_1"
@@ -254,7 +232,6 @@
             android:textSize="16sp"
             android:textColor="@color/red"
             android:layout_marginBottom="16dp" />
-
         <!-- Disclaimer -->
         <TextView
             android:id="@+id/disclaimer_2"
@@ -264,7 +241,6 @@
             android:textSize="16sp"
             android:textColor="@color/red"
             android:layout_marginBottom="16dp" />
-
         <!-- Disclaimer -->
         <TextView
             android:id="@+id/disclaimer_3"
@@ -274,7 +250,6 @@
             android:textSize="16sp"
             android:textColor="@color/red"
             android:layout_marginBottom="8dp" />
-
         <!-- version -->
         <TextView
             android:id="@+id/project_version"
@@ -285,6 +260,5 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_marginBottom="8dp" />
-
     </LinearLayout>
 </ScrollView>
