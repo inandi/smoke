@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 
-
-
 class QuitSmokingProgressAdapter(private val progressData: Array<Array<String>>) :
     RecyclerView.Adapter<QuitSmokingProgressAdapter.ProgressViewHolder>() {
 

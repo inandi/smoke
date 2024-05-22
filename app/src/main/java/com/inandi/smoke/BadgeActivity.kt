@@ -13,28 +13,10 @@ package com.inandi.smoke
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.inandi.smoke.ui.theme.SmokeTheme
-import android.widget.TextView
-import android.widget.Button
-import android.view.View
 import android.widget.ImageButton
-import android.widget.EditText
-import android.widget.Spinner
-import androidx.appcompat.app.AppCompatActivity
-import android.content.Context
-import android.content.SharedPreferences
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
-//import com.inandi.smoke.QuitSmokingProgressAdapter
 
 class BadgeActivity : ComponentActivity() {
 
@@ -70,11 +52,12 @@ class BadgeActivity : ComponentActivity() {
      * containing information such as duration, icon, and description.
      *
      * @return An array of arrays, where each inner array represents a milestone.
-     *         The inner array structure: [id, title, award, description]
+     *         The inner array structure: [id, title, award, description, imagePath]
      *         - id: An int representing id of each milestone.
      *         - title: A string representing the title or name of the milestone.
      *         - award: A string representing the icon/award associated with the milestone.
      *         - description: A string providing details about the milestone.
+     *         - imagePath: A string providing details location of image.
      */
     private fun quitSmokingProgress(): Array<Array<String>> {
         return arrayOf(
@@ -90,7 +73,7 @@ class BadgeActivity : ComponentActivity() {
                 "After 7 Days",
                 "Rabbit",
                 "Nicotine is completely out of your system. Your sense of taste and smell start to improve.",
-                "file:///android_asset/media/award/not_found.jpg"),
+                "file:///android_asset/media/award/rabbit.jpg"),
 
             arrayOf(
                 "3",
@@ -118,7 +101,7 @@ class BadgeActivity : ComponentActivity() {
                 "After 1 Year",
                 "Eagle",
                 "Risk of heart disease is halved compared to a smoker's risk. Risk of heart attack drops significantly. Cilia in the lungs begin to regain normal function, reducing the risk of infection.",
-                "file:///android_asset/media/award/not_found.jpg"),
+                "file:///android_asset/media/award/eagle.jpg"),
 
             arrayOf(
                 "7",
@@ -139,7 +122,7 @@ class BadgeActivity : ComponentActivity() {
                 "After 4 Years",
                 "Gorilla",
                 "Risk of cancers, such as mouth, throat, esophagus, and bladder, decreases significantly. Coughing and shortness of breath continue to decrease.",
-                "file:///android_asset/media/award/not_found.jpg"),
+                "file:///android_asset/media/award/gorilla.jpg"),
 
             arrayOf(
                 "10",
@@ -160,7 +143,7 @@ class BadgeActivity : ComponentActivity() {
                 "After 15 Years",
                 "Dragon",
                 "Risk of heart disease drops to that of a nonsmoker. Overall risk of death becomes nearly the same as that of someone who has never smoked.",
-                "file:///android_asset/media/award/not_found.jpg")
+                "file:///android_asset/media/award/dragon.jpg")
         )
     }
 

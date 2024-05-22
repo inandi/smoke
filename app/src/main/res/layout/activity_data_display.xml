@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/black"
-android:orientation="vertical"
-tools:context=".DataDisplayActivity">
-
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical"
+    tools:context=".DataDisplayActivity">
     <include layout="@layout/header_layout" android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
     <include layout="@layout/activity_data_display_body" android:id="@+id/activity_about_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
-
     <FrameLayout
         android:id="@+id/ad_view_container"
         android:layout_width="match_parent"
@@ -24,8 +22,7 @@ tools:context=".DataDisplayActivity">
         android:layout_marginBottom="20dp"
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true" />
-
-    <include android:id="@+id/footer_layout" layout="@layout/footer_layout" android:layout_width="match_parent"
+    <include android:id="@+id/footer_layout" layout="@layout/footer_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
 </LinearLayout>

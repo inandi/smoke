@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,17 +8,13 @@
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".AboutActivity">
-
     <include layout="@layout/header_layout" android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
     <include layout="@layout/activity_about_body" android:id="@+id/activity_about_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
-
     <include layout="@layout/footer_layout" android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
 </LinearLayout>
