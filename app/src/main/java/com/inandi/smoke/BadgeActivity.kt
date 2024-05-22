@@ -70,11 +70,12 @@ class BadgeActivity : ComponentActivity() {
      * containing information such as duration, icon, and description.
      *
      * @return An array of arrays, where each inner array represents a milestone.
-     *         The inner array structure: [id, title, award, description]
+     *         The inner array structure: [id, title, award, description, imagePath]
      *         - id: An int representing id of each milestone.
      *         - title: A string representing the title or name of the milestone.
      *         - award: A string representing the icon/award associated with the milestone.
      *         - description: A string providing details about the milestone.
+     *         - imagePath: A string providing details location of image.
      */
     private fun quitSmokingProgress(): Array<Array<String>> {
         return arrayOf(
