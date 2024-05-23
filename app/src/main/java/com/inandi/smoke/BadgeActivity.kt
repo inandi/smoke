@@ -87,7 +87,7 @@ class BadgeActivity : ComponentActivity() {
                 "After 3 Months",
                 "Lion",
                 "Circulation improves, leading to better blood flow to your extremities. Lung function continues to improve, making physical activity easier. Breathing becomes noticeably easier.",
-                "file:///android_asset/media/award/not_found.jpg"),
+                "file:///android_asset/media/award/lion.jpg"),
 
             arrayOf(
                 "5",
@@ -108,14 +108,14 @@ class BadgeActivity : ComponentActivity() {
                 "After 2 Years",
                 "Bear",
                 "Risk of stroke decreases significantly. Lung function continues to improve, reducing the risk of chronic lung diseases.",
-                "file:///android_asset/media/award/not_found.jpg"),
+                "file:///android_asset/media/award/bear.jpg"),
 
             arrayOf(
                 "8",
                 "After 3 Years",
                 "Leopard",
                 "Risk of heart disease drops to that of a nonsmoker. Lung function improves even further.",
-                "file:///android_asset/media/award/not_found.jpg"),
+                "file:///android_asset/media/award/leopard.jpg"),
 
             arrayOf(
                 "9",
