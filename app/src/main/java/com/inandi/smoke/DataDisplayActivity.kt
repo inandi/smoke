@@ -88,13 +88,8 @@ class DataDisplayActivity : ComponentActivity() {
         // Call the function to update the TextView with cig count
 //                deleteFormDataFile()
 
-        // Initialize TextView elements for displaying data
-        initializeDataDisplayTextView()
-
-        println("---start.....")
         // Update the TextView elements with data from the JSON object
         loadData()
-        println("---end.....")
 
         // Set up the about button and its click listener
         val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
@@ -110,7 +105,6 @@ class DataDisplayActivity : ComponentActivity() {
     }
 
     private fun loadGoogleAds() {
-
         binding = ActivityDataDisplayBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -119,7 +113,6 @@ class DataDisplayActivity : ComponentActivity() {
 
         // Log the Mobile Ads SDK version.
         Log.d(TAG, "Google Mobile Ads SDK Version: " + MobileAds.getVersion())
-
         googleMobileAdsConsentManager =
             GoogleMobileAdsConsentManager.getInstance(applicationContext)
         googleMobileAdsConsentManager.gatherConsent(this) { error ->
@@ -188,42 +181,8 @@ class DataDisplayActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-    //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-    //        menuInflater.inflate(R.menu.action_menu, menu)
-    //        val moreMenu = menu?.findItem(R.id.action_more)
-    //        moreMenu?.isVisible = googleMobileAdsConsentManager.isPrivacyOptionsRequired
-    //        return super.onCreateOptionsMenu(menu)
-    //    }
-
-    //    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    //        val menuItemView = findViewById<View>(item.itemId)
-    //        PopupMenu(this, menuItemView).apply {
-    //            menuInflater.inflate(R.menu.popup_menu, menu)
-    //            show()
-    //            setOnMenuItemClickListener { popupMenuItem ->
-    //                when (popupMenuItem.itemId) {
-    //                    R.id.privacy_settings -> {
-    //                        // Handle changes to user consent.
-    //
-    // googleMobileAdsConsentManager.showPrivacyOptionsForm(this@MainActivity) { formError ->
-    //                            if (formError != null) {
-    //                                Toast.makeText(this@MainActivity, formError.message,
-    // Toast.LENGTH_SHORT).show()
-    //                            }
-    //                        }
-    //                        true
-    //                    }
-    //                    else -> false
-    //                }
-    //            }
-    //            return super.onOptionsItemSelected(item)
-    //        }
-    //    }
-
     private fun loadBanner() {
-
         // This is an ad unit ID for a test ad. Replace with your own banner ad unit ID.
-        //
         adView.adUnitId = "ca-app-pub-3940256099942544/9214589741"
         adView.setAdSize(adSize)
 
@@ -238,10 +197,8 @@ class DataDisplayActivity : ComponentActivity() {
         if (isMobileAdsInitializeCalled.getAndSet(true)) {
             return
         }
-
         // Initialize the Mobile Ads SDK.
         MobileAds.initialize(this) {}
-
         // Load an ad.
         if (initialLayoutComplete.get()) {
             loadBanner()
@@ -261,32 +218,30 @@ class DataDisplayActivity : ComponentActivity() {
      * - The number of days since a specified date.
      */
     private fun loadData() {
-        // Create an instance of BadgeActivity
-        val badgeActivity = BadgeActivity()
-        val mainActivity = MainActivity()
+        // Initialize TextView elements for displaying data
+        initializeDataDisplayTextView()
 
         val formData = readDataFromFile()
         val jsonObjectFormData = createJsonObjectFromFormData(formData)
 
         Log.d("JSON", "jsonObjectFormData: $jsonObjectFormData")
 
-        val upComingAwardName = setGetData.getStatusValueFromJsonObject(jsonObjectFormData, "next_award_detail", "animal")
-        val upcomingAwardDurationInHour=setGetData.getStatusValueFromJsonObject(jsonObjectFormData, "next_award_detail", "hourDuration")
+        val upComingAwardName = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "next_award_detail", "animal")
 
         val dummyData = "NULL"
         var finalCountrySymbol: String? = null
 
-        // Extract values from the JSON object
         val varOriginalObject = jsonObjectFormData.optJSONObject("original")
-        val varCigarettePrice = varOriginalObject.optDouble("cigarettePrice")
-        val varCountryObject = varOriginalObject.optJSONObject("country")
+        val varStatusObject = jsonObjectFormData.optJSONObject("status")
+
+        val varCigarettePrice = varOriginalObject?.optDouble("cigarettePrice") ?: 0.0
+        val varCountryObject = varOriginalObject?.optJSONObject("country")
+
         val varCountryName = varCountryObject?.optString("country_name")
         val varCurrencyName = varCountryObject?.optString("currency_name")
         val varCountrySymbol = varCountryObject?.optString("currency_symbol")
 
-        val varStatusObject = jsonObjectFormData.optJSONObject("status")
-        val varNextAwardDatetime = varStatusObject.optString("next_award_datetime")
-
+        val varNextAwardDatetime = varStatusObject?.optString("next_award_datetime") ?: ""
 
         finalCountrySymbol =
             if (isRtlLanguage(varCountrySymbol)) {
@@ -295,9 +250,9 @@ class DataDisplayActivity : ComponentActivity() {
                 varCountrySymbol
             }
 
-        val varCreatedOn = varOriginalObject.optString("created_on")
-        val varSmokesPerDay = varOriginalObject.optInt("smokesPerDay")
-        val varStartYear = varOriginalObject.optString("startYear")
+        val varCreatedOn = varOriginalObject?.optString("created_on") ?: ""
+        val varSmokesPerDay = varOriginalObject?.optInt("smokesPerDay") ?: 0
+        val varStartYear = varOriginalObject?.optString("startYear")
 
         // Calculate per minute metrics and past days
         val perMinuteSpent = perMinuteSpentMoney(varSmokesPerDay, varCigarettePrice)
@@ -313,9 +268,6 @@ class DataDisplayActivity : ComponentActivity() {
             displayData.find { it.containsKey("totalMoneySpent") }?.get("totalMoneySpent")
                     as? Number
 
-        //        val days = displayData.find { it.containsKey("days") }?.get("days")
-        //        val hours = displayData.find { it.containsKey("hours") }?.get("hours")
-        //        val minutes = displayData.find { it.containsKey("minutes") }?.get("minutes")
         val timeCompletedString = displayData.find { it.containsKey("dayString") }?.get("dayString")
 
         // Update TextView elements with the calculated and formatted information
@@ -336,7 +288,8 @@ class DataDisplayActivity : ComponentActivity() {
                 totalMoneySpent,
                 upComingAwardName
             )
-        val timeRestString = getDateDiff(varNextAwardDatetime)
+
+        val timeRestString = setGetData.getDateDiff(varNextAwardDatetime)
         textViewDisplayDay.text =
             getString(R.string.displayDayMsgTemplate, timeCompletedString, timeRestString, upComingAwardName)
     }
@@ -380,15 +333,14 @@ class DataDisplayActivity : ComponentActivity() {
         // Construct the result string
         val valDatString = StringBuilder()
         if (days > 0) {
-            valDatString.append("${formatNumberWithCommas(days)} day(s) ")
+            valDatString.append("${setGetData.formatNumberWithCommas(days)} day(s) ")
         }
         if (hours > 0) {
-            valDatString.append("${formatNumberWithCommas(hours)} hour(s) ")
+            valDatString.append("${setGetData.formatNumberWithCommas(hours)} hour(s) ")
         }
         if (minutes > 0) {
-            valDatString.append("${formatNumberWithCommas(minutes)} minute(s)")
+            valDatString.append("${setGetData.formatNumberWithCommas(minutes)} minute(s)")
         } else{
-            // @todo need to check
             valDatString.append("0 minute")
         }
         val dayString = valDatString.toString().trim()
@@ -466,51 +418,7 @@ class DataDisplayActivity : ComponentActivity() {
         return stringBuilder.toString()
     }
 
-    /**
-     * @deprecated v0.1 - not in use
-     *
-     * Calculates the difference between the provided date string and the current UTC time.
-     *
-     * This function takes a date string in the format "yyyy-MM-dd HH:mm:ss", parses it to a date
-     * object, and then calculates the difference between this date and the current time in UTC. The
-     * result is returned as a string representing the difference in days, hours, and minutes.
-     *
-     * For example:
-     * - Input: "2024-05-17 12:00:00" -> Output: "1 day(s) 5 hour(s) 30 minute(s)" (assuming the
-     *   current time is 2024-05-18 17:30:00 UTC)
-     * @param dateString The date string to be compared, in the format "yyyy-MM-dd HH:mm:ss".
-     * @return A `String` representing the difference in days, hours, and minutes.
-     */
-    private fun getDateDiff(dateString: String): String {
-        // Parse the provided date string
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        sdf.timeZone = TimeZone.getTimeZone("UTC")
-        val date = sdf.parse(dateString)
 
-        // Get the current time in UTC
-        val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
-
-        // Calculate the difference in milliseconds
-        val diffInMillis = date.time - currentTime.time
-
-        // Convert milliseconds to days, hours, and minutes
-        val days = (diffInMillis / (1000 * 60 * 60 * 24)).toInt()
-        val hours = ((diffInMillis / (1000 * 60 * 60)) % 24).toInt()
-        val minutes = ((diffInMillis / (1000 * 60)) % 60).toInt()
-
-        // Construct the result string
-        val result = StringBuilder()
-        if (days > 0) {
-            result.append("${formatNumberWithCommas(days)} day(s) ")
-        }
-        if (hours > 0) {
-            result.append("${formatNumberWithCommas(hours)} hour(s) ")
-        }
-        if (minutes > 0) {
-            result.append("${formatNumberWithCommas(minutes)} minute(s)")
-        }
-        return result.toString().trim()
-    }
 
     /**
      * Deletes the form data file (formData.json) if it exists.
@@ -535,25 +443,4 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Formats a given number by adding commas as thousands separators.
-     *
-     * This function takes a `Number` as input and returns a `String` representation of the number
-     * with commas inserted at every thousandth place.
-     *
-     * For example:
-     * - Input: 1234567 -> Output: "1,234,567"
-     * - Input: 1234567.89 -> Output: "1,234,567.89"
-     *
-     * @param number The number to be formatted. This can be any subclass of `Number`.
-     * @return A `String` representation of the number with commas as thousands separators.
-     */
-    private fun formatNumberWithCommas(number: Any): String {
-        val numberString = number.toString()
-        val parts = numberString.split(".")
-        val wholePart = parts[0]
-        val decimalPart = if (parts.size > 1) "." + parts[1] else ""
-        val pattern = Regex("\\B(?=(\\d{3})+(?!\\d))")
-        return wholePart.replace(pattern, ",") + decimalPart
-    }
 }
