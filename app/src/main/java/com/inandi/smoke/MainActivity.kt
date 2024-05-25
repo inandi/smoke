@@ -34,6 +34,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
+import android.view.ViewGroup
+import android.widget.TextView
 
 class MainActivity : ComponentActivity() {
 
@@ -103,78 +105,123 @@ class MainActivity : ComponentActivity() {
     private fun setupSubmitButtonListener(countryObject: JSONObject) {
         val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
         buttonSubmit.setOnClickListener {
+            // Check if countryObject is null or empty
+            if (countryObject.length() == 0) {
+                val context = this
+                val toast = Toast.makeText(context, "Please provide country details", Toast.LENGTH_SHORT)
+                toast.show()
+                return@setOnClickListener // Exit the click listener if countryObject is empty
+            }
+
             // Retrieve user input from EditText fields
-            val startYear = findViewById<EditText>(R.id.editTextStartYear).text.toString().toInt()
-            val smokesPerDay = findViewById<EditText>(R.id.editTextSmokesPerDay).text.toString().toInt()
-            val cigarettePrice = findViewById<EditText>(R.id.editTextCigarettePrice).text.toString().toDouble()
+            val startYearText = findViewById<EditText>(R.id.editTextStartYear).text.toString()
+            val smokesPerDayText = findViewById<EditText>(R.id.editTextSmokesPerDay).text.toString()
+            val cigarettePriceText = findViewById<EditText>(R.id.editTextCigarettePrice).text.toString()
 
-            // Create a JSON object to hold the user input
-            val jsonObject = JSONObject()
-            jsonObject.put("country", countryObject) // Include country details
-            jsonObject.put("cigarettePrice", cigarettePrice) // Price per cigarette
-            jsonObject.put("smokesPerDay", smokesPerDay) // Number of cigarettes smoked per day
-            jsonObject.put("startYear", startYear) // Year the user started smoking
+            // Check for empty fields and show toast message
+            if (startYearText.isEmpty() || smokesPerDayText.isEmpty() || cigarettePriceText.isEmpty()) {
+                val context = this
+                val toast = Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT)
+                toast.show()
+                return@setOnClickListener // Exit the click listener if any field is empty
+            }
+
+            // Convert input to valid data types (assuming these are integers and a double)
+            val startYear = startYearText.toIntOrNull() ?: 0
+            val smokesPerDay = smokesPerDayText.toIntOrNull() ?: 0
+            val cigarettePrice = cigarettePriceText.toDoubleOrNull() ?: 0.0
+
+            // create JSON to save in file
+            val jsonObjectForForm = JSONObject()
             val getCurrentTimestamp = setGetData.getCurrentTimestamp()
-            jsonObject.put("created_on", getCurrentTimestamp) // Timestamp of when the data is created
 
-            // Wrap the JSON object in another JSON object
-            val originalObject = JSONObject()
-            originalObject.put("original", jsonObject)
+            // Create a JSON object to hold the user input, in "original" key
+            val jsonObjectOriginal = JSONObject()
+            jsonObjectOriginal.put("country", countryObject) // Include country details
+            jsonObjectOriginal.put("cigarettePrice", cigarettePrice) // Price per cigarette
+            jsonObjectOriginal.put("smokesPerDay", smokesPerDay) // Number of cigarettes smoked per day
+            jsonObjectOriginal.put("startYear", startYear) // Year the user started smoking
+            jsonObjectOriginal.put("created_on", getCurrentTimestamp) // Timestamp of when the data is created
+            // store in main JSON
+            jsonObjectForForm.put("original", jsonObjectOriginal)
 
-            // Create a JSON object to hold the update status
-            val updateJsonObject = JSONObject()
-
-            // Create an instance of BadgeActivity
-            val badgeActivity = BadgeActivity()
-
+            // Create a JSON object to hold the update status, in "status" key
+            val jsonObjectStatus = JSONObject()
             val firstAwardDetail = setGetData.getSmokingProgressById("1")
-            updateJsonObject.put("next_award_detail", firstAwardDetail) // Include country details
+            jsonObjectStatus.put("next_award_detail", firstAwardDetail)
 
+            // get the time to achieve the award in minutes
             val hourDurationStr = firstAwardDetail?.get("hourDuration") as? String
             val hourDuration = hourDurationStr?.toIntOrNull() ?: 0 // Convert to Int or use 0 if invalid
             val minutesToAdd = hourDuration * 60L
 
+            // add minutes to the current timestamp
             val nextAwardDatetime = setGetData.addMinutesToDateTime(getCurrentTimestamp, minutesToAdd)
-            updateJsonObject.put("next_award_datetime", nextAwardDatetime) // Include country details
+            jsonObjectStatus.put("next_award_datetime", nextAwardDatetime) // Include country details
 
-            originalObject.put("status", updateJsonObject)
+            // store in main JSON
+            jsonObjectForForm.put("status", jsonObjectStatus)
 
             // Save the data to a file
-            saveDataToFile(originalObject, this)
+            saveDataToFile(jsonObjectForForm, this)
         }
     }
 
-    /**
-     * Initializes the country spinner with data and sets up the item selected listener.
-     *
-     * This function performs the following steps:
-     * 1. Initializes the country spinner view.
-     * 2. Calls the `initializeCountriesArray` function to get the list of countries.
-     * 3. Sets up an ArrayAdapter with the country names and currency symbols.
-     * 4. Sets up the item selected listener to update the country details in the JSON object.
-     *
-     * @param countryObject The JSON object to store selected country details.
-     */
     private fun initializeCountrySpinner(countryObject: JSONObject) {
         spinnerCountry = findViewById(R.id.spinnerCountry)
+
+        // Initialize the country list
         val countries = dataSet.initializeCountriesArray()
-        val adapter = ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_spinner_item,
-            countries.map { "${it[0]} (${it[2]})" } // Combine country name with currency symbol
-        )
+        val countryNames = countries.map { "${it[0]} (${it[2]})" }.toMutableList()
+
+        // Add the placeholder to the beginning of the list
+        countryNames.add(0, getString(R.string.placeholder_select_country))
+
+        // Create a custom ArrayAdapter
+        val adapter = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, countryNames) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent) as TextView
+                if (position == 0) {
+                    view.setTextColor(resources.getColor(android.R.color.darker_gray))
+                } else {
+                    view.setTextColor(resources.getColor(android.R.color.white))
+                }
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent) as TextView
+                if (position == 0) {
+                    view.setTextColor(resources.getColor(android.R.color.darker_gray))
+                } else {
+                    view.setTextColor(resources.getColor(android.R.color.black))
+                }
+                return view
+            }
+        }
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCountry.adapter = adapter
+        spinnerCountry.setSelection(0, false) // Ensure the placeholder is shown initially
+
         spinnerCountry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedCountry = countries[position]
-                val selectedCountryName = selectedCountry[0]
-                val selectedCurrencyName = selectedCountry[1]
-                val selectedCurrencySymbol = selectedCountry[2]
-                countryObject.put("country_name", selectedCountryName)
-                countryObject.put("currency_name", selectedCurrencyName)
-                countryObject.put("currency_symbol", selectedCurrencySymbol)
+                if (position > 0) { // Ignore the placeholder selection
+                    val selectedCountry = countries[position - 1]
+                    val selectedCountryName = selectedCountry[0]
+                    val selectedCurrencyName = selectedCountry[1]
+                    val selectedCurrencySymbol = selectedCountry[2]
+                    countryObject.put("country_name", selectedCountryName)
+                    countryObject.put("currency_name", selectedCurrencyName)
+                    countryObject.put("currency_symbol", selectedCurrencySymbol)
+                } else {
+                    // Placeholder selected
+                    countryObject.remove("country_name")
+                    countryObject.remove("currency_name")
+                    countryObject.remove("currency_symbol")
+                }
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // Do nothing if nothing is selected
             }
@@ -213,8 +260,6 @@ class MainActivity : ComponentActivity() {
             // Close the file output stream
             fileOutputStream.close()
             navigateToDataDisplayScreen()
-            // Show a toast message indicating success
-//            Toast.makeText(context, "Data saved", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             // Print the stack trace of the exception
             e.printStackTrace()

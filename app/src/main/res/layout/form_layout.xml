@@ -1,9 +1,7 @@
-<!-- form.xml -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     android:orientation="vertical"
     android:padding="16dp">
     <Spinner
@@ -16,8 +14,7 @@
         android:entries="@array/countries"
         android:padding="10dp"
         android:prompt="@string/country_prompt"
-        android:spinnerMode="dropdown"
-        android:textColor="@android:color/darker_gray" />
+        android:spinnerMode="dropdown"/>
     <TextView
         android:id="@+id/txtVWFormQYear"
         android:layout_width="match_parent"
@@ -34,6 +31,8 @@
         android:backgroundTint="@android:color/darker_gray"
         android:hint="@string/form_q_year_placeholder"
         android:textColorHint="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:inputType="numberDecimal"
         android:padding="12dp" />
     <TextView
         android:id="@+id/txtVWFormQCigCount"
@@ -51,6 +50,8 @@
         android:layout_below="@id/txtVWFormQCigCount"
         android:hint="@string/countEG"
         android:textColorHint="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:inputType="numberDecimal"
         android:padding="12dp" />
     <TextView
         android:id="@+id/txtVWFormQCigPrice"
@@ -68,6 +69,7 @@
         android:layout_below="@id/txtVWFormQCigPrice"
         android:hint="@string/priceEG"
         android:textColorHint="@android:color/darker_gray"
+        android:textColor="@android:color/white"
         android:inputType="numberDecimal"
         android:padding="12dp" />
     <TextView

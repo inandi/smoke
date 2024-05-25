@@ -80,8 +80,8 @@ class DataDisplayActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_display)
-         dataSet = DataSet()
-         setGetData = SetGetData()
+        dataSet = DataSet()
+        setGetData = SetGetData()
 
         loadGoogleAds()
 
