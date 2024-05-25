@@ -1,9 +1,13 @@
 package com.inandi.smoke
 
+import android.content.Context
+import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 import org.json.JSONObject
+import java.io.FileOutputStream
+import java.util.Calendar
 
 class SetGetData {
 
@@ -24,6 +28,26 @@ class SetGetData {
             }
         }
         return null // Return null if ID is not found
+    }
+
+
+
+
+    fun getStatusValueFromJsonObject(jsonObject: JSONObject, detailKey: String, valueKey: String): String? {
+        val statusObject = jsonObject.getJSONObject("status")
+        val nextAwardDetail = statusObject.optString(detailKey)
+        // @todo fix it
+        val nextAwardJson = JSONObject(nextAwardDetail)
+        return nextAwardJson.optString(valueKey)
+    }
+
+     fun addMinutesToDateTime(dateTime: String, minutesToAdd: Long): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = formatter.parse(dateTime)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.MINUTE, minutesToAdd.toInt())
+        return formatter.format(calendar.time)
     }
 
     /**

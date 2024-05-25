@@ -62,9 +62,8 @@ class MainActivity : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val dataSet = DataSet()
-        val setGetData = SetGetData()
-
+        dataSet = DataSet()
+        setGetData = SetGetData()
         val countryObject = JSONObject()
 
         // Check if the form data file exists
@@ -74,43 +73,11 @@ class MainActivity : ComponentActivity() {
             // If the file exists, navigate to the data display screen
             navigateToDataDisplayScreen()
         } else {
-
             // If the file does not exist, set the content view to activity_main
-            setContentView(R.layout.activity_main) // Ensure this matches your layout file's name.
-
-//            setGetData.prepareForm()
+            setContentView(R.layout.activity_main)
 
             // Initialize the country spinner
-            spinnerCountry = findViewById(R.id.spinnerCountry)
-            // Call the function to initialize the array
-            val countries = dataSet.initializeCountriesArray()
-
-            // Adapter for the spinner
-            val adapter = ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_spinner_item,
-                countries.map { "${it[0]} (${it[2]})" } // Combine country name with currency symbol
-            )
-
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            spinnerCountry.adapter = adapter
-
-            // Set up the spinner item selected listener
-            spinnerCountry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    val selectedCountry = countries[position]
-                    val selectedCountryName = selectedCountry[0]
-                    val selectedCurrencyName = selectedCountry[1]
-                    val selectedCurrencySymbol = selectedCountry[2]
-                    countryObject.put("country_name", selectedCountryName)
-                    countryObject.put("currency_name", selectedCurrencyName)
-                    countryObject.put("currency_symbol", selectedCurrencySymbol)
-                }
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // Do nothing if nothing is selected
-                }
-            }
+            initializeCountrySpinner(countryObject)
 
             // Set up listeners for the button
             val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
@@ -124,71 +91,95 @@ class MainActivity : ComponentActivity() {
                 startActivity(Intent(this@MainActivity, BadgeActivity::class.java))
             }
 
-            /**
-             * Sets up an OnClickListener for the submit button to handle user input and save it to a file.
-             * Retrieves user input from EditText fields, creates a JSON object, and saves it to a file.
-             */
-            val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
-            buttonSubmit.setOnClickListener {
-                // Retrieve user input from EditText fields
-                val startYear = findViewById<EditText>(R.id.editTextStartYear).text.toString().toInt()
-                val smokesPerDay = findViewById<EditText>(R.id.editTextSmokesPerDay).text.toString().toInt()
-                val cigarettePrice = findViewById<EditText>(R.id.editTextCigarettePrice).text.toString().toDouble()
-
-                // Create a JSON object to hold the user input
-                val jsonObject = JSONObject()
-                jsonObject.put("country", countryObject) // Include country details
-                jsonObject.put("cigarettePrice", cigarettePrice) // Price per cigarette
-                jsonObject.put("smokesPerDay", smokesPerDay) // Number of cigarettes smoked per day
-                jsonObject.put("startYear", startYear) // Year the user started smoking
-                val getCurrentTimestamp = setGetData.getCurrentTimestamp()
-                jsonObject.put("created_on", getCurrentTimestamp) // Timestamp of when the data is created
-
-                // Wrap the JSON object in another JSON object
-                val originalObject = JSONObject()
-                originalObject.put("original", jsonObject)
-
-                // Create a JSON object to hold the update status
-                val updateJsonObject = JSONObject()
-
-                // Create an instance of BadgeActivity
-                val badgeActivity = BadgeActivity()
-
-                val firstAwardDetail = setGetData.getSmokingProgressById("1")
-                updateJsonObject.put("next_award_detail", firstAwardDetail) // Include country details
-
-                val hourDurationStr = firstAwardDetail?.get("hourDuration") as? String
-                val hourDuration = hourDurationStr?.toIntOrNull() ?: 0 // Convert to Int or use 0 if invalid
-                val minutesToAdd = hourDuration * 60L
-
-                val nextAwardDatetime = addMinutesToDateTime(getCurrentTimestamp, minutesToAdd)
-                updateJsonObject.put("next_award_datetime", nextAwardDatetime) // Include country details
-
-                originalObject.put("status", updateJsonObject)
-
-                // Save the data to a file
-                saveDataToFile(originalObject,this)
-            }
+            // Set up listener for the submit button
+            setupSubmitButtonListener(countryObject)
         }
     }
 
-    private fun addMinutesToDateTime(dateTime: String, minutesToAdd: Long): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val date = formatter.parse(dateTime)
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        calendar.add(Calendar.MINUTE, minutesToAdd.toInt())
-        return formatter.format(calendar.time)
+    /**
+     * Sets up an OnClickListener for the submit button to handle user input and save it to a file.
+     * Retrieves user input from EditText fields, creates a JSON object, and saves it to a file.
+     */
+    private fun setupSubmitButtonListener(countryObject: JSONObject) {
+        val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
+        buttonSubmit.setOnClickListener {
+            // Retrieve user input from EditText fields
+            val startYear = findViewById<EditText>(R.id.editTextStartYear).text.toString().toInt()
+            val smokesPerDay = findViewById<EditText>(R.id.editTextSmokesPerDay).text.toString().toInt()
+            val cigarettePrice = findViewById<EditText>(R.id.editTextCigarettePrice).text.toString().toDouble()
+
+            // Create a JSON object to hold the user input
+            val jsonObject = JSONObject()
+            jsonObject.put("country", countryObject) // Include country details
+            jsonObject.put("cigarettePrice", cigarettePrice) // Price per cigarette
+            jsonObject.put("smokesPerDay", smokesPerDay) // Number of cigarettes smoked per day
+            jsonObject.put("startYear", startYear) // Year the user started smoking
+            val getCurrentTimestamp = setGetData.getCurrentTimestamp()
+            jsonObject.put("created_on", getCurrentTimestamp) // Timestamp of when the data is created
+
+            // Wrap the JSON object in another JSON object
+            val originalObject = JSONObject()
+            originalObject.put("original", jsonObject)
+
+            // Create a JSON object to hold the update status
+            val updateJsonObject = JSONObject()
+
+            // Create an instance of BadgeActivity
+            val badgeActivity = BadgeActivity()
+
+            val firstAwardDetail = setGetData.getSmokingProgressById("1")
+            updateJsonObject.put("next_award_detail", firstAwardDetail) // Include country details
+
+            val hourDurationStr = firstAwardDetail?.get("hourDuration") as? String
+            val hourDuration = hourDurationStr?.toIntOrNull() ?: 0 // Convert to Int or use 0 if invalid
+            val minutesToAdd = hourDuration * 60L
+
+            val nextAwardDatetime = setGetData.addMinutesToDateTime(getCurrentTimestamp, minutesToAdd)
+            updateJsonObject.put("next_award_datetime", nextAwardDatetime) // Include country details
+
+            originalObject.put("status", updateJsonObject)
+
+            // Save the data to a file
+            saveDataToFile(originalObject, this)
+        }
     }
 
-    fun getStatusValueFromJsonObject(jsonObject: JSONObject, detailKey: String, valueKey: String): String? {
-        val statusObject = jsonObject.getJSONObject("status")
-        val nextAwardDetail = statusObject.optString(detailKey)
-        // @todo fix it
-        val nextAwardJson = JSONObject(nextAwardDetail)
-        return nextAwardJson.optString(valueKey)
+    /**
+     * Initializes the country spinner with data and sets up the item selected listener.
+     *
+     * This function performs the following steps:
+     * 1. Initializes the country spinner view.
+     * 2. Calls the `initializeCountriesArray` function to get the list of countries.
+     * 3. Sets up an ArrayAdapter with the country names and currency symbols.
+     * 4. Sets up the item selected listener to update the country details in the JSON object.
+     *
+     * @param countryObject The JSON object to store selected country details.
+     */
+    private fun initializeCountrySpinner(countryObject: JSONObject) {
+        spinnerCountry = findViewById(R.id.spinnerCountry)
+        val countries = dataSet.initializeCountriesArray()
+        val adapter = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_spinner_item,
+            countries.map { "${it[0]} (${it[2]})" } // Combine country name with currency symbol
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCountry.adapter = adapter
+        spinnerCountry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedCountry = countries[position]
+                val selectedCountryName = selectedCountry[0]
+                val selectedCurrencyName = selectedCountry[1]
+                val selectedCurrencySymbol = selectedCountry[2]
+                countryObject.put("country_name", selectedCountryName)
+                countryObject.put("currency_name", selectedCurrencyName)
+                countryObject.put("currency_symbol", selectedCurrencySymbol)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing if nothing is selected
+            }
+        }
     }
-
 
     /**
      * Navigates to the DataDisplayActivity screen.
@@ -221,8 +212,9 @@ class MainActivity : ComponentActivity() {
             fileOutputStream.write(jsonObject.toString().toByteArray())
             // Close the file output stream
             fileOutputStream.close()
+            navigateToDataDisplayScreen()
             // Show a toast message indicating success
-            Toast.makeText(context, "Data saved", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(context, "Data saved", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             // Print the stack trace of the exception
             e.printStackTrace()
@@ -230,20 +222,5 @@ class MainActivity : ComponentActivity() {
             Toast.makeText(context, "Failed to save data", Toast.LENGTH_SHORT).show()
         }
     }
-
-//    /**
-//     * Retrieves the current timestamp in the format "yyyy-MM-dd HH:mm:ss".
-//     *
-//     * This function gets the current date and time, formats it as a string in the specified format,
-//     * and sets the timezone to GMT.
-//     *
-//     * @return A `String` representing the current timestamp in "yyyy-MM-dd HH:mm:ss" format.
-//     */
-//    private fun getCurrentTimestamp(): String {
-//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        dateFormat.timeZone = TimeZone.getTimeZone("GMT") // Set timezone to GMT
-//        val currentTimeStamp = Date()
-//        return dateFormat.format(currentTimeStamp)
-//    }
 
 }

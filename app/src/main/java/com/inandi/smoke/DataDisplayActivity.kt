@@ -47,6 +47,9 @@ class DataDisplayActivity : ComponentActivity() {
     private lateinit var adView: AdView
     private lateinit var googleMobileAdsConsentManager: GoogleMobileAdsConsentManager
 
+    private lateinit var dataSet: DataSet
+    private lateinit var setGetData: SetGetData
+
     // Get the ad size with screen width.
     private val adSize: AdSize
         get() {
@@ -77,6 +80,8 @@ class DataDisplayActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_display)
+         dataSet = DataSet()
+         setGetData = SetGetData()
 
         loadGoogleAds()
 
@@ -265,8 +270,8 @@ class DataDisplayActivity : ComponentActivity() {
 
         Log.d("JSON", "jsonObjectFormData: $jsonObjectFormData")
 
-        val upComingAwardName = mainActivity.getStatusValueFromJsonObject(jsonObjectFormData, "next_award_detail", "animal")
-        val upcomingAwardDurationInHour=mainActivity.getStatusValueFromJsonObject(jsonObjectFormData, "next_award_detail", "hourDuration")
+        val upComingAwardName = setGetData.getStatusValueFromJsonObject(jsonObjectFormData, "next_award_detail", "animal")
+        val upcomingAwardDurationInHour=setGetData.getStatusValueFromJsonObject(jsonObjectFormData, "next_award_detail", "hourDuration")
 
         val dummyData = "NULL"
         var finalCountrySymbol: String? = null
