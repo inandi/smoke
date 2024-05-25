@@ -39,7 +39,7 @@ class DataSet {
                 "After 1 Month",
                 "Wolf",
                 "Your lung function begins to improve. You may notice a decrease in coughing and shortness of breath. Energy levels increase.",
-                "file:///android_asset/media/award/not_found.jpg",
+                "file:///android_asset/media/award/wolf.jpg",
                 "730.001"),
 
             arrayOf(
@@ -95,7 +95,7 @@ class DataSet {
                 "After 5 Years",
                 "Elephant",
                 "Risk of stroke decreases to that of a nonsmoker. Risk of cancers, such as cervix, colon, and rectum, decreases.",
-                "file:///android_asset/media/award/not_found.jpg",
+                "file:///android_asset/media/award/elephant.jpg",
                 "43830"),
 
             arrayOf(
@@ -103,7 +103,7 @@ class DataSet {
                 "After 10 Years",
                 "Rhino",
                 "Risk of dying from lung cancer drops by about half compared to a smoker. Risk of cancers, such as kidney, pancreas, and esophagus, decreases significantly.",
-                "file:///android_asset/media/award/not_found.jpg",
+                "file:///android_asset/media/award/rhino.jpg",
                 "87660"),
 
             arrayOf(

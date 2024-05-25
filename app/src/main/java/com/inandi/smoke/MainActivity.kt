@@ -157,17 +157,14 @@ class MainActivity : ComponentActivity() {
                 val firstAwardDetail = badgeActivity.getSmokingProgressById("1")
                 updateJsonObject.put("next_award_detail", firstAwardDetail) // Include country details
 
-
                 val hourDurationStr = firstAwardDetail?.get("hourDuration") as? String
                 val hourDuration = hourDurationStr?.toIntOrNull() ?: 0 // Convert to Int or use 0 if invalid
                 val minutesToAdd = hourDuration * 60L
-
 
                 val nextAwardDatetime = addMinutesToDateTime(getCurrentTimestamp, minutesToAdd)
                 updateJsonObject.put("next_award_datetime", nextAwardDatetime) // Include country details
 
                 originalObject.put("status", updateJsonObject)
-
 
                 // Save the data to a file
                 saveDataToFile(originalObject,this)
