@@ -141,7 +141,7 @@ class MainActivity : ComponentActivity() {
                 jsonObject.put("cigarettePrice", cigarettePrice) // Price per cigarette
                 jsonObject.put("smokesPerDay", smokesPerDay) // Number of cigarettes smoked per day
                 jsonObject.put("startYear", startYear) // Year the user started smoking
-                val getCurrentTimestamp = getCurrentTimestamp()
+                val getCurrentTimestamp = setGetData.getCurrentTimestamp()
                 jsonObject.put("created_on", getCurrentTimestamp) // Timestamp of when the data is created
 
                 // Wrap the JSON object in another JSON object
@@ -154,7 +154,7 @@ class MainActivity : ComponentActivity() {
                 // Create an instance of BadgeActivity
                 val badgeActivity = BadgeActivity()
 
-                val firstAwardDetail = badgeActivity.getSmokingProgressById("1")
+                val firstAwardDetail = setGetData.getSmokingProgressById("1")
                 updateJsonObject.put("next_award_detail", firstAwardDetail) // Include country details
 
                 val hourDurationStr = firstAwardDetail?.get("hourDuration") as? String
@@ -231,19 +231,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Retrieves the current timestamp in the format "yyyy-MM-dd HH:mm:ss".
-     *
-     * This function gets the current date and time, formats it as a string in the specified format,
-     * and sets the timezone to GMT.
-     *
-     * @return A `String` representing the current timestamp in "yyyy-MM-dd HH:mm:ss" format.
-     */
-    private fun getCurrentTimestamp(): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("GMT") // Set timezone to GMT
-        val currentTimeStamp = Date()
-        return dateFormat.format(currentTimeStamp)
-    }
+//    /**
+//     * Retrieves the current timestamp in the format "yyyy-MM-dd HH:mm:ss".
+//     *
+//     * This function gets the current date and time, formats it as a string in the specified format,
+//     * and sets the timezone to GMT.
+//     *
+//     * @return A `String` representing the current timestamp in "yyyy-MM-dd HH:mm:ss" format.
+//     */
+//    private fun getCurrentTimestamp(): String {
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        dateFormat.timeZone = TimeZone.getTimeZone("GMT") // Set timezone to GMT
+//        val currentTimeStamp = Date()
+//        return dateFormat.format(currentTimeStamp)
+//    }
 
 }

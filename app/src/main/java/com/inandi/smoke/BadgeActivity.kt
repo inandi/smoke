@@ -1,4 +1,10 @@
 /**
+ * BadgeActivity is responsible for displaying the badges representing milestones in the
+ * quit smoking progress.
+ *
+ * This activity sets up the layout, initializes the RecyclerView to display badges, and
+ * provides navigation to the "About" and "Home" activities via buttons.
+ *
  * This file is part of Quit Smoking Android.
  *
  * Author: Gobinda Nandi
@@ -23,20 +29,22 @@ class BadgeActivity : ComponentActivity() {
 
     private lateinit var dataSet: DataSet
 
+    /**
+     * Called when the activity is starting. This is where most initialization should go.
+     *
+     * This method sets the content view to the activity's layout, initializes the badge view,
+     * and sets up click listeners for the "About" and "Home" buttons to navigate to their
+     * respective activities.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being
+     *                           shut down then this Bundle contains the data it most recently
+     *                           supplied in `onSaveInstanceState`. Note: Otherwise it is null.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_badge)
-        val dataSet = DataSet()
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Fetch data from quitSmokingProgress function
-        val progressData = dataSet.quitSmokingProgress()
-
-        // Create and set adapter
-        val adapter = QuitSmokingProgressAdapter(progressData)
-        recyclerView.adapter = adapter
+        loadBadgeView()
 
         val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
         aboutButton.setOnClickListener {
@@ -47,25 +55,29 @@ class BadgeActivity : ComponentActivity() {
         homeButton.setOnClickListener {
             startActivity(Intent(this@BadgeActivity, MainActivity::class.java))
         }
-
     }
 
-    fun getSmokingProgressById(id: String): JSONObject? {
-        val progressArray = dataSet.quitSmokingProgress()
-        for (item in progressArray) {
-            if (item[0] == id) {
-                val obj = JSONObject()
-                obj.put("number", item[0])
-                obj.put("timeFrame", item[1])
-                obj.put("animal", item[2])
-                obj.put("description", item[3])
-                obj.put("imageUrl", item[4])
-                obj.put("hourDuration", item[5])
-                return obj
-            }
-        }
-        return null // Return null if ID is not found
-    }
+    /**
+     * Initializes and sets up the badge view by loading data into the RecyclerView.
+     *
+     * This method creates an instance of the `DataSet` class, retrieves the quitSmokingProgress()
+     * data and sets up the RecyclerView with a linear layout manager and an adapter populated
+     * with the retrieved data.
+     *
+     * The RecyclerView is used to display a list of badges, each representing a milestone in the
+     * quit smoking progress.
+     */
+    private fun loadBadgeView() {
+        val dataSet = DataSet()
+        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // Fetch data from quitSmokingProgress function
+        val progressData = dataSet.quitSmokingProgress()
+
+        // Create and set adapter
+        val adapter = QuitSmokingProgressAdapter(progressData)
+        recyclerView.adapter = adapter
+    }
 
 }
