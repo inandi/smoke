@@ -50,6 +50,8 @@ class SetGetData {
         return null // Return null if ID is not found
     }
 
+
+
     /**
      * Calculates the time difference and related metrics based on the provided milliseconds and per-minute rates.
      *
@@ -142,7 +144,6 @@ class SetGetData {
      * @param detailKey The key under which the next award detail is stored in the status object.
      * @param valueKey The key corresponding to the value to be retrieved from the next award detail.
      * @return The value associated with the value key in the next award detail, or null if not found.
-     * @throws JSONException If there is an error parsing the JSON object.
      */
     fun getNextAwardDetailFromStatusKeyOfJsonObject(
         jsonObject: JSONObject,
@@ -212,15 +213,19 @@ class SetGetData {
      * @param dateTime The input date and time string in the format "yyyy-MM-dd HH:mm:ss".
      * @param minutesToAdd The number of minutes to add to the date and time.
      * @return A string representing the date and time after adding the specified minutes.
-     * @throws ParseException If the input date and time string cannot be parsed.
      */
-    fun addMinutesToDateTime(dateTime: String, minutesToAdd: Long): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val date = formatter.parse(dateTime)
+    fun addMinutesToDateTime(dateTime: Date, minutesToAdd: Double): Date {
+//        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        val date = formatter.parse(dateTime)
+//        val calendar = Calendar.getInstance()
+//        calendar.time = dateTime
+//        calendar.add(Calendar.MINUTE, minutesToAdd.toInt())
+//        return formatter.format(calendar.time)
+
         val calendar = Calendar.getInstance()
-        calendar.time = date
+        calendar.time = dateTime
         calendar.add(Calendar.MINUTE, minutesToAdd.toInt())
-        return formatter.format(calendar.time)
+        return calendar.time
     }
 
     /**
@@ -253,10 +258,9 @@ class SetGetData {
      *
      * @return A `String` representing the current timestamp in "yyyy-MM-dd HH:mm:ss" format.
      */
-    fun getCurrentTimestamp(): String {
+    fun getCurrentTimestamp(): Date {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("GMT") // Set timezone to GMT
-        val currentTimeStamp = Date()
-        return dateFormat.format(currentTimeStamp)
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Set timezone to GMT
+        return Date()
     }
 }

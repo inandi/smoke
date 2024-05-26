@@ -345,6 +345,64 @@ class DataDisplayActivity : ComponentActivity() {
     private fun updateJson() {
         val formData = readDataFromFile()
         val jsonObjectFormData = createJsonObjectFromFormData(formData)
+
+        val statusObject = jsonObjectFormData.getJSONObject("status")
+        val nextAwardDateTimeString = statusObject.getString("next_award_datetime")
+
+        val varOriginalObject = jsonObjectFormData.optJSONObject("original")
+        val varCreatedOnString = varOriginalObject?.optString("created_on") ?: ""
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Assuming the date is in UTC
+        val varCreatedOn: Date = dateFormat.parse(varCreatedOnString)!!
+
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        val nextAwardDateTime = sdf.parse(nextAwardDateTimeString)
+
+//        val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
+
+        // temp
+        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +15)
+        val currentTime=tenHoursAgo.time
+        //temp
+
+        if (currentTime.after(nextAwardDateTime)) {
+            // Perform actions if current time in UTC is greater than next_award_datetime
+            println("Current time in UTC is greater than next_award_datetime.")
+            // Add your additional actions here
+
+            // only update next award in form json
+            var oneTimeUpdate = false;
+
+            val progressArray = dataSet.quitSmokingProgress()
+            for (item in progressArray) {
+                val progressId = item[0]
+                val hourDuration = item[5].toDouble()
+                val minutesDuration = hourDuration * 60L
+                val nextProspectAwardDatetime = setGetData.addMinutesToDateTime(varCreatedOn, minutesDuration)
+                if(currentTime.after(nextProspectAwardDatetime)){
+                    val jsonObjectAwardAchieved = JSONObject()
+                    jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetime)
+                    jsonObjectAwardAchieved.put("score", "40%")
+                    val jsonObjectAwardAchievedProgressId = JSONObject()
+                    jsonObjectAwardAchievedProgressId.put(progressId, jsonObjectAwardAchieved)
+                    statusObject.put("award_achieved_timeline", jsonObjectAwardAchievedProgressId)
+                } else{
+                    if(!oneTimeUpdate){
+                        val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        statusObject.put("next_award_detail", setGetData.getSmokingProgressById(progressId))
+                        statusObject.put("next_award_datetime", outputFormat.format(nextProspectAwardDatetime))
+                        oneTimeUpdate = true
+                    }
+                }
+            }
+            val mainActivity = MainActivity()
+            deleteFormDataFile()
+            mainActivity.saveDataToFile(jsonObjectFormData, this)
+        } else {
+            println("Current time in UTC is not greater than next_award_datetime.")
+        }
     }
 
     /**

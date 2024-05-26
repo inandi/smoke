@@ -152,7 +152,7 @@ class MainActivity : ComponentActivity() {
 
             // get the time to achieve the award in minutes
             val hourDurationStr = firstAwardDetail?.get("hourDuration") as? String
-            val hourDuration = hourDurationStr?.toIntOrNull() ?: 0 // Convert to Int or use 0 if invalid
+            val hourDuration = hourDurationStr?.toDouble() ?: 0.0 // Convert to Int or use 0 if invalid
             val minutesToAdd = hourDuration * 60L
 
             // add minutes to the current timestamp
@@ -164,6 +164,8 @@ class MainActivity : ComponentActivity() {
 
             // Save the data to a file
             saveDataToFile(jsonObjectForForm, this)
+            navigateToDataDisplayScreen()
+
         }
     }
 
@@ -250,7 +252,7 @@ class MainActivity : ComponentActivity() {
      * @param jsonObject The `JSONObject` to be saved to the file.
      * @param context The `Context` used to open the file output stream.
      */
-    private fun saveDataToFile(jsonObject: JSONObject, context: Context) {
+     fun saveDataToFile(jsonObject: JSONObject, context: Context) {
         val fileOutputStream: FileOutputStream
         try {
             // Open the file output stream in private mode
@@ -259,7 +261,6 @@ class MainActivity : ComponentActivity() {
             fileOutputStream.write(jsonObject.toString().toByteArray())
             // Close the file output stream
             fileOutputStream.close()
-            navigateToDataDisplayScreen()
         } catch (e: Exception) {
             // Print the stack trace of the exception
             e.printStackTrace()
