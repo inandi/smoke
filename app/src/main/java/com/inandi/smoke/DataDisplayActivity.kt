@@ -206,29 +206,45 @@ class DataDisplayActivity : ComponentActivity() {
     }
 
     /**
-     * Updates TextView elements with values extracted from a JSON object.
+     * Loads data from various sources and updates TextView elements with formatted information.
      *
-     * This function reads form data from a file, parses it into a `JSONObject`, extracts relevant
-     * values, calculates additional metrics, and updates several TextView elements with the
-     * formatted information.
+     * This function performs the following tasks:
+     * 1. Refreshes the JSON data.
+     * 2. Initializes TextView elements for displaying data.
+     * 3. Reads form data from a file and creates a JSONObject.
+     * 4. Retrieves upcoming award name.
+     * 5. Initializes variables and extracts relevant data from the JSON object.
+     * 6. Calculates per minute metrics for money spent and cigarettes smoked.
+     * 7. Prepares display data including total cigarettes smoked, total money spent, and formatted time strings.
+     * 8. Updates TextView elements with the calculated and formatted information.
      *
-     * The TextView elements are updated with:
-     * - The average number of cigarettes smoked per minute.
-     * - The average amount of money spent on cigarettes per minute.
-     * - The number of days since a specified date.
+     * @see updateJson
+     * @see initializeDataDisplayTextView
+     * @see readDataFromFile
+     * @see createJsonObjectFromFormData
+     * @see setGetData.getNextAwardDetailFromStatusKeyOfJsonObject
+     * @see prepareDisplayData
+     * @see perMinuteSpentMoney
+     * @see perMinuteSmokedCigarette
+     *
+     * @throws IllegalArgumentException If there is an error parsing the JSON data or if the start date or
+     * next award date has an invalid format.
      */
     private fun loadData() {
+        // Refresh the JSON data
+        updateJson()
+
         // Initialize TextView elements for displaying data
         initializeDataDisplayTextView()
 
+        // Read form data from file and create JSONObject
         val formData = readDataFromFile()
         val jsonObjectFormData = createJsonObjectFromFormData(formData)
 
-        Log.d("JSON", "jsonObjectFormData: $jsonObjectFormData")
-
+        // Retrieve upcoming award name
         val upComingAwardName = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "next_award_detail", "animal")
 
-        val dummyData = "NULL"
+        // Initialize variables
         var finalCountrySymbol: String? = null
 
         val varOriginalObject = jsonObjectFormData.optJSONObject("original")
@@ -243,6 +259,7 @@ class DataDisplayActivity : ComponentActivity() {
 
         val varNextAwardDatetime = varStatusObject?.optString("next_award_datetime") ?: ""
 
+        // Determine the final country symbol
         finalCountrySymbol =
             if (isRtlLanguage(varCountrySymbol)) {
                 "($varCurrencyName) "
@@ -254,13 +271,14 @@ class DataDisplayActivity : ComponentActivity() {
         val varSmokesPerDay = varOriginalObject?.optInt("smokesPerDay") ?: 0
         val varStartYear = varOriginalObject?.optString("startYear")
 
-        // Calculate per minute metrics and past days
+        // Calculate per minute spent money & cigarette smoked
         val perMinuteSpent = perMinuteSpentMoney(varSmokesPerDay, varCigarettePrice)
         val perMinuteSmoked = perMinuteSmokedCigarette(varSmokesPerDay)
 
-        // it contains totalCigarettesSmoked, totalMoneySpent, timeCompletedString
+        // Prepare display data
         val displayData = prepareDisplayData(varCreatedOn, varNextAwardDatetime, perMinuteSpent, perMinuteSmoked)
 
+        // Extract relevant data from displayData
         val totalCigarettesSmoked: Number? =
             displayData
                 .find { it.containsKey("totalCigarettesSmoked") }
@@ -305,6 +323,15 @@ class DataDisplayActivity : ComponentActivity() {
             getString(R.string.displayDayMsgTemplate, timeCompletedString, timePendingString, upComingAwardName)
     }
 
+    /**
+     * Checks if the given text is in a right-to-left (RTL) language.
+     *
+     * This function examines the first character of the provided text and determines if it belongs to
+     * a right-to-left language script, such as Arabic or Hebrew.
+     *
+     * @param text The text to check for RTL language.
+     * @return `true` if the text is in an RTL language, `false` otherwise.
+     */
     private fun isRtlLanguage(text: String?): Boolean {
         return text?.let {
             val firstChar = it.getOrNull(0)
@@ -315,6 +342,31 @@ class DataDisplayActivity : ComponentActivity() {
         } ?: false
     }
 
+    private fun updateJson() {
+        val formData = readDataFromFile()
+        val jsonObjectFormData = createJsonObjectFromFormData(formData)
+    }
+
+    /**
+     * Prepares the display data based on start date, next award date, and per minute metrics.
+     *
+     * This function calculates the time difference between the current date and the start date,
+     * and between the next award date and the current date. It then calculates the total cigarettes
+     * smoked, total money spent, and the formatted time strings for both completed and pending times.
+     *
+     * @param startDate The start date in "yyyy-MM-dd HH:mm:ss" format (in UTC).
+     * @param nextAwardDatetime The next award date in "yyyy-MM-dd HH:mm:ss" format (in UTC).
+     * @param perMinuteSpent The average amount of money spent on cigarettes per minute.
+     * @param perMinuteSmoked The average number of cigarettes smoked per minute.
+     * @return An array of maps containing the following key-value pairs:
+     *         - "totalCigarettesSmoked": The total number of cigarettes smoked.
+     *         - "totalCigarettesSmokePending": The total number of pending cigarettes to smoke.
+     *         - "totalMoneySpent": The total amount of money spent on cigarettes.
+     *         - "totalMoneySpentPending": The total pending money to spend on cigarettes.
+     *         - "timeCompletedString": The formatted string representing completed time.
+     *         - "timePendingString": The formatted string representing pending time.
+     * @throws IllegalArgumentException If the start date or next award date has an invalid format.
+     */
     private fun prepareDisplayData(
         startDate: String,
         nextAwardDatetime: String,
