@@ -9,10 +9,22 @@ import org.json.JSONObject
 import java.io.FileOutputStream
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.ceil
 
 class SetGetData {
 
     private val dataSet = DataSet()
+
+    private var diffInMinutes: Long = 0
+    private var days: Long = 0
+    private var hours: Long = 0
+    private var minutes: Long = 0
+    var timeCompletedString: String = ""
+    var timePendingString: String = ""
+    var totalCigarettesSmoked: Number = 0
+    var totalMoneySpent: Number = 0
+    var totalCigarettesSmokePending: Number = 0
+    var totalMoneySpentPending: Number = 0
 
     fun getSmokingProgressById(id: String): JSONObject? {
         val progressArray = dataSet.quitSmokingProgress()
@@ -31,6 +43,47 @@ class SetGetData {
         return null // Return null if ID is not found
     }
 
+     fun calculateTimeDifference(diffInMillis: Long,
+                                 perMinuteSpent: Double,
+                                 perMinuteSmoked: Double,
+                                 completedScenario: Boolean = true){
+         diffInMinutes = diffInMillis / (1000 * 60)
+         days = diffInMinutes / (24 * 60)
+         hours = (diffInMinutes % (24 * 60)) / 60
+         minutes = diffInMinutes % 60
+
+         // Construct the result string
+         val valDatString = StringBuilder()
+         if (days > 0) {
+             valDatString.append("${formatNumberWithCommas(days)} day(s) ")
+         }
+         if (hours > 0) {
+             valDatString.append("${formatNumberWithCommas(hours)} hour(s) ")
+         }
+         if (minutes > 0) {
+             valDatString.append("${formatNumberWithCommas(minutes)} minute(s)")
+         } else {
+             valDatString.append("0 minute")
+         }
+         if (completedScenario) {
+            totalCigarettesSmoked = calculateTotalCigarettesSmoked(diffInMinutes, perMinuteSmoked)
+            totalMoneySpent = calculateTotalMoneySpent(diffInMinutes, perMinuteSpent)
+            timeCompletedString = valDatString.toString().trim()
+         } else {
+             totalCigarettesSmokePending = calculateTotalCigarettesSmoked(diffInMinutes, perMinuteSmoked)
+             totalMoneySpentPending = calculateTotalMoneySpent(diffInMinutes, perMinuteSpent)
+             timePendingString = valDatString.toString().trim()
+         }
+    }
+
+    private fun calculateTotalCigarettesSmoked(diffInMinutes: Long, perMinuteSmoked: Double): Double {
+        return ceil(perMinuteSmoked * diffInMinutes * 100) / 100
+    }
+
+    private fun calculateTotalMoneySpent(diffInMinutes: Long, perMinuteSpent: Double): Double {
+        return ceil(perMinuteSpent * diffInMinutes * 100) / 100
+    }
+
     fun getNextAwardDetailFromStatusKeyOfJsonObject(jsonObject: JSONObject, detailKey: String, valueKey: String): String? {
         val statusObject = jsonObject.getJSONObject("status")
         val nextAwardDetail = statusObject.optString(detailKey)
@@ -39,6 +92,8 @@ class SetGetData {
     }
 
     /**
+     * @deprecated v0.1 - not in use
+     *
      * Calculates the difference between the provided date string and the current UTC time.
      *
      * This function takes a date string in the format "yyyy-MM-dd HH:mm:ss", parses it to a date
@@ -104,7 +159,7 @@ class SetGetData {
      * @param number The number to be formatted. This can be any subclass of `Number`.
      * @return A `String` representation of the number with commas as thousands separators.
      */
-     fun formatNumberWithCommas(number: Any): String {
+    private fun formatNumberWithCommas(number: Any): String {
         val numberString = number.toString()
         val parts = numberString.split(".")
         val wholePart = parts[0]

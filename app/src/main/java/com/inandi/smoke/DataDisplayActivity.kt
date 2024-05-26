@@ -257,25 +257,37 @@ class DataDisplayActivity : ComponentActivity() {
         // Calculate per minute metrics and past days
         val perMinuteSpent = perMinuteSpentMoney(varSmokesPerDay, varCigarettePrice)
         val perMinuteSmoked = perMinuteSmokedCigarette(varSmokesPerDay)
-        val displayData = getDisplayData(varCreatedOn, perMinuteSpent, perMinuteSmoked)
+
+        // it contains totalCigarettesSmoked, totalMoneySpent, timeCompletedString
+        val displayData = prepareDisplayData(varCreatedOn, varNextAwardDatetime, perMinuteSpent, perMinuteSmoked)
 
         val totalCigarettesSmoked: Number? =
             displayData
                 .find { it.containsKey("totalCigarettesSmoked") }
                 ?.get("totalCigarettesSmoked") as? Number
 
+        val totalCigarettesSmokePending: Number? =
+            displayData
+                .find { it.containsKey("totalCigarettesSmokePending") }
+                ?.get("totalCigarettesSmokePending") as? Number
+
         val totalMoneySpent: Number? =
             displayData.find { it.containsKey("totalMoneySpent") }?.get("totalMoneySpent")
                     as? Number
 
-        val timeCompletedString = displayData.find { it.containsKey("dayString") }?.get("dayString")
+        val totalMoneySpentPending: Number? =
+            displayData.find { it.containsKey("totalMoneySpentPending") }?.get("totalMoneySpentPending")
+                    as? Number
+
+        val timeCompletedString = displayData.find { it.containsKey("timeCompletedString") }?.get("timeCompletedString")
+        val timePendingString = displayData.find { it.containsKey("timePendingString") }?.get("timePendingString")
 
         // Update TextView elements with the calculated and formatted information
         textViewDisplayCount.text =
             getString(
                 R.string.displayCountMsgTemplate,
                 totalCigarettesSmoked,
-                dummyData,
+                totalCigarettesSmokePending,
                 upComingAwardName
             )
 
@@ -285,13 +297,12 @@ class DataDisplayActivity : ComponentActivity() {
                 finalCountrySymbol,
                 totalMoneySpent,
                 finalCountrySymbol,
-                totalMoneySpent,
+                totalMoneySpentPending,
                 upComingAwardName
             )
 
-        val timeRestString = setGetData.getDateDiff(varNextAwardDatetime)
         textViewDisplayDay.text =
-            getString(R.string.displayDayMsgTemplate, timeCompletedString, timeRestString, upComingAwardName)
+            getString(R.string.displayDayMsgTemplate, timeCompletedString, timePendingString, upComingAwardName)
     }
 
     private fun isRtlLanguage(text: String?): Boolean {
@@ -304,50 +315,34 @@ class DataDisplayActivity : ComponentActivity() {
         } ?: false
     }
 
-    private fun getDisplayData(
-        fromDate: String,
+    private fun prepareDisplayData(
+        startDate: String,
+        nextAwardDatetime: String,
         perMinuteSpent: Double,
         perMinuteSmoked: Double
     ): Array<Map<String, Any>> {
-
         // Date format in UTC
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-        val startDate: Date =
-            dateFormat.parse(fromDate) ?: throw IllegalArgumentException("Invalid date format")
+        val startDateLocal: Date = dateFormat.parse(startDate) ?: throw IllegalArgumentException("Invalid date format")
+        val nextAwardDatetimeLocal: Date = dateFormat.parse(nextAwardDatetime) ?: throw IllegalArgumentException("Invalid date format")
         val currentDate = Date()
 
-        // Calculate the time difference in milliseconds
-        val diffInMillis = currentDate.time - startDate.time
+        // Calculate the time (completed) difference in milliseconds
+        val completedTimeDiffInMillis = currentDate.time - startDateLocal.time
+        setGetData.calculateTimeDifference(completedTimeDiffInMillis,perMinuteSpent,perMinuteSmoked)
 
-        // Calculate the time difference in days, hours, and minutes
-        val diffInMinutes = diffInMillis / (1000 * 60)
-        val days = diffInMinutes / (24 * 60)
-        val hours = (diffInMinutes % (24 * 60)) / 60
-        val minutes = diffInMinutes % 60
+        // Calculate the time (pending) difference in milliseconds
+        val pendingTimeDiffInMillis = nextAwardDatetimeLocal.time - currentDate.time
+        setGetData.calculateTimeDifference(pendingTimeDiffInMillis,perMinuteSpent,perMinuteSmoked, false)
 
-        // Calculate the total number of cigarettes smoked and total money spent
-        val totalCigarettesSmoked = ceil(perMinuteSmoked * diffInMinutes * 100) / 100
-        val totalMoneySpent = ceil(perMinuteSpent * diffInMinutes * 100) / 100
-
-        // Construct the result string
-        val valDatString = StringBuilder()
-        if (days > 0) {
-            valDatString.append("${setGetData.formatNumberWithCommas(days)} day(s) ")
-        }
-        if (hours > 0) {
-            valDatString.append("${setGetData.formatNumberWithCommas(hours)} hour(s) ")
-        }
-        if (minutes > 0) {
-            valDatString.append("${setGetData.formatNumberWithCommas(minutes)} minute(s)")
-        } else{
-            valDatString.append("0 minute")
-        }
-        val dayString = valDatString.toString().trim()
         return arrayOf(
-            mapOf("totalCigarettesSmoked" to totalCigarettesSmoked as Number),
-            mapOf("totalMoneySpent" to totalMoneySpent as Number),
-            mapOf("dayString" to dayString)
+            mapOf("totalCigarettesSmoked" to setGetData.totalCigarettesSmoked as Number),
+            mapOf("totalCigarettesSmokePending" to setGetData.totalCigarettesSmokePending as Number),
+            mapOf("totalMoneySpent" to setGetData.totalMoneySpent as Number),
+            mapOf("totalMoneySpentPending" to setGetData.totalMoneySpentPending as Number),
+            mapOf("timeCompletedString" to setGetData.timeCompletedString),
+            mapOf("timePendingString" to setGetData.timePendingString)
         )
     }
 
@@ -417,8 +412,6 @@ class DataDisplayActivity : ComponentActivity() {
         }
         return stringBuilder.toString()
     }
-
-
 
     /**
      * Deletes the form data file (formData.json) if it exists.
