@@ -7,13 +7,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
-    <include layout="@layout/header_layout" android:id="@+id/header_layout"
+    <include layout="@layout/header_layout"
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <include layout="@layout/activity_main_body" android:id="@+id/activity_about_body"
+    <include layout="@layout/activity_main_body"
+        android:id="@+id/activity_about_body"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
-    <include layout="@layout/footer_layout" android:layout_width="match_parent"
+    <include layout="@layout/footer_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>
