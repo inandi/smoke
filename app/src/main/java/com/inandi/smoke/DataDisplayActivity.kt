@@ -8,13 +8,19 @@
  */
 package com.inandi.smoke
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.view.WindowMetrics
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -89,9 +95,6 @@ class DataDisplayActivity : ComponentActivity() {
 
         loadGoogleAds()
 
-        // Call the function to update the TextView with cig count
-//                deleteFormDataFile()
-
         // Update the TextView elements with data from the JSON object
         loadData()
 
@@ -106,6 +109,97 @@ class DataDisplayActivity : ComponentActivity() {
         badgeButton.setOnClickListener {
             startActivity(Intent(this@DataDisplayActivity, BadgeActivity::class.java))
         }
+
+        // Set up the popup menu button
+        val buttonShowPopup = binding.activityAboutBody.buttonAction
+        buttonShowPopup.setOnClickListener { view ->
+            showPopupMenu(view)
+        }
+    }
+
+    /**
+     * Displays a popup menu anchored to the given view.
+     *
+     * This function creates and displays a popup menu when the specified view is clicked. The menu
+     * items are inflated from the `popup_menu.xml` resource file. It also sets up a listener to handle
+     * menu item clicks.
+     *
+     * @param view The view to which the popup menu will be anchored.
+     */
+    private fun showPopupMenu(view: View) {
+        val popup = PopupMenu(this, view)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.popup_menu, popup.menu)
+        popup.setOnMenuItemClickListener { menuItem ->
+            handleMenuItemClick(menuItem)
+        }
+        popup.show()
+    }
+
+    /**
+     * Handles the click events for the popup menu items.
+     *
+     * This function processes the click events for the popup menu items based on their IDs.
+     * It performs different actions depending on which menu item was clicked. If the "Reload" menu
+     * item is clicked, it calls `loadData()`. If the "Reset" menu item is clicked, it shows a
+     * confirmation dialog for resetting.
+     *
+     * @param menuItem The menu item that was clicked.
+     * @return `true` if the menu item click was handled, `false` otherwise.
+     */
+    private fun handleMenuItemClick(menuItem: MenuItem): Boolean {
+        return when (menuItem.itemId) {
+            R.id.menu_option_reload -> {
+                loadData()
+                true
+            }
+            R.id.menu_option_reset -> {
+                showResetConfirmationDialog()
+                true
+            }
+            else -> false
+        }
+    }
+
+    /**
+     * Displays a confirmation dialog for resetting.
+     *
+     * This function shows an AlertDialog to confirm whether the user wants to perform a reset action.
+     * If the user selects "Yes", the `performResetAction` function is called. If the user selects "No",
+     * the dialog is dismissed without taking any action.
+     */
+    private fun showResetConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Are you sure you want to do it?")
+            .setPositiveButton("Yes") { dialog, id ->
+                performResetAction()
+            }
+            .setNegativeButton("No") { dialog, id ->
+                dialog.dismiss()
+            }
+        builder.create().show()
+    }
+
+    /**
+     * Performs the reset action by deleting form data and navigating to the main screen.
+     *
+     * This function first deletes the form data file by calling `deleteFormDataFile()`.
+     * After the file is deleted, it navigates to the main screen by calling `navigateToMainScreen()`.
+     */
+    private fun performResetAction() {
+        deleteFormDataFile()
+        navigateToMainScreen()
+    }
+
+    /**
+     * Navigates to the main screen of the application.
+     *
+     * This function starts the `MainActivity` by creating an intent and passing the current activity
+     * context. It effectively transitions the user from the current `DataDisplayActivity` to the main
+     * screen of the application.
+     */
+    private fun navigateToMainScreen() {
+        startActivity(Intent(this@DataDisplayActivity, MainActivity::class.java))
     }
 
     private fun loadGoogleAds() {
