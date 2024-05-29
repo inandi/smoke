@@ -83,6 +83,10 @@ class DataDisplayActivity : ComponentActivity() {
         dataSet = DataSet()
         setGetData = SetGetData()
 
+        // Initialize the ViewBinding
+        binding = ActivityDataDisplayBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         loadGoogleAds()
 
         // Call the function to update the TextView with cig count
@@ -105,11 +109,11 @@ class DataDisplayActivity : ComponentActivity() {
     }
 
     private fun loadGoogleAds() {
-        binding = ActivityDataDisplayBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+//        binding = ActivityDataDisplayBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
 
         adView = AdView(this)
-        binding.adViewContainer.addView(adView)
+        binding.activityAboutBody.adViewContainer.addView(adView)
 
         // Log the Mobile Ads SDK version.
         Log.d(TAG, "Google Mobile Ads SDK Version: " + MobileAds.getVersion())
@@ -139,7 +143,7 @@ class DataDisplayActivity : ComponentActivity() {
         // Since we're loading the banner based on the adContainerView size, we need to wait until
         // this
         // view is laid out before we can get the width.
-        binding.adViewContainer.viewTreeObserver.addOnGlobalLayoutListener {
+        binding.activityAboutBody.adViewContainer.viewTreeObserver.addOnGlobalLayoutListener {
             if (
                 !initialLayoutComplete.getAndSet(true) &&
                 googleMobileAdsConsentManager.canRequestAds
@@ -359,12 +363,12 @@ class DataDisplayActivity : ComponentActivity() {
         sdf.timeZone = TimeZone.getTimeZone("UTC")
         val nextAwardDateTime = sdf.parse(nextAwardDateTimeString)
 
-//        val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
+        val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
         // temp
-        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +15)
-        val currentTime=tenHoursAgo.time
+//        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +15)
+//        val currentTime=tenHoursAgo.time
         //temp
 
         if (currentTime.after(nextAwardDateTime)) {
