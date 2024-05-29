@@ -203,29 +203,18 @@ class SetGetData {
         return result.toString().trim()
     }
 
-    /**
-     * Adds the specified number of minutes to a given date and time string.
-     *
-     * This function parses the input date and time string using the format "yyyy-MM-dd HH:mm:ss",
-     * then adds the specified number of minutes to it. The resulting date and time are formatted
-     * back into a string using the same format and returned.
-     *
-     * @param dateTime The input date and time string in the format "yyyy-MM-dd HH:mm:ss".
-     * @param minutesToAdd The number of minutes to add to the date and time.
-     * @return A string representing the date and time after adding the specified minutes.
-     */
-    fun addMinutesToDateTime(dateTime: Date, minutesToAdd: Double): Date {
-//        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        val date = formatter.parse(dateTime)
-//        val calendar = Calendar.getInstance()
-//        calendar.time = dateTime
-//        calendar.add(Calendar.MINUTE, minutesToAdd.toInt())
-//        return formatter.format(calendar.time)
+     fun addMinutesToDateTime(datetime: String, minutesToAdd: Double): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
 
-        val calendar = Calendar.getInstance()
-        calendar.time = dateTime
-        calendar.add(Calendar.MINUTE, minutesToAdd.toInt())
-        return calendar.time
+        // Parse the input datetime string
+        val date = dateFormat.parse(datetime)
+
+        // Calculate the new datetime by adding minutes
+        val newDate = Date(date.time + (minutesToAdd * 60000).toLong())
+
+        // Format the new datetime to string
+        return dateFormat.format(newDate)
     }
 
     /**
@@ -250,17 +239,14 @@ class SetGetData {
         return wholePart.replace(pattern, ",") + decimalPart
     }
 
-    /**
-     * Retrieves the current timestamp in the format "yyyy-MM-dd HH:mm:ss".
-     *
-     * This function gets the current date and time, formats it as a string in the specified format,
-     * and sets the timezone to GMT.
-     *
-     * @return A `String` representing the current timestamp in "yyyy-MM-dd HH:mm:ss" format.
-     */
-    fun getCurrentTimestamp(): Date {
+
+    fun getCurrentTimestamp(): String {
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Set timezone to GMT
+//        return Date()
+
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Set timezone to GMT
-        return Date()
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        return dateFormat.format(Date())
     }
 }

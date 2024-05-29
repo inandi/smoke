@@ -449,9 +449,9 @@ class DataDisplayActivity : ComponentActivity() {
 
         val varOriginalObject = jsonObjectFormData.optJSONObject("original")
         val varCreatedOnString = varOriginalObject?.optString("created_on") ?: ""
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Assuming the date is in UTC
-        val varCreatedOn: Date = dateFormat.parse(varCreatedOnString)!!
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Assuming the date is in UTC
+//        val varCreatedOn: Date = dateFormat.parse(varCreatedOnString)!!
 
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         sdf.timeZone = TimeZone.getTimeZone("UTC")
@@ -461,7 +461,7 @@ class DataDisplayActivity : ComponentActivity() {
 
         // temp
 //        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +15)
+//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +11115)
 //        val currentTime=tenHoursAgo.time
         //temp
 
@@ -474,27 +474,29 @@ class DataDisplayActivity : ComponentActivity() {
             var oneTimeUpdate = false;
 
             val progressArray = dataSet.quitSmokingProgress()
+            val jsonObjectAwardAchievedProgressId = JSONObject()
             for (item in progressArray) {
                 val progressId = item[0]
                 val hourDuration = item[5].toDouble()
                 val minutesDuration = hourDuration * 60L
-                val nextProspectAwardDatetime = setGetData.addMinutesToDateTime(varCreatedOn, minutesDuration)
+                val nextProspectAwardDatetimeString = setGetData.addMinutesToDateTime(varCreatedOnString, minutesDuration)
+                val nextProspectAwardDatetime = sdf.parse(nextProspectAwardDatetimeString)
+
                 if(currentTime.after(nextProspectAwardDatetime)){
                     val jsonObjectAwardAchieved = JSONObject()
-                    jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetime)
+                    jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
                     jsonObjectAwardAchieved.put("score", "40%")
-                    val jsonObjectAwardAchievedProgressId = JSONObject()
                     jsonObjectAwardAchievedProgressId.put(progressId, jsonObjectAwardAchieved)
-                    statusObject.put("award_achieved_timeline", jsonObjectAwardAchievedProgressId)
                 } else{
                     if(!oneTimeUpdate){
-                        val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//                        val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         statusObject.put("next_award_detail", setGetData.getSmokingProgressById(progressId))
-                        statusObject.put("next_award_datetime", outputFormat.format(nextProspectAwardDatetime))
+                        statusObject.put("next_award_datetime", nextProspectAwardDatetimeString)
                         oneTimeUpdate = true
                     }
                 }
             }
+            statusObject.put("award_achieved_timeline", jsonObjectAwardAchievedProgressId)
             val mainActivity = MainActivity()
             deleteFormDataFile()
             mainActivity.saveDataToFile(jsonObjectFormData, this)
