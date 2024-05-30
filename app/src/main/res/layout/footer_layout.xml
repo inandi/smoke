@@ -12,13 +12,10 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:onClick="onBadgeButtonClick"
         android:orientation="vertical"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        >
         <ImageButton
             android:id="@+id/badgeButton"
             android:layout_width="60dp"
@@ -29,15 +26,11 @@
     </LinearLayout>
     <!-- Home -->
     <LinearLayout
-        android:layout_width="19dp"
+        android:layout_width="1dp"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:onClick="onHomeButtonClick"
-        android:orientation="vertical"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        android:orientation="vertical">
         <ImageButton
             android:id="@+id/homeButton"
             android:layout_width="60dp"
@@ -50,12 +43,9 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:orientation="vertical"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        android:orientation="vertical">
         <ImageButton
             android:id="@+id/aboutButton"
             android:layout_width="60dp"
