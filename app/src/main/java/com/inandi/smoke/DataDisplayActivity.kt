@@ -38,6 +38,9 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.ceil
 import org.json.JSONObject
+import android.graphics.BitmapFactory
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 
 private const val TAG = "DataDisplayActivity"
 
@@ -114,6 +117,24 @@ class DataDisplayActivity : ComponentActivity() {
         val buttonShowPopup = binding.activityAboutBody.buttonAction
         buttonShowPopup.setOnClickListener { view ->
             showPopupMenu(view)
+        }
+    }
+
+    /**
+     * Loads an image from the assets folder and sets it to the specified ImageView.
+     *
+     * @param assetPath The path to the image file in the assets folder. Must not be null.
+     * @throws IOException If an error occurs while loading the image from assets.
+     */
+    private fun loadImageFromAssets(assetPath: String) {
+        val imageView: ImageView = findViewById(R.id.image_view)
+        val assetManager = assets
+        try {
+            val inputStream = assetManager.open(assetPath)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            imageView.setImageBitmap(bitmap)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 
@@ -419,6 +440,28 @@ class DataDisplayActivity : ComponentActivity() {
 
         textViewDisplayDay.text =
             getString(R.string.displayDayMsgTemplate, timeCompletedString, timePendingString, upComingAwardName)
+
+        // @tdodo fix to current award
+        val currentAwardPath: String? = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "next_award_detail", "imageUrl")
+        currentAwardPath?.let {
+            val strippedAssetPath = stripAssetPrefix(it)
+            loadImageFromAssets(strippedAssetPath)
+        }
+    }
+
+    /**
+     * Strips the "file:///android_asset/" prefix from the given file path.
+     *
+     * @param filePath The file path to be processed. Must not be null.
+     * @return The file path with the "file:///android_asset/" prefix removed. Returns the input filePath if the prefix is not present.
+     */
+    private fun stripAssetPrefix(filePath: String): String {
+        val prefix = "file:///android_asset/"
+        return if (filePath.startsWith(prefix)) {
+            filePath.removePrefix(prefix)
+        } else {
+            filePath
+        }
     }
 
     /**
