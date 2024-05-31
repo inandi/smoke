@@ -1,11 +1,16 @@
 /**
+ * DataDisplayActivity is responsible for displaying user's progress
+ *
  * This file is part of Quit Smoking Android.
  *
- * Author: Gobinda Nandi Created: 2024
+ * Author: Gobinda Nandi
+ * Created: 2024
  *
- * Copyright (c) 2024 Gobinda Nandi This software is released under the MIT License. See the LICENSE
- * file for details.
+ * Copyright (c) 2024 Gobinda Nandi
+ * This software is released under the MIT License.
+ * See the LICENSE file for details.
  */
+
 package com.inandi.smoke
 
 import android.app.AlertDialog
@@ -44,6 +49,9 @@ import androidx.appcompat.app.AppCompatActivity
 
 private const val TAG = "DataDisplayActivity"
 
+/**
+ * Activity to display data related to quit smoking progress, and handle ad loading and popup menu.
+ */
 class DataDisplayActivity : ComponentActivity() {
 
     private lateinit var textViewDisplayCount: TextView
@@ -223,6 +231,9 @@ class DataDisplayActivity : ComponentActivity() {
         startActivity(Intent(this@DataDisplayActivity, MainActivity::class.java))
     }
 
+    /**
+     * Loads Google ads, sets up the consent manager, and initializes the Mobile Ads SDK.
+     */
     private fun loadGoogleAds() {
 //        binding = ActivityDataDisplayBinding.inflate(layoutInflater)
 //        setContentView(binding.root)
