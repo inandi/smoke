@@ -13,6 +13,8 @@
     <string name="lorem_ipsum_small">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
     <string name="displayCountMsgTemplate">%s cigarettes missed to kill you\n%s more to get awarded with %s</string>
     <string name="displayMoneyMsgTemplate">%s%s we saved for your next trip \n%s%s more to get awarded with %s</string>
+    <string name="displayTotalHowManyCigSmokedMsgTemplate">As of today, you have smoked %s cigarettes.</string>
+    <string name="displayTotalHowMuchMoneySpentMsgTemplate">Up until today, cigarettes have wasted %s%s of your money.</string>
     <string name="displayDayMsgTemplate">%s cigarette/poison free\n%s more to get awarded with %s</string>
     <string name="progressMsg">progress...</string>
     <string name="dummyMsg">--</string>

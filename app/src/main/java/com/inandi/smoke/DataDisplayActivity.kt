@@ -25,7 +25,6 @@ import android.view.WindowMetrics
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -45,7 +44,6 @@ import kotlin.math.ceil
 import org.json.JSONObject
 import android.graphics.BitmapFactory
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 
 private const val TAG = "DataDisplayActivity"
 
@@ -57,6 +55,8 @@ class DataDisplayActivity : ComponentActivity() {
     private lateinit var textViewDisplayCount: TextView
     private lateinit var textViewDisplayMoney: TextView
     private lateinit var textViewDisplayDay: TextView
+    private lateinit var textViewDisplayTotalHowManyCigSmoked: TextView
+    private lateinit var textViewDisplayTotalHowMuchMoneySpent: TextView
 
     private val isMobileAdsInitializeCalled = AtomicBoolean(false)
     private val initialLayoutComplete = AtomicBoolean(false)
@@ -291,6 +291,8 @@ class DataDisplayActivity : ComponentActivity() {
         textViewDisplayCount = findViewById(R.id.displayCount)
         textViewDisplayMoney = findViewById(R.id.displayMoney)
         textViewDisplayDay = findViewById(R.id.displayDay)
+        textViewDisplayTotalHowManyCigSmoked = findViewById(R.id.displayTotalHowManyCigSmoked)
+        textViewDisplayTotalHowMuchMoneySpent = findViewById(R.id.displayTotalHowMuchMoneySpent)
     }
 
     /** Called when leaving the activity. */
@@ -400,6 +402,8 @@ class DataDisplayActivity : ComponentActivity() {
         val varCreatedOn = varOriginalObject?.optString("created_on") ?: ""
         val varSmokesPerDay = varOriginalObject?.optInt("smokesPerDay") ?: 0
         val varStartYear = varOriginalObject?.optString("startYear")
+        val varTotalMoneySpent = varOriginalObject?.optString("total_money_spent")
+        val varTotalSmoked = varOriginalObject?.optString("total_smoked")
 
         // Calculate per minute spent money & cigarette smoked
         val perMinuteSpent = perMinuteSpentMoney(varSmokesPerDay, varCigarettePrice)
@@ -452,12 +456,51 @@ class DataDisplayActivity : ComponentActivity() {
         textViewDisplayDay.text =
             getString(R.string.displayDayMsgTemplate, timeCompletedString, timePendingString, upComingAwardName)
 
-        // @tdodo fix to current award
-        val currentAwardPath: String? = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "next_award_detail", "imageUrl")
-        currentAwardPath?.let {
+        textViewDisplayTotalHowManyCigSmoked.text = getString(
+            R.string.displayTotalHowManyCigSmokedMsgTemplate,
+            varTotalSmoked
+        )
+
+        textViewDisplayTotalHowMuchMoneySpent.text = getString(
+            R.string.displayTotalHowMuchMoneySpentMsgTemplate,
+            finalCountrySymbol,
+            varTotalMoneySpent
+        )
+
+        // load image
+        val nextAwardPath: String? = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "next_award_detail", "imageUrl")
+        nextAwardPath?.let {
             val strippedAssetPath = stripAssetPrefix(it)
             loadImageFromAssets(strippedAssetPath)
         }
+    }
+
+     fun calculateTotalSpent(perMinuteSpent: Double, varStartYear: Int, varCreatedOn: String): String {
+        // Define date format
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+
+        // Parse varCreatedOn to Date
+        val createdOnDate = dateFormat.parse(varCreatedOn)
+
+        // Create a date for 1st January of varStartYear
+        val startDate = dateFormat.parse("$varStartYear-01-01 00:00:00")
+
+        // Check if the dates are parsed correctly
+        if (createdOnDate == null || startDate == null) {
+            throw IllegalArgumentException("Invalid date format")
+        }
+
+        // Calculate the difference in milliseconds
+        val diffInMillis = createdOnDate.time - startDate.time
+
+        // Convert milliseconds to minutes
+        val diffInMinutes = diffInMillis / (1000 * 60)
+
+        // Calculate the total money spent
+        val totalMoneySpent = perMinuteSpent * diffInMinutes
+
+        // Round the result to 2 decimal places and format it as a string
+        return String.format("%.2f", totalMoneySpent)
     }
 
     /**
@@ -622,7 +665,7 @@ class DataDisplayActivity : ComponentActivity() {
      * @return A `Double` representing the amount of money spent on cigarettes per minute, rounded
      *   up to two decimal places.
      */
-    private fun perMinuteSpentMoney(smokesPerDay: Int, cigarettePrice: Double): Double {
+     fun perMinuteSpentMoney(smokesPerDay: Int, cigarettePrice: Double): Double {
         val cigarettesPerMinute = smokesPerDay.toDouble() / 1440
         return ceil(cigarettesPerMinute * cigarettePrice * 100) /
                 100 // Round up to two decimal places
@@ -638,7 +681,7 @@ class DataDisplayActivity : ComponentActivity() {
      * @return A `Double` representing the average number of cigarettes smoked per minute, rounded
      *   up to two decimal places.
      */
-    private fun perMinuteSmokedCigarette(smokesPerDay: Int): Double {
+     fun perMinuteSmokedCigarette(smokesPerDay: Int): Double {
         return ceil(smokesPerDay.toDouble() / 1440 * 100) / 100 // Round up to two decimal places
     }
 

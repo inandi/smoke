@@ -230,7 +230,7 @@ class SetGetData {
      * @param number The number to be formatted. This can be any subclass of `Number`.
      * @return A `String` representation of the number with commas as thousands separators.
      */
-    private fun formatNumberWithCommas(number: Any): String {
+     fun formatNumberWithCommas(number: Any): String {
         val numberString = number.toString()
         val parts = numberString.split(".")
         val wholePart = parts[0]
