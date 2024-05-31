@@ -25,8 +25,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.json.JSONObject
 
+/**
+ * BadgeActivity is a ComponentActivity that displays a list of badges representing milestones
+ * in a user's quit smoking progress. This activity initializes the view, sets up RecyclerView
+ * with data, and handles navigation to other activities via buttons.
+ */
 class BadgeActivity : ComponentActivity() {
 
+    // Dataset to store quit smoking progress data
     private lateinit var dataSet: DataSet
 
     /**
@@ -46,11 +52,13 @@ class BadgeActivity : ComponentActivity() {
 
         loadBadgeView()
 
+        // Set up click listener for "About" button
         val aboutButton = findViewById<ImageButton>(R.id.aboutButton)
         aboutButton.setOnClickListener {
             startActivity(Intent(this@BadgeActivity, AboutActivity::class.java))
         }
 
+        // Set up click listener for "Home" button
         val homeButton = findViewById<ImageButton>(R.id.homeButton)
         homeButton.setOnClickListener {
             startActivity(Intent(this@BadgeActivity, MainActivity::class.java))
@@ -79,5 +87,4 @@ class BadgeActivity : ComponentActivity() {
         val adapter = QuitSmokingProgressAdapter(progressData)
         recyclerView.adapter = adapter
     }
-
 }
