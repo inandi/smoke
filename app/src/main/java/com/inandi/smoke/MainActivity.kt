@@ -13,8 +13,6 @@ package com.inandi.smoke
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import java.text.SimpleDateFormat
-import java.util.Date
 import android.widget.Button
 import android.view.View
 import android.widget.ImageButton
@@ -22,18 +20,11 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import java.io.FileOutputStream
 import android.widget.Toast
-import java.util.TimeZone
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.annotation.RequiresApi
 import org.json.JSONObject
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import java.util.Calendar
 import android.view.ViewGroup
 import android.widget.TextView
 
@@ -142,6 +133,16 @@ class MainActivity : ComponentActivity() {
             jsonObjectOriginal.put("smokesPerDay", smokesPerDay) // Number of cigarettes smoked per day
             jsonObjectOriginal.put("startYear", startYear) // Year the user started smoking
             jsonObjectOriginal.put("created_on", getCurrentTimestamp) // Timestamp of when the data is created
+
+            val dataDisplayActivity = DataDisplayActivity()
+
+            val perMinuteSpent = dataDisplayActivity.perMinuteSpentMoney(smokesPerDay, cigarettePrice)
+            val perMinuteSmoked = dataDisplayActivity.perMinuteSmokedCigarette(smokesPerDay)
+            val calculateTotalMoneySpentVar = dataDisplayActivity.calculateTotalSpent(perMinuteSpent, startYear, getCurrentTimestamp)
+            val calculateTotalSmokedVar = dataDisplayActivity.calculateTotalSpent(perMinuteSmoked, startYear, getCurrentTimestamp)
+            jsonObjectOriginal.put("total_money_spent", setGetData.formatNumberWithCommas(calculateTotalMoneySpentVar)) // Timestamp of when the data is created
+            jsonObjectOriginal.put("total_smoked", setGetData.formatNumberWithCommas(calculateTotalSmokedVar)) // Timestamp of when the data is created
+
             // store in main JSON
             jsonObjectForForm.put("original", jsonObjectOriginal)
 
