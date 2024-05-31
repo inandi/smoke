@@ -438,8 +438,8 @@ class DataDisplayActivity : ComponentActivity() {
         textViewDisplayCount.text =
             getString(
                 R.string.displayCountMsgTemplate,
-                totalCigarettesSmoked,
-                totalCigarettesSmokePending,
+                totalCigarettesSmoked?.let { setGetData.formatNumberWithCommas(it) },
+                totalCigarettesSmokePending?.let { setGetData.formatNumberWithCommas(it) },
                 upComingAwardName
             )
 
@@ -447,9 +447,9 @@ class DataDisplayActivity : ComponentActivity() {
             getString(
                 R.string.displayMoneyMsgTemplate,
                 finalCountrySymbol,
-                totalMoneySpent,
+                totalMoneySpent?.let { setGetData.formatNumberWithCommas(it) },
                 finalCountrySymbol,
-                totalMoneySpentPending,
+                totalMoneySpentPending?.let { setGetData.formatNumberWithCommas(it) },
                 upComingAwardName
             )
 
@@ -554,11 +554,12 @@ class DataDisplayActivity : ComponentActivity() {
         sdf.timeZone = TimeZone.getTimeZone("UTC")
         val nextAwardDateTime = sdf.parse(nextAwardDateTimeString)
 
+// todo on badge screen app is crashing
         val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
         // temp
 //        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +11115)
+//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +111115)
 //        val currentTime=tenHoursAgo.time
         //temp
 
@@ -582,7 +583,8 @@ class DataDisplayActivity : ComponentActivity() {
                 if(currentTime.after(nextProspectAwardDatetime)){
                     val jsonObjectAwardAchieved = JSONObject()
                     jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
-                    jsonObjectAwardAchieved.put("score", "40%")
+                    // score is on percentage
+                    jsonObjectAwardAchieved.put("score", "40.12")
                     jsonObjectAwardAchievedProgressId.put(progressId, jsonObjectAwardAchieved)
                 } else{
                     if(!oneTimeUpdate){

@@ -24,6 +24,10 @@ import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStreamReader
 
 /**
  * BadgeActivity is a ComponentActivity that displays a list of badges representing milestones
@@ -77,6 +81,13 @@ class BadgeActivity : ComponentActivity() {
      */
     private fun loadBadgeView() {
         val dataSet = DataSet()
+        val setGetData = SetGetData()
+
+        // Read form data from file and create JSONObject
+        val formData = readDataFromFile()
+        val jsonObjectFormData = createJsonObjectFromFormData(formData)
+
+
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -84,7 +95,42 @@ class BadgeActivity : ComponentActivity() {
         val progressData = dataSet.quitSmokingProgress()
 
         // Create and set adapter
-        val adapter = QuitSmokingProgressAdapter(progressData)
+        val adapter = QuitSmokingProgressAdapter(progressData, jsonObjectFormData)
         recyclerView.adapter = adapter
+    }
+
+    /**
+     * Creates a JSON object from the provided form data string.
+     *
+     * This function takes a string containing form data in JSON format and parses it into a
+     * `JSONObject`.
+     *
+     * @param formData A string containing the form data in JSON format.
+     * @return A `JSONObject` representing the form data.
+     * @throws JSONException If the form data string cannot be parsed into a valid JSON object.
+     */
+    private fun createJsonObjectFromFormData(formData: String): JSONObject {
+        return JSONObject(formData)
+    }
+
+    /**
+     * Reads data from the form data file and returns it as a string.
+     *
+     * This function opens the file named `formData.json` from the application's internal storage,
+     * reads its contents line by line, and returns the entire content as a single string.
+     *
+     * @return A `String` containing the contents of the form data file.
+     * @throws IOException If an I/O error occurs during reading the file.
+     */
+    private fun readDataFromFile(): String {
+        val fileInputStream: FileInputStream = openFileInput(MainActivity.FORM_DATA_FILENAME)
+        val inputStreamReader = InputStreamReader(fileInputStream)
+        val bufferedReader = BufferedReader(inputStreamReader)
+        val stringBuilder = StringBuilder()
+        var line: String?
+        while (bufferedReader.readLine().also { line = it } != null) {
+            stringBuilder.append(line)
+        }
+        return stringBuilder.toString()
     }
 }
