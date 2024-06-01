@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.ceil
 import org.json.JSONObject
 import android.graphics.BitmapFactory
+import android.widget.Button
 import android.widget.ImageView
 
 private const val TAG = "DataDisplayActivity"
@@ -126,6 +127,18 @@ class DataDisplayActivity : ComponentActivity() {
         buttonShowPopup.setOnClickListener { view ->
             showPopupMenu(view)
         }
+
+        // Set up the penalty button and its click listener
+        val penaltyButton = findViewById<Button>(R.id.button_add_penalty)
+        penaltyButton.setOnClickListener {
+            // Define the action to be performed when the button is clicked
+            showPenaltyDialog()
+        }
+    }
+
+    private fun showPenaltyDialog() {
+        updatePenaltyJson()
+        loadData()
     }
 
     /**
@@ -601,6 +614,54 @@ class DataDisplayActivity : ComponentActivity() {
         } else {
             println("Current time in UTC is not greater than next_award_datetime.")
         }
+    }
+    private fun updatePenaltyJson() {
+        val formData = readDataFromFile()
+        val jsonObjectFormData = createJsonObjectFromFormData(formData)
+
+        val varOriginalObject = jsonObjectFormData.optJSONObject("original")
+        val statusObject = jsonObjectFormData.getJSONObject("status")
+
+        // Get current date in UTC format
+        val currentDate = setGetData.getCurrentUtcDate()
+
+        // Check if 'smoked_today' key exists
+        val smokedTodayObject = statusObject.optJSONObject("smoked_today")
+        var smokedTodayValue = 0
+        if (smokedTodayObject == null) {
+            // Add 'smoked_today' key with initial value { currentDate: 1 } if it does not exist
+            val newSmokedTodayObject = JSONObject()
+            smokedTodayValue = 1
+            newSmokedTodayObject.put(currentDate, smokedTodayValue)
+            statusObject.put("smoked_today", newSmokedTodayObject)
+        } else {
+            // If it exists, check if the current date exists as a key
+            if (smokedTodayObject.has(currentDate)) {
+                // Increment the value for the current date
+                smokedTodayValue = smokedTodayObject.getInt(currentDate) + 1
+                smokedTodayObject.put(currentDate, smokedTodayValue)
+            } else {
+                // Overwrite with current date and set value to 1
+                smokedTodayObject.keys().forEach { key ->
+                    smokedTodayObject.put(key, 0)
+                }
+                smokedTodayValue = 1
+                smokedTodayObject.put(currentDate, smokedTodayValue)
+            }
+        }
+
+        // Calculate smokesPerMinute based on smokesPerDay
+        val smokesPerDay = varOriginalObject.optInt("smokesPerDay", 0)
+        val smokesPerMinute = smokesPerDay.toDouble() / (24 * 60) // 24 hours * 60 minutes
+
+        // Calculate the final value based on smoked_today and smokesPerMinute, 2 is penalty
+        val minutesDuration = smokedTodayValue * smokesPerMinute * 2
+        val currentNextAwardDatetime = statusObject.optString("next_award_datetime") ?: ""
+        val nextProspectAwardDatetimeString = setGetData.addMinutesToDateTime(currentNextAwardDatetime, minutesDuration)
+        statusObject.put("next_award_datetime", nextProspectAwardDatetimeString)
+        val mainActivity = MainActivity()
+        deleteFormDataFile()
+        mainActivity.saveDataToFile(jsonObjectFormData, this)
     }
 
     /**
