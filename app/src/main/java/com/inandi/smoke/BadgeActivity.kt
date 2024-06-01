@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
 
@@ -85,8 +86,11 @@ class BadgeActivity : ComponentActivity() {
 
         // Read form data from file and create JSONObject
         val formData = readDataFromFile()
-        val jsonObjectFormData = createJsonObjectFromFormData(formData)
+        var jsonObjectFormData = JSONObject()
 
+        if (!formData.isNullOrEmpty()) {
+            jsonObjectFormData = createJsonObjectFromFormData(formData)
+        }
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -122,15 +126,23 @@ class BadgeActivity : ComponentActivity() {
      * @return A `String` containing the contents of the form data file.
      * @throws IOException If an I/O error occurs during reading the file.
      */
-    private fun readDataFromFile(): String {
-        val fileInputStream: FileInputStream = openFileInput(MainActivity.FORM_DATA_FILENAME)
-        val inputStreamReader = InputStreamReader(fileInputStream)
-        val bufferedReader = BufferedReader(inputStreamReader)
-        val stringBuilder = StringBuilder()
-        var line: String?
-        while (bufferedReader.readLine().also { line = it } != null) {
-            stringBuilder.append(line)
+    private fun readDataFromFile(): String? {
+        return try {
+            val fileInputStream: FileInputStream = openFileInput(MainActivity.FORM_DATA_FILENAME)
+            val inputStreamReader = InputStreamReader(fileInputStream)
+            val bufferedReader = BufferedReader(inputStreamReader)
+            val stringBuilder = StringBuilder()
+            var line: String?
+            while (bufferedReader.readLine().also { line = it } != null) {
+                stringBuilder.append(line)
+            }
+            stringBuilder.toString()
+        } catch (e: FileNotFoundException) {
+            null
+        } catch (e: IOException) {
+            // Log the exception if needed
+            e.printStackTrace()
+            null
         }
-        return stringBuilder.toString()
     }
 }
