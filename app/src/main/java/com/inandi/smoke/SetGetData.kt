@@ -261,4 +261,11 @@ class SetGetData {
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
         return dateFormat.format(Date())
     }
+
+    // Method to get current date in UTC format
+     fun getCurrentUtcDate(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        return sdf.format(Date())
+    }
 }
