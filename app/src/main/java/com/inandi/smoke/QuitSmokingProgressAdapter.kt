@@ -79,7 +79,7 @@ class QuitSmokingProgressAdapter(
         holder.descriptionTextView.text = milestone[3]
 
         val awardDetailString = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "award_achieved_timeline", milestone[0])
-        if (awardDetailString.isNullOrEmpty()) {
+        if (awardDetailString == null) {
             holder.awardAchievedOn.text = ""
         } else {
             val jsonObjectAwardDetail = JSONObject(awardDetailString)

@@ -1,5 +1,6 @@
 package com.inandi.smoke
 
+import org.json.JSONException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -150,10 +151,21 @@ class SetGetData {
         detailKey: String,
         valueKey: String
     ): String? {
-        val statusObject = jsonObject.getJSONObject("status")
-        val nextAwardDetail = statusObject.optString(detailKey)
-        val nextAwardJson = JSONObject(nextAwardDetail)
-        return nextAwardJson.optString(valueKey)
+        // Check if "status" key exists and is a JSONObject
+        val statusObject = jsonObject.optJSONObject("status") ?: return null
+
+        // Check if detailKey exists and is a non-empty string
+        val nextAwardDetail = statusObject.optString(detailKey).takeIf { it.isNotEmpty() } ?: return null
+
+        // Parse the nextAwardDetail into a JSONObject
+        val nextAwardJson = try {
+            JSONObject(nextAwardDetail)
+        } catch (e: JSONException) {
+            return null
+        }
+
+        // Return the value associated with valueKey or null if it doesn't exist
+        return nextAwardJson.optString(valueKey).takeIf { it.isNotEmpty() }
     }
 
     /**

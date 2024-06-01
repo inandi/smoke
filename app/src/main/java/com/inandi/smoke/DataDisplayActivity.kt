@@ -554,12 +554,11 @@ class DataDisplayActivity : ComponentActivity() {
         sdf.timeZone = TimeZone.getTimeZone("UTC")
         val nextAwardDateTime = sdf.parse(nextAwardDateTimeString)
 
-// todo on badge screen app is crashing
         val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
         // temp
 //        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +111115)
+//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +35)
 //        val currentTime=tenHoursAgo.time
         //temp
 
