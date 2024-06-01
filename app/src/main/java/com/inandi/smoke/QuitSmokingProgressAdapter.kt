@@ -20,6 +20,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * RecyclerView Adapter for displaying progress data in quitting smoking.
@@ -28,7 +31,10 @@ import com.bumptech.glide.Glide
  * representing a milestone. The expected structure of each inner array is:
  * [id, milestone, award, description, imagePath].
  */
-class QuitSmokingProgressAdapter(private val progressData: Array<Array<String>>) :
+class QuitSmokingProgressAdapter(
+    private val progressData: Array<Array<String>>,
+    private val jsonObjectFormData: JSONObject
+) :
     RecyclerView.Adapter<QuitSmokingProgressAdapter.ProgressViewHolder>() {
 
     /**
@@ -40,6 +46,7 @@ class QuitSmokingProgressAdapter(private val progressData: Array<Array<String>>)
         val milestoneTextView: TextView = itemView.findViewById(R.id.milestoneTextView)
         val awardTextView: TextView = itemView.findViewById(R.id.awardTextView)
         val descriptionTextView: TextView = itemView.findViewById(R.id.descriptionTextView)
+        val awardAchievedOn: TextView = itemView.findViewById(R.id.awardAchievedOn)
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
     }
 
@@ -65,10 +72,31 @@ class QuitSmokingProgressAdapter(private val progressData: Array<Array<String>>)
      * @param position The position of the item within the adapter's data set.
      */
     override fun onBindViewHolder(holder: ProgressViewHolder, position: Int) {
+        val setGetData = SetGetData()
         val milestone = progressData[position]
         holder.milestoneTextView.text = milestone[1]
         holder.awardTextView.text = milestone[2]
         holder.descriptionTextView.text = milestone[3]
+
+        val awardDetailString = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "award_achieved_timeline", milestone[0])
+        if (awardDetailString == null) {
+            holder.awardAchievedOn.text = ""
+        } else {
+            val jsonObjectAwardDetail = JSONObject(awardDetailString)
+
+            // Extract values from jsonObjectAwardDetail
+            val score = jsonObjectAwardDetail.optString("score", "")
+            val dateTimeString = jsonObjectAwardDetail.optString("datetime", "")
+
+            // Parse dateTimeString into a Date object
+            val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val dateTime = dateTimeFormatter.parse(dateTimeString)
+
+            // Format the date to a nicer format
+            val dateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
+            val formattedDate = dateFormatter.format(dateTime)
+            holder.awardAchievedOn.text = "You attained this accomplishment on $formattedDate, scoring $score%."
+        }
 
         // Set text color to white
         holder.milestoneTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
