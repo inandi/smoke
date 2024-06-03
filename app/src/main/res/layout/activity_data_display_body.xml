@@ -44,6 +44,7 @@
             <LinearLayout
                 android:id="@+id/section_2"
                 android:layout_width="match_parent"
+                android:layout_margin="16dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/section_1"
                 android:layout_marginTop="0dp">
@@ -66,25 +67,24 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
                     android:orientation="vertical">
                     <TextView
                         android:id="@+id/displayCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
+                        android:layout_marginBottom="10dp"
                         android:text="@string/lorem_ipsum_small" />
                     <TextView
                         android:id="@+id/displayMoney"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
+                        android:layout_marginBottom="10dp"
                         android:text="@string/lorem_ipsum_small" />
                     <TextView
                         android:id="@+id/displayDay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
+                        android:layout_marginBottom="10dp"
                         android:text="@string/lorem_ipsum_small" />
                 </LinearLayout>
             </LinearLayout>

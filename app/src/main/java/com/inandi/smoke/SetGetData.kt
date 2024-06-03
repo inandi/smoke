@@ -252,19 +252,21 @@ class SetGetData {
     }
 
 
-    fun getCurrentTimestamp(): String {
+//    fun getCurrentTimestamp(): String {
 //        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Set timezone to GMT
-//        return Date()
-
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-        return dateFormat.format(Date())
-    }
+//        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+//        return dateFormat.format(Date())
+//    }
 
     // Method to get current date in UTC format
-     fun getCurrentUtcDate(): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//     fun getCurrentUtcDate(): String {
+//        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//        sdf.timeZone = TimeZone.getTimeZone("UTC")
+//        return sdf.format(Date())
+//    }
+
+    fun getCurrentDateTime(format: String = "yyyy-MM-dd HH:mm:ss"): String {
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
         sdf.timeZone = TimeZone.getTimeZone("UTC")
         return sdf.format(Date())
     }

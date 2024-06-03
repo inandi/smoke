@@ -537,6 +537,10 @@ class DataDisplayActivity : ComponentActivity() {
             val strippedAssetPath = stripAssetPrefix(it)
             loadImageFromAssets(strippedAssetPath)
         }
+
+        if (varStatusObject != null) {
+            updatePenaltyButtonUI(varStatusObject)
+        };
     }
 
      fun calculateTotalSpent(perMinuteSpent: Double, varStartYear: Int, varCreatedOn: String): String {
@@ -666,6 +670,25 @@ class DataDisplayActivity : ComponentActivity() {
             println("Current time in UTC is not greater than next_award_datetime.")
         }
     }
+
+    private fun updatePenaltyButtonUI(statusObject: JSONObject) {
+        // Get current date in UTC format
+        val currentDate = setGetData.getCurrentDateTime("yyyy-MM-dd")
+
+        // Check if 'smoked_today' key exists
+        val smokedTodayObject = statusObject.optJSONObject("smoked_today")
+        var smokedTodayValue = 0
+        if (smokedTodayObject != null) {
+            // If it exists, check if the current date exists as a key
+            if (smokedTodayObject.has(currentDate)) {
+                smokedTodayValue = smokedTodayObject.getInt(currentDate)
+            }
+        }
+        val penaltyButton = findViewById<Button>(R.id.button_add_penalty)
+        val newText = "One Cigarette, add penalty ($smokedTodayValue)"
+        penaltyButton.text = newText
+    }
+
     private fun updatePenaltyJson() {
         val formData = readDataFromFile()
         val jsonObjectFormData = createJsonObjectFromFormData(formData)
@@ -674,11 +697,14 @@ class DataDisplayActivity : ComponentActivity() {
         val statusObject = jsonObjectFormData.getJSONObject("status")
 
         // Get current date in UTC format
-        val currentDate = setGetData.getCurrentUtcDate()
+        val currentDate = setGetData.getCurrentDateTime("yyyy-MM-dd")
+        val currentYear = setGetData.getCurrentDateTime("yyyy")
 
         // Check if 'smoked_today' key exists
         val smokedTodayObject = statusObject.optJSONObject("smoked_today")
+        val yearStatusObject = statusObject.optJSONObject("year_status")
         var smokedTodayValue = 0
+
         if (smokedTodayObject == null) {
             // Add 'smoked_today' key with initial value { currentDate: 1 } if it does not exist
             val newSmokedTodayObject = JSONObject()
@@ -701,18 +727,55 @@ class DataDisplayActivity : ComponentActivity() {
             }
         }
 
-        // Calculate smokesPerMinute based on smokesPerDay
-        val smokesPerDay = varOriginalObject.optInt("smokesPerDay", 0)
-        val smokesPerMinute = smokesPerDay.toDouble() / (24 * 60) // 24 hours * 60 minutes
+        // Update 'year_status' using the new function
+        updateYearStatus(statusObject, yearStatusObject, currentDate, currentYear, smokedTodayValue)
 
-        // Calculate the final value based on smoked_today and smokesPerMinute, 2 is penalty
-        val minutesDuration = smokedTodayValue * smokesPerMinute * 2
+        // Calculate smokeCoversMinute based on smokesPerDay
+        val smokesPerDay = varOriginalObject.optInt("smokesPerDay", 0)
+        // one cigarette covers this many minutes
+        val smokeCoversMinute = ((24 / smokesPerDay) * 60).toDouble() // 24 hours * 60 minutes
+
+        // Calculate the final value based on smoked_today and smokeCoversMinute, 2 is penalty
+        val minutesDuration = smokedTodayValue * smokeCoversMinute * 2
         val currentNextAwardDatetime = statusObject.optString("next_award_datetime") ?: ""
         val nextProspectAwardDatetimeString = setGetData.addMinutesToDateTime(currentNextAwardDatetime, minutesDuration)
         statusObject.put("next_award_datetime", nextProspectAwardDatetimeString)
+
         val mainActivity = MainActivity()
         deleteFormDataFile()
         mainActivity.saveDataToFile(jsonObjectFormData, this)
+    }
+
+    private fun updateYearStatus(
+        statusObject: JSONObject?,
+        yearStatusObject: JSONObject?,
+        currentDate: String,
+        currentYear: String,
+        smokedTodayValue: Int
+    ) {
+        if (yearStatusObject == null) {
+            val smokeCurrentYear = JSONObject()
+            val smokeCurrentDay = JSONObject()
+            smokeCurrentDay.put(currentDate, smokedTodayValue)
+            smokeCurrentYear.put(currentYear, smokeCurrentDay)
+            statusObject?.put("year_status", smokeCurrentYear)
+        } else {
+            if (yearStatusObject.has(currentYear)) {
+                val smokeCurrentYear = yearStatusObject.getJSONObject(currentYear)
+                if (smokeCurrentYear.has(currentDate)) {
+                    // Update the value for the current date
+                    smokeCurrentYear.put(currentDate, smokedTodayValue)
+                } else {
+                    // Add the current date and set value to smokedTodayValue
+                    smokeCurrentYear.put(currentDate, smokedTodayValue)
+                }
+            } else {
+                // Add the current year with the current date and smokedTodayValue
+                val smokeCurrentYear = JSONObject()
+                smokeCurrentYear.put(currentDate, smokedTodayValue)
+                yearStatusObject.put(currentYear, smokeCurrentYear)
+            }
+        }
     }
 
     /**
