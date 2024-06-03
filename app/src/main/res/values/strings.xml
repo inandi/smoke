@@ -14,10 +14,10 @@
     <string name="lorem_ipsum_smaller">Lorem Ipsum</string>
     <string name="displayCountMsgTemplate">%s cigarettes missed to kill you\n%s more to get awarded with %s</string>
     <string name="displayMoneyMsgTemplate">%s%s we saved for your next trip \n%s%s more to get awarded with %s</string>
-    <string name="displayTotalHowManyCigSmokedMsgTemplate">As of today, you have smoked %s cigarettes.</string>
-    <string name="displayTotalHowMuchMoneySpentMsgTemplate">Up until today, cigarettes have wasted %s%s of your money.</string>
+    <string name="displayTotalHowManyCigSmokedMsgTemplate">Since we started, you have smoked %s cigarette(s).</string>
+    <string name="displayTotalHowMuchMoneySpentMsgTemplate">Since we started, cigarettes have wasted %s%s of your money.</string>
     <string name="displayDayMsgTemplate">%s cigarette/poison free\n%s more to get awarded with %s</string>
-    <string name="progressMsg">progress...</string>
+    <string name="progressMsg">progress…</string>
     <string name="dummyMsg">--</string>
     <string name="penaltyButtonLevel">One Cigarette, add penalty</string>
     <string name="submitButtonLevel">Let us begin</string>
