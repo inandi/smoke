@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
 
             // create JSON to save in file
             val jsonObjectForForm = JSONObject()
-            val getCurrentTimestamp = setGetData.getCurrentTimestamp()
+            val getCurrentTimestamp = setGetData.getCurrentDateTime()
 
             // Create a JSON object to hold the user input, in "original" key
             val jsonObjectOriginal = JSONObject()
