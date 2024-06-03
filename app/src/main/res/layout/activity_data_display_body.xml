@@ -96,7 +96,7 @@
                 android:layout_alignParentBottom="@+id/section_2"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="16dp"
-                android:background="#900606"
+                android:background="@drawable/button_background"
                 android:text="@string/penaltyButtonLevel"
                 android:textAllCaps="true"
                 android:textColor="#FFFFFF" />
