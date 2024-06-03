@@ -57,4 +57,5 @@
     <string name="todo">TODO</string>
     <string name="reload">Reload</string>
     <string name="reset">Reset</string>
+    <string name="download_progress">Download Progress</string>
 </resources>

@@ -15,6 +15,8 @@ package com.inandi.smoke
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -43,8 +45,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.ceil
 import org.json.JSONObject
 import android.graphics.BitmapFactory
+import android.os.Environment
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
+import java.io.FileOutputStream
 
 private const val TAG = "DataDisplayActivity"
 
@@ -58,7 +63,7 @@ class DataDisplayActivity : ComponentActivity() {
     private lateinit var textViewDisplayDay: TextView
     private lateinit var textViewDisplayTotalHowManyCigSmoked: TextView
     private lateinit var textViewDisplayTotalHowMuchMoneySpent: TextView
-
+    private val PERMISSION_REQUEST_CODE = 1001
     private val isMobileAdsInitializeCalled = AtomicBoolean(false)
     private val initialLayoutComplete = AtomicBoolean(false)
     private lateinit var binding: ActivityDataDisplayBinding
@@ -136,6 +141,17 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                downloadUserDataFile()
+            } else {
+                Toast.makeText(this, "Permission denied. Unable to download file.", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     private fun showPenaltyDialog() {
         updatePenaltyJson()
         loadData()
@@ -199,7 +215,42 @@ class DataDisplayActivity : ComponentActivity() {
                 showResetConfirmationDialog()
                 true
             }
+            R.id.menu_option_download -> {
+                checkPermissionsAndDownload()
+                true
+            }
             else -> false
+        }
+    }
+
+    private fun checkPermissionsAndDownload() {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+                PERMISSION_REQUEST_CODE
+            )
+        } else {
+            downloadUserDataFile()
+        }
+    }
+
+    private fun downloadUserDataFile() {
+        val fileName = MainActivity.FORM_DATA_FILENAME
+        try {
+            val fileInputStream = openFileInput(fileName)
+            val fileContent = fileInputStream.bufferedReader().use { it.readText() }
+            fileInputStream.close()
+
+            val downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val outFile = File(downloadsFolder, fileName)
+            val fileOutputStream = FileOutputStream(outFile)
+            fileOutputStream.use {
+                it.write(fileContent.toByteArray())
+            }
+            Toast.makeText(this, "File downloaded to: ${outFile.absolutePath}", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Download failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
