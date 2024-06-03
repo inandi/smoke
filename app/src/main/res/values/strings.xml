@@ -23,7 +23,7 @@
     <string name="submitButtonLevel">Let us begin</string>
     <string name="priceEG">e.g. 17.12</string>
     <string name="countEG">e.g. 18</string>
-    <string name="price_of_your_cigarette">Price of your cigarette</string>
+    <string name="price_of_your_cigarette">Price of your cigarette (average)</string>
     <string name="how_many_you_smoke_in_a_day_on_average">How many you smoke in a day on average?</string>
     <string name="placeholder_select_country">Select your country</string>
 
