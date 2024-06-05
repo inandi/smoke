@@ -71,7 +71,7 @@ class DataSet {
                 "After 2 Years",
                 "Bear",
                 "Risk of stroke decreases significantly. Lung function continues to improve, reducing the risk of chronic lung diseases.",
-                "file:///android_asset/media/award/bear.jpg",
+                "file:///android_asset/media/award/bear.png",
                 "17532"),
 
             arrayOf(
@@ -79,7 +79,7 @@ class DataSet {
                 "After 3 Years",
                 "Leopard",
                 "Risk of heart disease drops to that of a nonsmoker. Lung function improves even further.",
-                "file:///android_asset/media/award/leopard.jpg",
+                "file:///android_asset/media/award/leopard.png",
                 "26298"),
 
             arrayOf(
@@ -95,7 +95,7 @@ class DataSet {
                 "After 5 Years",
                 "Elephant",
                 "Risk of stroke decreases to that of a nonsmoker. Risk of cancers, such as cervix, colon, and rectum, decreases.",
-                "file:///android_asset/media/award/elephant.jpg",
+                "file:///android_asset/media/award/elephant.png",
                 "43830"),
 
             arrayOf(
@@ -103,7 +103,7 @@ class DataSet {
                 "After 10 Years",
                 "Rhino",
                 "Risk of dying from lung cancer drops by about half compared to a smoker. Risk of cancers, such as kidney, pancreas, and esophagus, decreases significantly.",
-                "file:///android_asset/media/award/rhino.jpg",
+                "file:///android_asset/media/award/rhino.png",
                 "87660"),
 
             arrayOf(
@@ -111,7 +111,7 @@ class DataSet {
                 "After 15 Years",
                 "Dragon",
                 "Risk of heart disease drops to that of a nonsmoker. Overall risk of death becomes nearly the same as that of someone who has never smoked.",
-                "file:///android_asset/media/award/dragon.jpg",
+                "file:///android_asset/media/award/dragon.png",
                 "131490"),
         )
     }
