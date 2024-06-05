@@ -23,7 +23,7 @@ class DataSet {
                 "After 1 Day",
                 "Bee",
                 "Within minutes of quitting, your heart rate and blood pressure drop. Carbon monoxide levels in your blood decrease, allowing oxygen levels to return to normal.",
-                "file:///android_asset/media/award/bee.jpeg",
+                "file:///android_asset/media/award/bee.png",
                 "24"),
 
             arrayOf(
@@ -31,7 +31,7 @@ class DataSet {
                 "After 7 Days",
                 "Rabbit",
                 "Nicotine is completely out of your system. Your sense of taste and smell start to improve.",
-                "file:///android_asset/media/award/rabbit.jpg",
+                "file:///android_asset/media/award/rabbit.png",
                 "168"),
 
             arrayOf(
@@ -39,7 +39,7 @@ class DataSet {
                 "After 1 Month",
                 "Wolf",
                 "Your lung function begins to improve. You may notice a decrease in coughing and shortness of breath. Energy levels increase.",
-                "file:///android_asset/media/award/wolf.jpg",
+                "file:///android_asset/media/award/wolf.png",
                 "730.001"),
 
             arrayOf(
@@ -47,7 +47,7 @@ class DataSet {
                 "After 3 Months",
                 "Lion",
                 "Circulation improves, leading to better blood flow to your extremities. Lung function continues to improve, making physical activity easier. Breathing becomes noticeably easier.",
-                "file:///android_asset/media/award/lion.jpg",
+                "file:///android_asset/media/award/lion.png",
                 "2190"),
 
             arrayOf(
@@ -55,7 +55,7 @@ class DataSet {
                 "After 6 Months",
                 "Tiger",
                 "Coughing, sinus congestion, fatigue, and shortness of breath decrease even more. Lung function can increase by up to 10%. Risk of infections decreases.",
-                "file:///android_asset/media/award/tiger.jpeg",
+                "file:///android_asset/media/award/tiger.png",
                 "4380"),
 
             arrayOf(
@@ -63,7 +63,7 @@ class DataSet {
                 "After 1 Year",
                 "Eagle",
                 "Risk of heart disease is halved compared to a smoker's risk. Risk of heart attack drops significantly. Cilia in the lungs begin to regain normal function, reducing the risk of infection.",
-                "file:///android_asset/media/award/eagle.jpg",
+                "file:///android_asset/media/award/eagle.png",
                 "8766"),
 
             arrayOf(
@@ -71,7 +71,7 @@ class DataSet {
                 "After 2 Years",
                 "Bear",
                 "Risk of stroke decreases significantly. Lung function continues to improve, reducing the risk of chronic lung diseases.",
-                "file:///android_asset/media/award/bear.jpg",
+                "file:///android_asset/media/award/bear.png",
                 "17532"),
 
             arrayOf(
@@ -79,7 +79,7 @@ class DataSet {
                 "After 3 Years",
                 "Leopard",
                 "Risk of heart disease drops to that of a nonsmoker. Lung function improves even further.",
-                "file:///android_asset/media/award/leopard.jpg",
+                "file:///android_asset/media/award/leopard.png",
                 "26298"),
 
             arrayOf(
@@ -87,7 +87,7 @@ class DataSet {
                 "After 4 Years",
                 "Gorilla",
                 "Risk of cancers, such as mouth, throat, esophagus, and bladder, decreases significantly. Coughing and shortness of breath continue to decrease.",
-                "file:///android_asset/media/award/gorilla.jpg",
+                "file:///android_asset/media/award/gorilla.png",
                 "35064"),
 
             arrayOf(
@@ -95,7 +95,7 @@ class DataSet {
                 "After 5 Years",
                 "Elephant",
                 "Risk of stroke decreases to that of a nonsmoker. Risk of cancers, such as cervix, colon, and rectum, decreases.",
-                "file:///android_asset/media/award/elephant.jpg",
+                "file:///android_asset/media/award/elephant.png",
                 "43830"),
 
             arrayOf(
@@ -103,7 +103,7 @@ class DataSet {
                 "After 10 Years",
                 "Rhino",
                 "Risk of dying from lung cancer drops by about half compared to a smoker. Risk of cancers, such as kidney, pancreas, and esophagus, decreases significantly.",
-                "file:///android_asset/media/award/rhino.jpg",
+                "file:///android_asset/media/award/rhino.png",
                 "87660"),
 
             arrayOf(
@@ -111,7 +111,7 @@ class DataSet {
                 "After 15 Years",
                 "Dragon",
                 "Risk of heart disease drops to that of a nonsmoker. Overall risk of death becomes nearly the same as that of someone who has never smoked.",
-                "file:///android_asset/media/award/dragon.jpg",
+                "file:///android_asset/media/award/dragon.png",
                 "131490"),
         )
     }
