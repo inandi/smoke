@@ -62,18 +62,18 @@ class SetGetData {
      * per-minute rates. If the `completedScenario` flag is true, it calculates for the completed scenario; otherwise,
      * it calculates for the pending scenario.
      *
-     * @param diffInMillis The difference in milliseconds for which to calculate the time difference.
+     * @param diffInSeconds The difference in seconds for which to calculate the time difference.
      * @param perMinuteSpent The average amount of money spent on cigarettes per minute.
      * @param perMinuteSmoked The average number of cigarettes smoked per minute.
      * @param completedScenario A boolean flag indicating whether to calculate for the completed scenario (default: true).
      */
     fun calculateTimeDifference(
-        diffInMillis: Long,
+        diffInSeconds: Long,
         perMinuteSpent: Double,
         perMinuteSmoked: Double,
         completedScenario: Boolean = true
     ) {
-        diffInMinutes = diffInMillis / (1000 * 60)
+        diffInMinutes = diffInSeconds / 60
         days = diffInMinutes / (24 * 60)
         hours = (diffInMinutes % (24 * 60)) / 60
         minutes = diffInMinutes % 60
@@ -265,9 +265,33 @@ class SetGetData {
 //        return sdf.format(Date())
 //    }
 
+    /**
+     * Gets the current date and time formatted according to the specified format.
+     *
+     * @param format The desired date and time format (default is "yyyy-MM-dd HH:mm:ss").
+     * @return The formatted current date and time.
+     * @since 0.1
+     */
     fun getCurrentDateTime(format: String = "yyyy-MM-dd HH:mm:ss"): String {
         val sdf = SimpleDateFormat(format, Locale.getDefault())
-        sdf.timeZone = TimeZone.getTimeZone("UTC")
-        return sdf.format(Date())
+        sdf.timeZone = TimeZone.getTimeZone("UTC") // Set the time zone to UTC
+        return sdf.format(Date()) // Format the current date and time
+    }
+
+    /**
+     * Calculates the difference in seconds between two date strings.
+     *
+     * @param date1 The first date string in "yyyy-MM-dd HH:mm:ss" format.
+     * @param date2 The second date string in "yyyy-MM-dd HH:mm:ss" format. This should bigger than date1.
+     * @return The difference in seconds between the two dates.
+     * @since 0.1
+     */
+    fun getSecondDifference(date1: String, date2: String): Long {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date1Obj = dateFormat.parse(date1)
+        val date2Obj = dateFormat.parse(date2)
+        val diff = date2Obj.time - date1Obj.time
+        val seconds = diff / 1000
+        return seconds
     }
 }

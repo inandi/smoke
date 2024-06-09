@@ -723,8 +723,10 @@ class DataDisplayActivity : ComponentActivity() {
                     smokedTodayObject.put(key, 0)
                 }
                 smokedTodayValue = 1
+                statusObject.put("smoked_today", null)
                 smokedTodayObject.put(currentDate, smokedTodayValue)
             }
+            statusObject.put("smoked_today", smokedTodayObject)
         }
 
         // Update 'year_status' using the new function
@@ -805,18 +807,29 @@ class DataDisplayActivity : ComponentActivity() {
         perMinuteSmoked: Double
     ): Array<Map<String, Any>> {
         // Date format in UTC
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-        val startDateLocal: Date = dateFormat.parse(startDate) ?: throw IllegalArgumentException("Invalid date format")
-        val nextAwardDatetimeLocal: Date = dateFormat.parse(nextAwardDatetime) ?: throw IllegalArgumentException("Invalid date format")
-        val currentDate = Date()
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+//        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+//        val startDateLocal: Date = dateFormat.parse(startDate) ?: throw IllegalArgumentException("Invalid date format")
+//        val nextAwardDatetimeLocal: Date = dateFormat.parse(nextAwardDatetime) ?: throw IllegalArgumentException("Invalid date format")
+//        val currentDate = Date()
+
+        val currentDate = setGetData.getCurrentDateTime();
+
+//        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        sdf.timeZone = TimeZone.getTimeZone("UTC")
+//        val nextAwardDatetimeLocal = sdf.parse(nextAwardDatetime)
+//        val startDateLocal = sdf.parse(startDate)
+//        val currentDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
 
         // Calculate the time (completed) difference in milliseconds
-        val completedTimeDiffInMillis = currentDate.time - startDateLocal.time
+//        val completedTimeDiffInMillis = currentDate.time - startDateLocal.time
+        val completedTimeDiffInMillis = setGetData.getSecondDifference(startDate, currentDate)
         setGetData.calculateTimeDifference(completedTimeDiffInMillis,perMinuteSpent,perMinuteSmoked)
 
         // Calculate the time (pending) difference in milliseconds
-        val pendingTimeDiffInMillis = nextAwardDatetimeLocal.time - currentDate.time
+//        val pendingTimeDiffInMillis = nextAwardDatetimeLocal.time - currentDate.time
+        val pendingTimeDiffInMillis = setGetData.getSecondDifference(currentDate, nextAwardDatetime)
         setGetData.calculateTimeDifference(pendingTimeDiffInMillis,perMinuteSpent,perMinuteSmoked, false)
 
         return arrayOf(
