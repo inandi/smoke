@@ -33,6 +33,7 @@ class SetGetData {
      *
      * @param id The ID of the smoking progress to retrieve.
      * @return A JSONObject containing smoking progress details if found, or null if not found.
+     * @since 0.1
      */
     fun getSmokingProgressById(id: String): JSONObject? {
         val progressArray = dataSet.quitSmokingProgress()
@@ -52,33 +53,31 @@ class SetGetData {
     }
 
 
-
     /**
-     * Calculates the time difference and related metrics based on the provided milliseconds and per-minute rates.
+     * Calculates and formats the difference in time given in seconds, and computes
+     * the total cigarettes smoked and money spent based on the time difference and rates provided.
      *
-     * This function calculates the time difference in minutes from the provided milliseconds and then computes
-     * the number of days, hours, and minutes. It also constructs a result string representing the time difference.
-     * Additionally, it calculates the total number of cigarettes smoked and the total money spent based on the
-     * per-minute rates. If the `completedScenario` flag is true, it calculates for the completed scenario; otherwise,
-     * it calculates for the pending scenario.
-     *
-     * @param diffInSeconds The difference in seconds for which to calculate the time difference.
-     * @param perMinuteSpent The average amount of money spent on cigarettes per minute.
-     * @param perMinuteSmoked The average number of cigarettes smoked per minute.
-     * @param completedScenario A boolean flag indicating whether to calculate for the completed scenario (default: true).
+     * @param diffInSeconds The time difference in seconds.
+     * @param perMinuteSpent The amount of money spent per minute.
+     * @param perMinuteSmoked The number of cigarettes smoked per minute.
+     * @param completedScenario A boolean indicating if the scenario is completed or pending.
+     * @since 0.1
      */
     fun calculateTimeDifference(
         diffInSeconds: Long,
         perMinuteSpent: Double,
         perMinuteSmoked: Double,
-        completedScenario: Boolean = true
+        completedScenario: Boolean = true,
     ) {
+        // Convert the time difference from seconds to minutes
         diffInMinutes = diffInSeconds / 60
+
+        // Calculate the number of days, hours, and minutes from the total minutes
         days = diffInMinutes / (24 * 60)
         hours = (diffInMinutes % (24 * 60)) / 60
         minutes = diffInMinutes % 60
 
-        // Construct the result string
+        // Construct the result string for formatted time difference
         val valDatString = StringBuilder()
         if (days > 0) {
             valDatString.append("${formatNumberWithCommas(days)} day(s) ")
@@ -91,6 +90,8 @@ class SetGetData {
         } else {
             valDatString.append("0 minute")
         }
+
+        // Calculate and assign the total cigarettes smoked and money spent based on the scenario completion
         if (completedScenario) {
             totalCigarettesSmoked = calculateTotalCigarettesSmoked(diffInMinutes, perMinuteSmoked)
             totalMoneySpent = calculateTotalMoneySpent(diffInMinutes, perMinuteSpent)
@@ -113,10 +114,11 @@ class SetGetData {
      * @param diffInMinutes The difference in minutes for which the cigarettes are smoked.
      * @param perMinuteSmoked The average number of cigarettes smoked per minute.
      * @return The total number of cigarettes smoked.
+     * @since 0.1
      */
     private fun calculateTotalCigarettesSmoked(
         diffInMinutes: Long,
-        perMinuteSmoked: Double
+        perMinuteSmoked: Double,
     ): Double {
         return ceil(perMinuteSmoked * diffInMinutes * 100) / 100
     }
@@ -130,6 +132,7 @@ class SetGetData {
      * @param diffInMinutes The difference in minutes for which the money is spent.
      * @param perMinuteSpent The average amount of money spent on cigarettes per minute.
      * @return The total amount of money spent on cigarettes.
+     * @since 0.1
      */
     private fun calculateTotalMoneySpent(diffInMinutes: Long, perMinuteSpent: Double): Double {
         return ceil(perMinuteSpent * diffInMinutes * 100) / 100
@@ -145,17 +148,19 @@ class SetGetData {
      * @param detailKey The key under which the next award detail is stored in the status object.
      * @param valueKey The key corresponding to the value to be retrieved from the next award detail.
      * @return The value associated with the value key in the next award detail, or null if not found.
+     * @since 0.1
      */
     fun getNextAwardDetailFromStatusKeyOfJsonObject(
         jsonObject: JSONObject,
         detailKey: String,
-        valueKey: String
+        valueKey: String,
     ): String? {
         // Check if "status" key exists and is a JSONObject
         val statusObject = jsonObject.optJSONObject("status") ?: return null
 
         // Check if detailKey exists and is a non-empty string
-        val nextAwardDetail = statusObject.optString(detailKey).takeIf { it.isNotEmpty() } ?: return null
+        val nextAwardDetail =
+            statusObject.optString(detailKey).takeIf { it.isNotEmpty() } ?: return null
 
         // Parse the nextAwardDetail into a JSONObject
         val nextAwardJson = try {
@@ -179,6 +184,7 @@ class SetGetData {
      *
      * @param dateString The date string to be compared, in the format "yyyy-MM-dd HH:mm:ss".
      * @return A `String` representing the difference in days, hours, and minutes.
+     * @since 0.1
      *
      * For example:
      * - Input: "2024-05-17 12:00:00" -> Output: "1 day(s) 5 hour(s) 30 minute(s)" (assuming the
@@ -215,7 +221,15 @@ class SetGetData {
         return result.toString().trim()
     }
 
-     fun addMinutesToDateTime(datetime: String, minutesToAdd: Double): String {
+    /**
+     * Adds the specified number of minutes to a given datetime string.
+     *
+     * @param datetime The input datetime string in "yyyy-MM-dd HH:mm:ss" format.
+     * @param minutesToAdd The number of minutes to add.
+     * @return The new datetime string after adding the specified minutes.
+     * @since 0.1
+     */
+    fun addMinutesToDateTime(datetime: String, minutesToAdd: Double): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
 
@@ -241,8 +255,9 @@ class SetGetData {
      *
      * @param number The number to be formatted. This can be any subclass of `Number`.
      * @return A `String` representation of the number with commas as thousands separators.
+     * @since 0.1
      */
-     fun formatNumberWithCommas(number: Any): String {
+    fun formatNumberWithCommas(number: Any): String {
         val numberString = number.toString()
         val parts = numberString.split(".")
         val wholePart = parts[0]
@@ -250,20 +265,6 @@ class SetGetData {
         val pattern = Regex("\\B(?=(\\d{3})+(?!\\d))")
         return wholePart.replace(pattern, ",") + decimalPart
     }
-
-
-//    fun getCurrentTimestamp(): String {
-//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-//        return dateFormat.format(Date())
-//    }
-
-    // Method to get current date in UTC format
-//     fun getCurrentUtcDate(): String {
-//        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-//        sdf.timeZone = TimeZone.getTimeZone("UTC")
-//        return sdf.format(Date())
-//    }
 
     /**
      * Gets the current date and time formatted according to the specified format.

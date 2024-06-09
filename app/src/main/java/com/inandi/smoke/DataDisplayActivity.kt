@@ -99,6 +99,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      *   down, this contains the data it most recently supplied in `onSaveInstanceState`.
+     * @since 0.1
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,13 +142,21 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 downloadUserDataFile()
             } else {
-                Toast.makeText(this, "Permission denied. Unable to download file.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "Permission denied. Unable to download file.",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -162,6 +171,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * @param assetPath The path to the image file in the assets folder. Must not be null.
      * @throws IOException If an error occurs while loading the image from assets.
+     * @since 0.1
      */
     private fun loadImageFromAssets(assetPath: String) {
         val imageView: ImageView = findViewById(R.id.image_view)
@@ -183,6 +193,7 @@ class DataDisplayActivity : ComponentActivity() {
      * menu item clicks.
      *
      * @param view The view to which the popup menu will be anchored.
+     * @since 0.1
      */
     private fun showPopupMenu(view: View) {
         val popup = PopupMenu(this, view)
@@ -204,6 +215,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * @param menuItem The menu item that was clicked.
      * @return `true` if the menu item click was handled, `false` otherwise.
+     * @since 0.1
      */
     private fun handleMenuItemClick(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
@@ -211,14 +223,17 @@ class DataDisplayActivity : ComponentActivity() {
                 loadData()
                 true
             }
+
             R.id.menu_option_reset -> {
                 showResetConfirmationDialog()
                 true
             }
+
             R.id.menu_option_download -> {
                 checkPermissionsAndDownload()
                 true
             }
+
             else -> false
         }
     }
@@ -226,7 +241,10 @@ class DataDisplayActivity : ComponentActivity() {
     private fun checkPermissionsAndDownload() {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+                arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
                 PERMISSION_REQUEST_CODE
             )
         } else {
@@ -241,13 +259,15 @@ class DataDisplayActivity : ComponentActivity() {
             val fileContent = fileInputStream.bufferedReader().use { it.readText() }
             fileInputStream.close()
 
-            val downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val downloadsFolder =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val outFile = File(downloadsFolder, fileName)
             val fileOutputStream = FileOutputStream(outFile)
             fileOutputStream.use {
                 it.write(fileContent.toByteArray())
             }
-            Toast.makeText(this, "File downloaded to: ${outFile.absolutePath}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "File downloaded to: ${outFile.absolutePath}", Toast.LENGTH_LONG)
+                .show()
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "Download failed: ${e.message}", Toast.LENGTH_LONG).show()
@@ -425,6 +445,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * @throws IllegalArgumentException If there is an error parsing the JSON data or if the start date or
      * next award date has an invalid format.
+     * @since 0.1
      */
     private fun loadData() {
         // Refresh the JSON data
@@ -438,7 +459,11 @@ class DataDisplayActivity : ComponentActivity() {
         val jsonObjectFormData = createJsonObjectFromFormData(formData)
 
         // Retrieve upcoming award name
-        val upComingAwardName = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "next_award_detail", "animal")
+        val upComingAwardName = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(
+            jsonObjectFormData,
+            "next_award_detail",
+            "animal"
+        )
 
         // Initialize variables
         var finalCountrySymbol: String? = null
@@ -474,7 +499,8 @@ class DataDisplayActivity : ComponentActivity() {
         val perMinuteSmoked = perMinuteSmokedCigarette(varSmokesPerDay)
 
         // Prepare display data
-        val displayData = prepareDisplayData(varCreatedOn, varNextAwardDatetime, perMinuteSpent, perMinuteSmoked)
+        val displayData =
+            prepareDisplayData(varCreatedOn, varNextAwardDatetime, perMinuteSpent, perMinuteSmoked)
 
         // Extract relevant data from displayData
         val totalCigarettesSmoked: Number? =
@@ -492,11 +518,14 @@ class DataDisplayActivity : ComponentActivity() {
                     as? Number
 
         val totalMoneySpentPending: Number? =
-            displayData.find { it.containsKey("totalMoneySpentPending") }?.get("totalMoneySpentPending")
+            displayData.find { it.containsKey("totalMoneySpentPending") }
+                ?.get("totalMoneySpentPending")
                     as? Number
 
-        val timeCompletedString = displayData.find { it.containsKey("timeCompletedString") }?.get("timeCompletedString")
-        val timePendingString = displayData.find { it.containsKey("timePendingString") }?.get("timePendingString")
+        val timeCompletedString =
+            displayData.find { it.containsKey("timeCompletedString") }?.get("timeCompletedString")
+        val timePendingString =
+            displayData.find { it.containsKey("timePendingString") }?.get("timePendingString")
 
         // Update TextView elements with the calculated and formatted information
         textViewDisplayCount.text =
@@ -518,7 +547,12 @@ class DataDisplayActivity : ComponentActivity() {
             )
 
         textViewDisplayDay.text =
-            getString(R.string.displayDayMsgTemplate, timeCompletedString, timePendingString, upComingAwardName)
+            getString(
+                R.string.displayDayMsgTemplate,
+                timeCompletedString,
+                timePendingString,
+                upComingAwardName
+            )
 
         textViewDisplayTotalHowManyCigSmoked.text = getString(
             R.string.displayTotalHowManyCigSmokedMsgTemplate,
@@ -532,7 +566,11 @@ class DataDisplayActivity : ComponentActivity() {
         )
 
         // load image
-        val nextAwardPath: String? = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "next_award_detail", "imageUrl")
+        val nextAwardPath: String? = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(
+            jsonObjectFormData,
+            "next_award_detail",
+            "imageUrl"
+        )
         nextAwardPath?.let {
             val strippedAssetPath = stripAssetPrefix(it)
             loadImageFromAssets(strippedAssetPath)
@@ -543,7 +581,11 @@ class DataDisplayActivity : ComponentActivity() {
         };
     }
 
-     fun calculateTotalSpent(perMinuteSpent: Double, varStartYear: Int, varCreatedOn: String): String {
+    fun calculateTotalSpent(
+        perMinuteSpent: Double,
+        varStartYear: Int,
+        varCreatedOn: String,
+    ): String {
         // Define date format
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
@@ -576,6 +618,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * @param filePath The file path to be processed. Must not be null.
      * @return The file path with the "file:///android_asset/" prefix removed. Returns the input filePath if the prefix is not present.
+     * @since 0.1
      */
     private fun stripAssetPrefix(filePath: String): String {
         val prefix = "file:///android_asset/"
@@ -594,6 +637,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * @param text The text to check for RTL language.
      * @return `true` if the text is in an RTL language, `false` otherwise.
+     * @since 0.1
      */
     private fun isRtlLanguage(text: String?): Boolean {
         return text?.let {
@@ -644,19 +688,23 @@ class DataDisplayActivity : ComponentActivity() {
                 val progressId = item[0]
                 val hourDuration = item[5].toDouble()
                 val minutesDuration = hourDuration * 60L
-                val nextProspectAwardDatetimeString = setGetData.addMinutesToDateTime(varCreatedOnString, minutesDuration)
+                val nextProspectAwardDatetimeString =
+                    setGetData.addMinutesToDateTime(varCreatedOnString, minutesDuration)
                 val nextProspectAwardDatetime = sdf.parse(nextProspectAwardDatetimeString)
 
-                if(currentTime.after(nextProspectAwardDatetime)){
+                if (currentTime.after(nextProspectAwardDatetime)) {
                     val jsonObjectAwardAchieved = JSONObject()
                     jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
                     // score is on percentage
                     jsonObjectAwardAchieved.put("score", "40.12")
                     jsonObjectAwardAchievedProgressId.put(progressId, jsonObjectAwardAchieved)
-                } else{
-                    if(!oneTimeUpdate){
+                } else {
+                    if (!oneTimeUpdate) {
 //                        val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                        statusObject.put("next_award_detail", setGetData.getSmokingProgressById(progressId))
+                        statusObject.put(
+                            "next_award_detail",
+                            setGetData.getSmokingProgressById(progressId)
+                        )
                         statusObject.put("next_award_datetime", nextProspectAwardDatetimeString)
                         oneTimeUpdate = true
                     }
@@ -671,6 +719,11 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Updates the UI of the penalty button based on the number of cigarettes smoked today.
+     *
+     * @param statusObject The status JSON object containing information about cigarettes smoked today.
+     */
     private fun updatePenaltyButtonUI(statusObject: JSONObject) {
         // Get current date in UTC format
         val currentDate = setGetData.getCurrentDateTime("yyyy-MM-dd")
@@ -684,41 +737,52 @@ class DataDisplayActivity : ComponentActivity() {
                 smokedTodayValue = smokedTodayObject.getInt(currentDate)
             }
         }
+        
+        // Find the penalty button in the layout
         val penaltyButton = findViewById<Button>(R.id.button_add_penalty)
+        // Create the new text for the penalty button
         val newText = "One Cigarette, add penalty ($smokedTodayValue)"
+        // Update the text of the penalty button
         penaltyButton.text = newText
     }
 
+    /**
+     * Updates the penalty information in the JSON data.
+     * This function is triggered when the user incurs a penalty.
+     * @since 0.1
+     */
     private fun updatePenaltyJson() {
+        // Read the form data from a file and convert it to a JSON object
         val formData = readDataFromFile()
         val jsonObjectFormData = createJsonObjectFromFormData(formData)
 
+        // Extract the 'original' and 'status' JSON objects from the form data
         val varOriginalObject = jsonObjectFormData.optJSONObject("original")
         val statusObject = jsonObjectFormData.getJSONObject("status")
 
-        // Get current date in UTC format
+        // Get the current date in UTC format and the current year
         val currentDate = setGetData.getCurrentDateTime("yyyy-MM-dd")
         val currentYear = setGetData.getCurrentDateTime("yyyy")
 
-        // Check if 'smoked_today' key exists
+        // Check if 'smoked_today' key exists in the status object
         val smokedTodayObject = statusObject.optJSONObject("smoked_today")
         val yearStatusObject = statusObject.optJSONObject("year_status")
         var smokedTodayValue = 0
 
         if (smokedTodayObject == null) {
-            // Add 'smoked_today' key with initial value { currentDate: 1 } if it does not exist
+            // If 'smoked_today' does not exist, create it with the current date set to 1
             val newSmokedTodayObject = JSONObject()
             smokedTodayValue = 1
             newSmokedTodayObject.put(currentDate, smokedTodayValue)
             statusObject.put("smoked_today", newSmokedTodayObject)
         } else {
-            // If it exists, check if the current date exists as a key
+            // If 'smoked_today' exists, check if the current date exists as a key
             if (smokedTodayObject.has(currentDate)) {
-                // Increment the value for the current date
+                // If the current date exists, increment its value
                 smokedTodayValue = smokedTodayObject.getInt(currentDate) + 1
                 smokedTodayObject.put(currentDate, smokedTodayValue)
             } else {
-                // Overwrite with current date and set value to 1
+                // If the current date does not exist, reset all values to 0 and set the current date to 1
                 smokedTodayObject.keys().forEach { key ->
                     smokedTodayObject.put(key, 0)
                 }
@@ -729,10 +793,10 @@ class DataDisplayActivity : ComponentActivity() {
             statusObject.put("smoked_today", smokedTodayObject)
         }
 
-        // Update 'year_status' using the new function
+        // Update 'year_status' with the new data
         updateYearStatus(statusObject, yearStatusObject, currentDate, currentYear, smokedTodayValue)
 
-        // Calculate smokeCoversMinute based on smokesPerDay
+        // Calculate the number of minutes one cigarette covers based on smokesPerDay
         val smokesPerDay = varOriginalObject.optInt("smokesPerDay", 0)
         // one cigarette covers this many minutes
         val smokeCoversMinute = ((24 / smokesPerDay) * 60).toDouble() // 24 hours * 60 minutes
@@ -740,9 +804,11 @@ class DataDisplayActivity : ComponentActivity() {
         // Calculate the final value based on smoked_today and smokeCoversMinute, 2 is penalty
         val minutesDuration = smokedTodayValue * smokeCoversMinute * 2
         val currentNextAwardDatetime = statusObject.optString("next_award_datetime") ?: ""
-        val nextProspectAwardDatetimeString = setGetData.addMinutesToDateTime(currentNextAwardDatetime, minutesDuration)
+        val nextProspectAwardDatetimeString =
+            setGetData.addMinutesToDateTime(currentNextAwardDatetime, minutesDuration)
         statusObject.put("next_award_datetime", nextProspectAwardDatetimeString)
 
+        // Save the updated data back to the file
         val mainActivity = MainActivity()
         deleteFormDataFile()
         mainActivity.saveDataToFile(jsonObjectFormData, this)
@@ -753,7 +819,7 @@ class DataDisplayActivity : ComponentActivity() {
         yearStatusObject: JSONObject?,
         currentDate: String,
         currentYear: String,
-        smokedTodayValue: Int
+        smokedTodayValue: Int,
     ) {
         if (yearStatusObject == null) {
             val smokeCurrentYear = JSONObject()
@@ -799,38 +865,32 @@ class DataDisplayActivity : ComponentActivity() {
      *         - "timeCompletedString": The formatted string representing completed time.
      *         - "timePendingString": The formatted string representing pending time.
      * @throws IllegalArgumentException If the start date or next award date has an invalid format.
+     * @since 0.1
      */
     private fun prepareDisplayData(
         startDate: String,
         nextAwardDatetime: String,
         perMinuteSpent: Double,
-        perMinuteSmoked: Double
+        perMinuteSmoked: Double,
     ): Array<Map<String, Any>> {
-        // Date format in UTC
-//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-//        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-//        val startDateLocal: Date = dateFormat.parse(startDate) ?: throw IllegalArgumentException("Invalid date format")
-//        val nextAwardDatetimeLocal: Date = dateFormat.parse(nextAwardDatetime) ?: throw IllegalArgumentException("Invalid date format")
-//        val currentDate = Date()
-
         val currentDate = setGetData.getCurrentDateTime();
 
-//        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        sdf.timeZone = TimeZone.getTimeZone("UTC")
-//        val nextAwardDatetimeLocal = sdf.parse(nextAwardDatetime)
-//        val startDateLocal = sdf.parse(startDate)
-//        val currentDate = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-
-
         // Calculate the time (completed) difference in milliseconds
-//        val completedTimeDiffInMillis = currentDate.time - startDateLocal.time
         val completedTimeDiffInMillis = setGetData.getSecondDifference(startDate, currentDate)
-        setGetData.calculateTimeDifference(completedTimeDiffInMillis,perMinuteSpent,perMinuteSmoked)
+        setGetData.calculateTimeDifference(
+            completedTimeDiffInMillis,
+            perMinuteSpent,
+            perMinuteSmoked
+        )
 
         // Calculate the time (pending) difference in milliseconds
-//        val pendingTimeDiffInMillis = nextAwardDatetimeLocal.time - currentDate.time
         val pendingTimeDiffInMillis = setGetData.getSecondDifference(currentDate, nextAwardDatetime)
-        setGetData.calculateTimeDifference(pendingTimeDiffInMillis,perMinuteSpent,perMinuteSmoked, false)
+        setGetData.calculateTimeDifference(
+            pendingTimeDiffInMillis,
+            perMinuteSpent,
+            perMinuteSmoked,
+            false
+        )
 
         return arrayOf(
             mapOf("totalCigarettesSmoked" to setGetData.totalCigarettesSmoked as Number),
@@ -853,8 +913,9 @@ class DataDisplayActivity : ComponentActivity() {
      * @param cigarettePrice The price of a single cigarette.
      * @return A `Double` representing the amount of money spent on cigarettes per minute, rounded
      *   up to two decimal places.
+     * @since 0.1
      */
-     fun perMinuteSpentMoney(smokesPerDay: Int, cigarettePrice: Double): Double {
+    fun perMinuteSpentMoney(smokesPerDay: Int, cigarettePrice: Double): Double {
         val cigarettesPerMinute = smokesPerDay.toDouble() / 1440
         return ceil(cigarettesPerMinute * cigarettePrice * 100) /
                 100 // Round up to two decimal places
@@ -869,8 +930,9 @@ class DataDisplayActivity : ComponentActivity() {
      * @param smokesPerDay The number of cigarettes smoked per day.
      * @return A `Double` representing the average number of cigarettes smoked per minute, rounded
      *   up to two decimal places.
+     * @since 0.1
      */
-     fun perMinuteSmokedCigarette(smokesPerDay: Int): Double {
+    fun perMinuteSmokedCigarette(smokesPerDay: Int): Double {
         return ceil(smokesPerDay.toDouble() / 1440 * 100) / 100 // Round up to two decimal places
     }
 
@@ -882,7 +944,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * @param formData A string containing the form data in JSON format.
      * @return A `JSONObject` representing the form data.
-     * @throws JSONException If the form data string cannot be parsed into a valid JSON object.
+     * @since 0.1
      */
     private fun createJsonObjectFromFormData(formData: String): JSONObject {
         return JSONObject(formData)
@@ -896,6 +958,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * @return A `String` containing the contents of the form data file.
      * @throws IOException If an I/O error occurs during reading the file.
+     * @since 0.1
      */
     private fun readDataFromFile(): String {
         val fileInputStream: FileInputStream = openFileInput(MainActivity.FORM_DATA_FILENAME)
@@ -917,6 +980,7 @@ class DataDisplayActivity : ComponentActivity() {
      * - If the file is successfully deleted, it logs a success message.
      * - If the file fails to delete, it logs an error message.
      * - If the file does not exist, it logs a message indicating so.
+     * @since 0.1
      */
     private fun deleteFormDataFile() {
         val file = File(filesDir, MainActivity.FORM_DATA_FILENAME)
