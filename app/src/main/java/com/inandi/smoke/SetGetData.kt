@@ -8,6 +8,7 @@ import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.ceil
 import org.json.JSONObject
+import kotlin.math.pow
 
 class SetGetData {
 
@@ -278,6 +279,23 @@ class SetGetData {
         sdf.timeZone = TimeZone.getTimeZone("UTC") // Set the time zone to UTC
         return sdf.format(Date()) // Format the current date and time
     }
+
+//    fun calculatePercentage(part: Int, total: Int): Double {
+//        if (total.toDouble() == 0.0) {
+//            return 0.0
+//        }
+//        val percentage = (part / total) * 100
+//        return ceil(percentage * 10.0.pow(2)) / 10.0.pow(2)
+//    }
+
+    fun calculatePercentage(part: Double, total: Double): Double {
+        if (total.toInt() == 0 || part < 0) {
+            return 0.0
+        }
+        val percentage = (part.toDouble() / total.toDouble()) * 100
+        return ceil(percentage * 10.0.pow(2)) / 10.0.pow(2)
+    }
+
 
     /**
      * Calculates the difference in seconds between two date strings.

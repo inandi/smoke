@@ -49,7 +49,10 @@ import android.os.Environment
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import java.io.FileOutputStream
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 private const val TAG = "DataDisplayActivity"
 
@@ -142,6 +145,25 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray,
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (requestCode == PERMISSION_REQUEST_CODE) {
+//            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+//                downloadUserDataFile()
+//            } else {
+//                Toast.makeText(
+//                    this,
+//                    "Permission denied. Unable to download file.",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            }
+//        }
+//    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -149,7 +171,15 @@ class DataDisplayActivity : ComponentActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            var allPermissionsGranted = true
+            for (result in grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false
+                    break
+                }
+            }
+
+            if (allPermissionsGranted) {
                 downloadUserDataFile()
             } else {
                 Toast.makeText(
@@ -239,8 +269,9 @@ class DataDisplayActivity : ComponentActivity() {
     }
 
     private fun checkPermissionsAndDownload() {
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
                 arrayOf(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE
@@ -251,6 +282,20 @@ class DataDisplayActivity : ComponentActivity() {
             downloadUserDataFile()
         }
     }
+
+//    private fun checkPermissionsAndDownload() {
+//        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            requestPermissions(
+//                arrayOf(
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE
+//                ),
+//                PERMISSION_REQUEST_CODE
+//            )
+//        } else {
+//            downloadUserDataFile()
+//        }
+//    }
 
     private fun downloadUserDataFile() {
         val fileName = MainActivity.FORM_DATA_FILENAME
@@ -655,12 +700,12 @@ class DataDisplayActivity : ComponentActivity() {
 
         val statusObject = jsonObjectFormData.getJSONObject("status")
         val nextAwardDateTimeString = statusObject.getString("next_award_datetime")
+        val existingAwardAchievedTimeline = statusObject.optJSONObject("award_achieved_timeline")
 
         val varOriginalObject = jsonObjectFormData.optJSONObject("original")
         val varCreatedOnString = varOriginalObject?.optString("created_on") ?: ""
-//        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Assuming the date is in UTC
-//        val varCreatedOn: Date = dateFormat.parse(varCreatedOnString)!!
+        val varSmokesPerDay = varOriginalObject?.optInt("smokesPerDay") ?: 0
+
 
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         sdf.timeZone = TimeZone.getTimeZone("UTC")
@@ -670,13 +715,13 @@ class DataDisplayActivity : ComponentActivity() {
 
         // temp
 //        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +35)
-//        val currentTime=tenHoursAgo.time
+//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +784)
+//        val currentTime = tenHoursAgo.time
         //temp
 
         if (currentTime.after(nextAwardDateTime)) {
             // Perform actions if current time in UTC is greater than next_award_datetime
-            println("Current time in UTC is greater than next_award_datetime.")
+//            println("Current time in UTC is greater than next_award_datetime.")
             // Add your additional actions here
 
             // only update next award in form json
@@ -684,6 +729,7 @@ class DataDisplayActivity : ComponentActivity() {
 
             val progressArray = dataSet.quitSmokingProgress()
             val jsonObjectAwardAchievedProgressId = JSONObject()
+
             for (item in progressArray) {
                 val progressId = item[0]
                 val hourDuration = item[5].toDouble()
@@ -693,11 +739,35 @@ class DataDisplayActivity : ComponentActivity() {
                 val nextProspectAwardDatetime = sdf.parse(nextProspectAwardDatetimeString)
 
                 if (currentTime.after(nextProspectAwardDatetime)) {
-                    val jsonObjectAwardAchieved = JSONObject()
-                    jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
-                    // score is on percentage
-                    jsonObjectAwardAchieved.put("score", "40.12")
-                    jsonObjectAwardAchievedProgressId.put(progressId, jsonObjectAwardAchieved)
+
+                    if (existingAwardAchievedTimeline == null || !existingAwardAchievedTimeline.has(
+                            progressId
+                        )
+                    ) {
+                        val jsonObjectAwardAchieved = JSONObject()
+                        jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
+
+                        val totalSmokedCurrentAwardDurationAsPenalty =
+                            statusObject.optInt("total_smoked_current_award_duration", 0)
+                        val perMinuteSmoked = perMinuteSmokedCigarette(varSmokesPerDay)
+                        val totalRangeOfSmokeCurrentAwardDuration =
+                            minutesDuration * perMinuteSmoked
+                        val currentAwardScore = setGetData.calculatePercentage(
+                            (totalRangeOfSmokeCurrentAwardDuration - totalSmokedCurrentAwardDurationAsPenalty),
+                            totalRangeOfSmokeCurrentAwardDuration
+                        )
+                        statusObject.put("total_smoked_current_award_duration", 0)
+
+
+                        // score is on percentage
+                        jsonObjectAwardAchieved.put("score", currentAwardScore)
+                        jsonObjectAwardAchievedProgressId.put(
+                            progressId,
+                            jsonObjectAwardAchieved
+                        )
+
+                    }
+
                 } else {
                     if (!oneTimeUpdate) {
 //                        val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -710,13 +780,33 @@ class DataDisplayActivity : ComponentActivity() {
                     }
                 }
             }
-            statusObject.put("award_achieved_timeline", jsonObjectAwardAchievedProgressId)
+
+            val awardAchievedTimeline = existingAwardAchievedTimeline?.let {
+                mergeJsonObjects(jsonObjectAwardAchievedProgressId, it)
+            } ?: jsonObjectAwardAchievedProgressId
+
+            statusObject.put("award_achieved_timeline", awardAchievedTimeline)
+
             val mainActivity = MainActivity()
             deleteFormDataFile()
             mainActivity.saveDataToFile(jsonObjectFormData, this)
         } else {
-            println("Current time in UTC is not greater than next_award_datetime.")
+//            println("Current time in UTC is not greater than next_award_datetime.")
         }
+    }
+
+
+    fun mergeJsonObjects(json1: JSONObject, json2: JSONObject): JSONObject {
+        val mergedJson = JSONObject(json1.toString()) // Create a copy of the first JSON object
+
+        json2.keys().forEach { key ->
+            mergedJson.put(
+                key,
+                json2.get(key)
+            ) // Overwrite or add values from the second JSON object
+        }
+
+        return mergedJson
     }
 
     /**
@@ -737,7 +827,7 @@ class DataDisplayActivity : ComponentActivity() {
                 smokedTodayValue = smokedTodayObject.getInt(currentDate)
             }
         }
-        
+
         // Find the penalty button in the layout
         val penaltyButton = findViewById<Button>(R.id.button_add_penalty)
         // Create the new text for the penalty button
@@ -807,6 +897,13 @@ class DataDisplayActivity : ComponentActivity() {
         val nextProspectAwardDatetimeString =
             setGetData.addMinutesToDateTime(currentNextAwardDatetime, minutesDuration)
         statusObject.put("next_award_datetime", nextProspectAwardDatetimeString)
+
+        val existingTotalSmokedCurrentAwardDuration =
+            statusObject.optInt("total_smoked_current_award_duration", 0)
+        statusObject.put(
+            "total_smoked_current_award_duration",
+            existingTotalSmokedCurrentAwardDuration + 1
+        )
 
         // Save the updated data back to the file
         val mainActivity = MainActivity()
