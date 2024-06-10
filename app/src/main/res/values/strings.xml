@@ -13,6 +13,7 @@
     <string name="lorem_ipsum_small">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
     <string name="lorem_ipsum_smaller">Lorem Ipsum</string>
     <string name="displayCountMsgTemplate">%s cigarettes missed to kill you\n%s more to get awarded with %s</string>
+    <string name="shareMsgTemplate">%s cigarettes missed to kill you\n%s%s we saved for your next trip\n%s cigarette/poison free</string>
     <string name="displayMoneyMsgTemplate">%s%s we saved for your next trip \n%s%s more to get awarded with %s</string>
     <string name="displayTotalHowManyCigSmokedMsgTemplate">Since we started, you have smoked %s cigarette(s).</string>
     <string name="displayTotalHowMuchMoneySpentMsgTemplate">Since we started, cigarettes have wasted %s%s of your money.</string>
@@ -58,4 +59,5 @@
     <string name="reload">Reload</string>
     <string name="reset">Reset</string>
     <string name="download_progress">Download Progress</string>
+    <string name="share_progress">Share Progress</string>
 </resources>

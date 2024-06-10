@@ -47,6 +47,7 @@ import org.json.JSONObject
 import android.graphics.BitmapFactory
 import android.os.Environment
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -143,6 +144,26 @@ class DataDisplayActivity : ComponentActivity() {
             // Define the action to be performed when the button is clicked
             showPenaltyDialog()
         }
+
+        val shareButton: Button = findViewById(R.id.button_share)
+        // Set a click listener for the share button
+        shareButton.setOnClickListener {
+            share()
+        }
+    }
+
+    private fun share() {
+        val hiddenField: EditText = findViewById(R.id.hidden_field_share)
+        val hiddenInfo = hiddenField.text.toString()
+        val template = "Check out my progress:\n\n$hiddenInfo\n\nDownload our app here: https://play.google.com/store/apps/details?id=com.inandi.smoke"
+
+        // Prepare the share intent
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, template)
+
+        // Start the share activity
+        startActivity(Intent.createChooser(shareIntent, "Share"))
     }
 
 //    override fun onRequestPermissionsResult(
@@ -599,6 +620,16 @@ class DataDisplayActivity : ComponentActivity() {
                 upComingAwardName
             )
 
+        val shareMsg = getString(
+            R.string.shareMsgTemplate,
+            totalCigarettesSmoked?.let { setGetData.formatNumberWithCommas(it) },
+            finalCountrySymbol,
+            totalMoneySpent?.let { setGetData.formatNumberWithCommas(it) },
+            timeCompletedString
+        )
+        val hiddenField: EditText = findViewById(R.id.hidden_field_share)
+        hiddenField.setText(shareMsg)
+
         textViewDisplayTotalHowManyCigSmoked.text = getString(
             R.string.displayTotalHowManyCigSmokedMsgTemplate,
             varTotalSmoked
@@ -701,6 +732,15 @@ class DataDisplayActivity : ComponentActivity() {
         val statusObject = jsonObjectFormData.getJSONObject("status")
         val nextAwardDateTimeString = statusObject.getString("next_award_datetime")
         val existingAwardAchievedTimeline = statusObject.optJSONObject("award_achieved_timeline")
+
+//        val shareMsg = getString(
+//            R.string.shareMsgTemplate,
+//            totalCigarettesSmoked?.let { setGetData.formatNumberWithCommas(it) },
+//            finalCountrySymbol,
+//            totalMoneySpent?.let { setGetData.formatNumberWithCommas(it) },
+//            timeCompletedString
+//        )
+//        varStatusObject?.put("share_msg", shareMsg)
 
         val varOriginalObject = jsonObjectFormData.optJSONObject("original")
         val varCreatedOnString = varOriginalObject?.optString("created_on") ?: ""
