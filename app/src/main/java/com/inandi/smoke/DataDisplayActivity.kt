@@ -733,15 +733,6 @@ class DataDisplayActivity : ComponentActivity() {
         val nextAwardDateTimeString = statusObject.getString("next_award_datetime")
         val existingAwardAchievedTimeline = statusObject.optJSONObject("award_achieved_timeline")
 
-//        val shareMsg = getString(
-//            R.string.shareMsgTemplate,
-//            totalCigarettesSmoked?.let { setGetData.formatNumberWithCommas(it) },
-//            finalCountrySymbol,
-//            totalMoneySpent?.let { setGetData.formatNumberWithCommas(it) },
-//            timeCompletedString
-//        )
-//        varStatusObject?.put("share_msg", shareMsg)
-
         val varOriginalObject = jsonObjectFormData.optJSONObject("original")
         val varCreatedOnString = varOriginalObject?.optString("created_on") ?: ""
         val varSmokesPerDay = varOriginalObject?.optInt("smokesPerDay") ?: 0
