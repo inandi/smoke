@@ -10,19 +10,35 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:id="@+id/section_1"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:orientation="horizontal"
                 >
-                <TextView
-                    android:id="@+id/progress_label"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:gravity="center_vertical"
                     android:layout_height="match_parent"
-                    android:text="@string/progressMsg" />
+                    >
+                    <Button
+                        android:id="@+id/button_share"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@color/black"
+                        android:layout_marginStart="16dp"
+                        android:gravity="start"
+                        android:text="@string/share_progress"
+                        android:layout_marginTop="16dp"
+                        android:drawableStart="@drawable/ic_share"
+                        android:drawablePadding="8dp"
+                        android:textColor="@color/white" />
+                    <EditText
+                        android:id="@+id/hidden_field_share"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -35,7 +51,6 @@
                         android:background="@color/black"
                         android:layout_marginEnd="16dp"
                         android:drawableEnd="@drawable/ic_vertical_three_dots"
-                        android:textAllCaps="true"
                         android:gravity="end"
                         android:textColor="@color/white" />
                 </LinearLayout>
