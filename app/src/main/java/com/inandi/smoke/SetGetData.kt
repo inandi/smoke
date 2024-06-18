@@ -288,14 +288,6 @@ class SetGetData {
         return sdf.format(calendar.time)
     }
 
-//    fun calculatePercentage(part: Int, total: Int): Double {
-//        if (total.toDouble() == 0.0) {
-//            return 0.0
-//        }
-//        val percentage = (part / total) * 100
-//        return ceil(percentage * 10.0.pow(2)) / 10.0.pow(2)
-//    }
-
     fun calculatePercentage(part: Double, total: Double): Double {
         if (total.toInt() == 0 || part < 0) {
             return 0.0

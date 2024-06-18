@@ -79,6 +79,12 @@ class QuitSmokingProgressAdapter(
         holder.descriptionTextView.text = milestone[3]
 
         val awardDetailString = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "award_achieved_timeline", milestone[0])
+
+        // Set text color to white
+        holder.milestoneTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
+        holder.awardTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
+        holder.descriptionTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
+
         if (awardDetailString == null) {
             holder.awardAchievedOn.text = ""
         } else {
@@ -87,22 +93,25 @@ class QuitSmokingProgressAdapter(
             // Extract values from jsonObjectAwardDetail
             val score = jsonObjectAwardDetail.optString("score", "")
             val dateTimeString = jsonObjectAwardDetail.optString("datetime", "")
+            holder.awardAchievedOn.text = ""
 
-            // Parse dateTimeString into a Date object
-            val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val dateTime = dateTimeFormatter.parse(dateTimeString)
+            if (dateTimeString.isNotEmpty() && score.isNotEmpty()) {
+                // Parse dateTimeString into a Date object
+                val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val dateTime = dateTimeFormatter.parse(dateTimeString)
 
-            // Format the date to a nicer format
-            val dateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
-            val formattedDate = dateFormatter.format(dateTime)
-            holder.awardAchievedOn.text = "You attained this accomplishment on $formattedDate, scoring $score%."
+                // Format the date to a nicer format
+                val dateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
+                val formattedDate = dateFormatter.format(dateTime)
+                holder.awardAchievedOn.text =
+                    "You attained this accomplishment on $formattedDate, scoring $score%."
+
+                // Set text color to darker grey if score archived
+                holder.milestoneTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.darker_gray))
+                holder.awardTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.darker_gray))
+                holder.descriptionTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.darker_gray))
+            }
         }
-
-        // Set text color to white
-        holder.milestoneTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
-        holder.awardTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
-        holder.descriptionTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
-
 
         // Load the image (assuming you have a method to do this, e.g., using Glide or Picasso)
         val imagePath = milestone[4]
