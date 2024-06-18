@@ -222,6 +222,17 @@ class SetGetData {
         return result.toString().trim()
     }
 
+    fun mergeJsonObjects(json1: JSONObject, json2: JSONObject): JSONObject {
+        val mergedJson = JSONObject(json1.toString()) // Create a copy of the first JSON object
+        json2.keys().forEach { key ->
+            mergedJson.put(
+                key,
+                json2.get(key)
+            ) // Overwrite or add values from the second JSON object
+        }
+        return mergedJson
+    }
+
     /**
      * Adds the specified number of minutes to a given datetime string.
      *

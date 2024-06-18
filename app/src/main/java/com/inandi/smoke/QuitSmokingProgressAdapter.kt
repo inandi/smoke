@@ -33,7 +33,7 @@ import java.util.Locale
  */
 class QuitSmokingProgressAdapter(
     private val progressData: Array<Array<String>>,
-    private val jsonObjectFormData: JSONObject
+    private val jsonObjectFormData: JSONObject,
 ) :
     RecyclerView.Adapter<QuitSmokingProgressAdapter.ProgressViewHolder>() {
 
@@ -78,7 +78,11 @@ class QuitSmokingProgressAdapter(
         holder.awardTextView.text = milestone[2]
         holder.descriptionTextView.text = milestone[3]
 
-        val awardDetailString = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "award_achieved_timeline", milestone[0])
+        val awardDetailString = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(
+            jsonObjectFormData,
+            "award_achieved_timeline",
+            milestone[0]
+        )
 
         // Set text color to white
         holder.milestoneTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
