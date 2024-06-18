@@ -280,6 +280,14 @@ class SetGetData {
         return sdf.format(Date()) // Format the current date and time
     }
 
+    fun getCurrentDateTimePlusXDays(format: String = "yyyy-MM-dd HH:mm:ss"): String {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.add(Calendar.DAY_OF_YEAR, 1) // Add two days to the current date
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        return sdf.format(calendar.time)
+    }
+
 //    fun calculatePercentage(part: Int, total: Int): Double {
 //        if (total.toDouble() == 0.0) {
 //            return 0.0
