@@ -60,4 +60,5 @@
     <string name="reset">Reset</string>
     <string name="download_progress">Download Progress</string>
     <string name="share_progress">Share Progress</string>
+    <string name="smoked_in_current_year">Smoked in Current Year:</string>
 </resources>

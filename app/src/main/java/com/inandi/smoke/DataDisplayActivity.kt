@@ -50,9 +50,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+//import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
+import com.db.williamchart.view.LineChartView
 import org.json.JSONArray
 import java.io.FileOutputStream
+import android.graphics.Color
+import com.db.williamchart.ExperimentalFeature
 
 private const val TAG = "DataDisplayActivity"
 
@@ -104,6 +108,7 @@ class DataDisplayActivity : ComponentActivity() {
      *   down, this contains the data it most recently supplied in `onSaveInstanceState`.
      * @since 0.1
      */
+    @OptIn(ExperimentalFeature::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_display)
@@ -149,6 +154,42 @@ class DataDisplayActivity : ComponentActivity() {
         shareButton.setOnClickListener {
             share()
         }
+
+        // load chart
+        loadLineChart()
+    }
+
+    private fun loadLineChart() {
+        val lineSet = listOf(
+            "label1" to 5f,
+            "label2" to 4.5f,
+            "label3" to 4.7f,
+            "label4" to 3.5f,
+            "label5" to 3.6f,
+            "label6" to 7.5f,
+            "label7" to 7.5f,
+            "label8" to 10f,
+            "label9" to 5f,
+            "label10" to 6.5f,
+            "label11" to 3f,
+            "label12" to 4f
+        )
+        val animationDuration = 1000L
+        val lineChart = findViewById<LineChartView>(R.id.lineChart)
+        val tvChartData = findViewById<TextView>(R.id.tvChartData)
+        lineChart.gradientFillColors =
+            intArrayOf(
+                Color.parseColor("#70E805"),
+                Color.TRANSPARENT
+            )
+        lineChart.animation.duration = animationDuration
+        lineChart.onDataPointTouchListener = { index, _, _ ->
+            tvChartData.text =
+                lineSet.toList()[index]
+                    .first
+                    .toString()
+        }
+        lineChart.animate(lineSet)
     }
 
     private fun share() {
