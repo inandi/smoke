@@ -60,5 +60,13 @@
     <string name="reset">Reset</string>
     <string name="download_progress">Download Progress</string>
     <string name="share_progress">Share Progress</string>
-    <string name="smoked_in_current_year">Smoked in Current Year:</string>
+    <string name="smoked_in_current_year">Your Progress:</string>
+
+    <string-array name="line_chart_options">
+        <item>Last 7 days</item>
+        <item>Last 2 weeks</item>
+        <item>Last 30 days</item>
+        <item>Last 3 months</item>
+        <item>Last 12 months</item>
+    </string-array>
 </resources>

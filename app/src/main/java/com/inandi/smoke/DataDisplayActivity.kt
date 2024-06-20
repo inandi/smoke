@@ -56,8 +56,11 @@ import com.db.williamchart.view.LineChartView
 import org.json.JSONArray
 import java.io.FileOutputStream
 import android.graphics.Color
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import com.db.williamchart.ExperimentalFeature
-
+import kotlin.random.Random
 private const val TAG = "DataDisplayActivity"
 
 /**
@@ -155,25 +158,45 @@ class DataDisplayActivity : ComponentActivity() {
             share()
         }
 
-        // load chart
-        loadLineChart()
     }
 
-    private fun loadLineChart() {
-        val lineSet = listOf(
-            "label1" to 5f,
-            "label2" to 4.5f,
-            "label3" to 4.7f,
-            "label4" to 3.5f,
-            "label5" to 3.6f,
-            "label6" to 7.5f,
-            "label7" to 7.5f,
-            "label8" to 10f,
-            "label9" to 5f,
-            "label10" to 6.5f,
-            "label11" to 3f,
-            "label12" to 4f
-        )
+    private fun generateDataForLastDays(days: Int): List<Pair<String, Float>> {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        val randomData = mutableListOf<Pair<String, Float>>()
+
+        // Generate records for the specified number of days
+        for (i in 0 until days) {
+            val date = dateFormat.format(calendar.time)
+            val value = Random.nextFloat() * 10 // Generate a random float between 0 and 10
+            randomData.add(date to value)
+
+            // Move to the previous day
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+        }
+
+        // Sort the data by date in ascending order
+        return randomData.sortedBy { it.first }
+    }
+
+
+    private fun loadLineChart(lineSet: List<Pair<String, Float>>) {
+
+//        val lineSet = listOf(
+//            "label1" to 5f,
+//            "label2" to 4.5f,
+//            "label3" to 4.7f,
+//            "label4" to 3.5f,
+//            "label5" to 3.6f,
+//            "label6" to 7.5f,
+//            "label7" to 7.5f,
+//            "label8" to 10f,
+//            "label9" to 5f,
+//            "label10" to 6.5f,
+//            "label11" to 3f,
+//            "label12" to 4f
+//        )
+
         val animationDuration = 1000L
         val lineChart = findViewById<LineChartView>(R.id.lineChart)
         val tvChartData = findViewById<TextView>(R.id.tvChartData)
@@ -700,6 +723,58 @@ class DataDisplayActivity : ComponentActivity() {
         if (varStatusObject != null) {
             updatePenaltyButtonUI(varStatusObject)
         };
+
+        // set up chart dropdown
+        setupChartSpinner()
+    }
+
+    private fun setupChartSpinner() {
+        val spinner: Spinner = findViewById(R.id.spinnerOptions)
+        val chartDataTextView: TextView = findViewById(R.id.tvChartData)
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.line_chart_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spinner.adapter = adapter
+        }
+
+        // Set the listener for the spinner
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                when (position) {
+                    0 -> { // "Last 7 days" selected
+                        val data = generateDataForLastDays(7)
+                        loadLineChart(data)
+                    }
+                    1 -> { // "Last 2 weeks" selected
+                        val data = generateDataForLastDays(14)
+                        loadLineChart(data)
+                    }
+                    2 -> { // "Last 30 days" selected
+                        val data = generateDataForLastDays(30)
+                        loadLineChart(data)
+                    }
+                    3 -> { // "Last 3 months" selected
+                        val data = generateDataForLastDays(90)
+                        loadLineChart(data)
+                    }
+                    4 -> { // "Last 12 months" selected
+                        val data = generateDataForLastDays(365)
+                        loadLineChart(data)
+                    }
+                    // Handle other options if needed
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Another interface callback
+            }
+        }
     }
 
     fun calculateTotalSpent(

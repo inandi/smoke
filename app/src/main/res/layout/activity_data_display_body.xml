@@ -129,31 +129,35 @@
                 android:layout_below="@+id/button_add_penalty"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvChartName"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/smoked_in_current_year"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/tvChartData" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    tools:text="Chart Data"
-                    android:id="@+id/tvChartData"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/lineChart" />
+                    <TextView
+                        android:id="@+id/tvChartData"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingBottom="5dp"
+                        app:layout_constraintBottom_toTopOf="@id/lineChart"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="Chart Data" />
+
+                    <Spinner
+                        android:id="@+id/spinnerOptions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/line_chart_options"
+                        android:layout_gravity="end"
+                        android:paddingBottom="5dp"/>
+                </LinearLayout>
 
                 <com.db.williamchart.view.LineChartView
                     android:id="@+id/lineChart"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="200dp"
                     app:chart_axis="none"
                     app:chart_gridEffect="dotted"
                     app:chart_labelsColor="#0D47A1"
