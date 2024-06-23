@@ -83,7 +83,7 @@ class BadgeActivity : ComponentActivity() {
      */
     private fun loadBadgeView() {
         val dataSet = DataSet()
-        val setGetData = SetGetData()
+//        val setGetData = SetGetData()
 
         // Read form data from file and create JSONObject
         val formData = readDataFromFile()

@@ -1,13 +1,11 @@
 /**
  * QuitSmokingProgressAdapter is responsible to load the RecyclerView
  *
- * This file is part of Quit Smoking Android.
- *
- * Author: Gobinda Nandi
- * Created: 2024
- *
- * Copyright (c) 2024 Gobinda Nandi
- * This software is released under the MIT License.
+ * @author Gobinda Nandi
+ * @version 0.2
+ * @since 2024-04-01
+ * @copyright Copyright (c) 2024
+ * @license This code is licensed under the MIT License.
  * See the LICENSE file for details.
  */
 
