@@ -715,8 +715,6 @@ class DataDisplayActivity : ComponentActivity() {
             setupChartSpinner(varStatusObject)
         };
 
-//        // set up chart dropdown
-//        setupChartSpinner()
     }
 
     private fun setupChartSpinner(statusObject: JSONObject) {
@@ -736,38 +734,41 @@ class DataDisplayActivity : ComponentActivity() {
 
         // Set the listener for the spinner
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
             override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View,
+                parent: AdapterView<*>?,
+                view: View?,
                 position: Int,
                 id: Long,
             ) {
-                when (position) {
-                    0 -> { // "Last 7 days" selected
-                        val data = generateDataForLastDays(7, statusObject)
-                        loadLineChart(data)
-                    }
+                view?.let { // Use safe call operator to handle possible null view
+                    when (position) {
+                        0 -> { // "Last 7 days" selected
+                            val data = generateDataForLastDays(7, statusObject)
+                            loadLineChart(data)
+                        }
 
-                    1 -> { // "Last 2 weeks" selected
-                        val data = generateDataForLastDays(14, statusObject)
-                        loadLineChart(data)
-                    }
+                        1 -> { // "Last 2 weeks" selected
+                            val data = generateDataForLastDays(14, statusObject)
+                            loadLineChart(data)
+                        }
 
-                    2 -> { // "Last 30 days" selected
-                        val data = generateDataForLastDays(30, statusObject)
-                        loadLineChart(data)
-                    }
+                        2 -> { // "Last 30 days" selected
+                            val data = generateDataForLastDays(30, statusObject)
+                            loadLineChart(data)
+                        }
 
-                    3 -> { // "Last 3 months" selected
-                        val data = generateDataForLastDays(90, statusObject)
-                        loadLineChart(data)
-                    }
+                        3 -> { // "Last 3 months" selected
+                            val data = generateDataForLastDays(90, statusObject)
+                            loadLineChart(data)
+                        }
 
-                    4 -> { // "Last 12 months" selected
-                        val data = generateDataForLastDays(365, statusObject)
-                        loadLineChart(data)
+                        4 -> { // "Last 12 months" selected
+                            val data = generateDataForLastDays(365, statusObject)
+                            loadLineChart(data)
+                        }
+                        // Handle other options if needed
                     }
-                    // Handle other options if needed
                 }
             }
 
@@ -1320,5 +1321,15 @@ class DataDisplayActivity : ComponentActivity() {
             Log.d("FileDeleted", "formData.json does not exist")
         }
     }
+
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putInt("myCounter", counterValue)
+//    }
+//
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//        counterValue = savedInstanceState.getInt("myCounter", 0)
+//    }
 
 }
