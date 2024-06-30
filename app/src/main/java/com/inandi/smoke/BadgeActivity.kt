@@ -5,13 +5,11 @@
  * This activity sets up the layout, initializes the RecyclerView to display badges, and
  * provides navigation to the "About" and "Home" activities via buttons.
  *
- * This file is part of Quit Smoking Android.
- *
- * Author: Gobinda Nandi
- * Created: 2024
- *
- * Copyright (c) 2024 Gobinda Nandi
- * This software is released under the MIT License.
+ * @author Gobinda Nandi
+ * @version 0.2
+ * @since 2024-04-01
+ * @copyright Copyright (c) 2024
+ * @license This code is licensed under the MIT License.
  * See the LICENSE file for details.
  */
 
@@ -34,6 +32,7 @@ import java.io.InputStreamReader
  * BadgeActivity is a ComponentActivity that displays a list of badges representing milestones
  * in a user's quit smoking progress. This activity initializes the view, sets up RecyclerView
  * with data, and handles navigation to other activities via buttons.
+ * @since 0.1
  */
 class BadgeActivity : ComponentActivity() {
 
@@ -50,6 +49,7 @@ class BadgeActivity : ComponentActivity() {
      * @param savedInstanceState If the activity is being re-initialized after previously being
      *                           shut down then this Bundle contains the data it most recently
      *                           supplied in `onSaveInstanceState`. Note: Otherwise it is null.
+     * @since 0.1
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,10 +79,11 @@ class BadgeActivity : ComponentActivity() {
      *
      * The RecyclerView is used to display a list of badges, each representing a milestone in the
      * quit smoking progress.
+     * @since 0.1
      */
     private fun loadBadgeView() {
         val dataSet = DataSet()
-        val setGetData = SetGetData()
+//        val setGetData = SetGetData()
 
         // Read form data from file and create JSONObject
         val formData = readDataFromFile()
@@ -111,7 +112,7 @@ class BadgeActivity : ComponentActivity() {
      *
      * @param formData A string containing the form data in JSON format.
      * @return A `JSONObject` representing the form data.
-     * @throws JSONException If the form data string cannot be parsed into a valid JSON object.
+     * @since 0.1
      */
     private fun createJsonObjectFromFormData(formData: String): JSONObject {
         return JSONObject(formData)
@@ -125,6 +126,7 @@ class BadgeActivity : ComponentActivity() {
      *
      * @return A `String` containing the contents of the form data file.
      * @throws IOException If an I/O error occurs during reading the file.
+     * @since 0.2
      */
     private fun readDataFromFile(): String? {
         return try {

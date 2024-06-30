@@ -15,6 +15,7 @@ class DataSet {
      *         - description: A string providing details about the milestone.
      *         - imagePath: A string providing details location of image.
      *         - hourDuration: A string providing duration in hours.
+     * @since 0.1
      */
      fun quitSmokingProgress(): Array<Array<String>> {
         return arrayOf(
@@ -128,6 +129,7 @@ class DataSet {
      * Initializes the array of countries with their respective currencies and symbols.
      *
      * @return An array of arrays containing country name, currency name, and currency symbol.
+     * @since 0.1
      */
      fun initializeCountriesArray(): Array<Array<String>> {
         return arrayOf(

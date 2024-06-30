@@ -1,13 +1,11 @@
 /**
  * QuitSmokingProgressAdapter is responsible to load the RecyclerView
  *
- * This file is part of Quit Smoking Android.
- *
- * Author: Gobinda Nandi
- * Created: 2024
- *
- * Copyright (c) 2024 Gobinda Nandi
- * This software is released under the MIT License.
+ * @author Gobinda Nandi
+ * @version 0.2
+ * @since 2024-04-01
+ * @copyright Copyright (c) 2024
+ * @license This code is licensed under the MIT License.
  * See the LICENSE file for details.
  */
 
@@ -33,7 +31,7 @@ import java.util.Locale
  */
 class QuitSmokingProgressAdapter(
     private val progressData: Array<Array<String>>,
-    private val jsonObjectFormData: JSONObject
+    private val jsonObjectFormData: JSONObject,
 ) :
     RecyclerView.Adapter<QuitSmokingProgressAdapter.ProgressViewHolder>() {
 
@@ -78,7 +76,17 @@ class QuitSmokingProgressAdapter(
         holder.awardTextView.text = milestone[2]
         holder.descriptionTextView.text = milestone[3]
 
-        val awardDetailString = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(jsonObjectFormData, "award_achieved_timeline", milestone[0])
+        val awardDetailString = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(
+            jsonObjectFormData,
+            "award_achieved_timeline",
+            milestone[0]
+        )
+
+        // Set text color to white
+        holder.milestoneTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
+        holder.awardTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
+        holder.descriptionTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
+
         if (awardDetailString == null) {
             holder.awardAchievedOn.text = ""
         } else {
@@ -87,22 +95,25 @@ class QuitSmokingProgressAdapter(
             // Extract values from jsonObjectAwardDetail
             val score = jsonObjectAwardDetail.optString("score", "")
             val dateTimeString = jsonObjectAwardDetail.optString("datetime", "")
+            holder.awardAchievedOn.text = ""
 
-            // Parse dateTimeString into a Date object
-            val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val dateTime = dateTimeFormatter.parse(dateTimeString)
+            if (dateTimeString.isNotEmpty() && score.isNotEmpty()) {
+                // Parse dateTimeString into a Date object
+                val dateTimeFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val dateTime = dateTimeFormatter.parse(dateTimeString)
 
-            // Format the date to a nicer format
-            val dateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
-            val formattedDate = dateFormatter.format(dateTime)
-            holder.awardAchievedOn.text = "You attained this accomplishment on $formattedDate, scoring $score%."
+                // Format the date to a nicer format
+                val dateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
+                val formattedDate = dateFormatter.format(dateTime)
+                holder.awardAchievedOn.text =
+                    "You attained this accomplishment on $formattedDate, scoring $score%."
+
+                // Set text color to darker grey if score archived
+                holder.milestoneTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.darker_gray))
+                holder.awardTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.darker_gray))
+                holder.descriptionTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.darker_gray))
+            }
         }
-
-        // Set text color to white
-        holder.milestoneTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
-        holder.awardTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
-        holder.descriptionTextView.setTextColor(holder.itemView.resources.getColor(android.R.color.white))
-
 
         // Load the image (assuming you have a method to do this, e.g., using Glide or Picasso)
         val imagePath = milestone[4]

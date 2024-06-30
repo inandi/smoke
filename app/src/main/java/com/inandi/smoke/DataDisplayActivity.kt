@@ -50,10 +50,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+//import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
+import com.db.williamchart.view.LineChartView
+import org.json.JSONArray
 import java.io.FileOutputStream
-import java.math.BigDecimal
-import java.math.RoundingMode
+import android.graphics.Color
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import com.db.williamchart.ExperimentalFeature
+import kotlin.random.Random
 
 private const val TAG = "DataDisplayActivity"
 
@@ -105,6 +112,7 @@ class DataDisplayActivity : ComponentActivity() {
      *   down, this contains the data it most recently supplied in `onSaveInstanceState`.
      * @since 0.1
      */
+    @OptIn(ExperimentalFeature::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_display)
@@ -150,12 +158,57 @@ class DataDisplayActivity : ComponentActivity() {
         shareButton.setOnClickListener {
             share()
         }
+
+    }
+
+    private fun generateDataForLastDays(
+        days: Int,
+        statusObject: JSONObject,
+    ): List<Pair<String, Float>> {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        val lineChartData = mutableListOf<Pair<String, Float>>()
+
+        // Generate records for the specified number of days
+        for (i in 0 until days) {
+            val date = dateFormat.format(calendar.time)
+            val year = date.split("-")[0]
+            val yearData = statusObject.optJSONObject("year_status")?.optJSONObject(year)
+            val value = yearData?.optInt(date, 0)?.toFloat() ?: 0f
+            lineChartData.add(date to value)
+
+            // Move to the previous day
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+        }
+
+        // Sort the data by date in ascending order
+        return lineChartData.sortedBy { it.first }
+    }
+
+
+    @OptIn(ExperimentalFeature::class)
+    private fun loadLineChart(lineSet: List<Pair<String, Float>>) {
+        val animationDuration = 1000L
+        val lineChart = findViewById<LineChartView>(R.id.lineChart)
+        val tvChartData = findViewById<TextView>(R.id.tvChartData)
+        lineChart.gradientFillColors =
+            intArrayOf(
+                Color.parseColor("#70E805"),
+                Color.TRANSPARENT
+            )
+        lineChart.animation.duration = animationDuration
+        lineChart.onDataPointTouchListener = { index, _, _ ->
+            tvChartData.text =
+                "${lineSet.toList()[index].first}:  ${lineSet.toList()[index].second}"
+        }
+        lineChart.animate(lineSet)
     }
 
     private fun share() {
         val hiddenField: EditText = findViewById(R.id.hidden_field_share)
         val hiddenInfo = hiddenField.text.toString()
-        val template = "Check out my progress:\n\n$hiddenInfo\n\nDownload our app here: https://play.google.com/store/apps/details?id=com.inandi.smoke"
+        val template =
+            "Check out my progress:\n\n$hiddenInfo\n\nDownload our app here: https://play.google.com/store/apps/details?id=com.inandi.smoke"
 
         // Prepare the share intent
         val shareIntent = Intent(Intent.ACTION_SEND)
@@ -290,7 +343,11 @@ class DataDisplayActivity : ComponentActivity() {
     }
 
     private fun checkPermissionsAndDownload() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(
@@ -654,7 +711,71 @@ class DataDisplayActivity : ComponentActivity() {
 
         if (varStatusObject != null) {
             updatePenaltyButtonUI(varStatusObject)
+            // set up chart dropdown
+            setupChartSpinner(varStatusObject)
         };
+
+    }
+
+    private fun setupChartSpinner(statusObject: JSONObject) {
+        val spinner: Spinner = findViewById(R.id.spinnerOptions)
+//        val chartDataTextView: TextView = findViewById(R.id.tvChartData)
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.line_chart_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spinner.adapter = adapter
+        }
+
+        // Set the listener for the spinner
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
+                view?.let { // Use safe call operator to handle possible null view
+                    when (position) {
+                        0 -> { // "Last 7 days" selected
+                            val data = generateDataForLastDays(7, statusObject)
+                            loadLineChart(data)
+                        }
+
+                        1 -> { // "Last 2 weeks" selected
+                            val data = generateDataForLastDays(14, statusObject)
+                            loadLineChart(data)
+                        }
+
+                        2 -> { // "Last 30 days" selected
+                            val data = generateDataForLastDays(30, statusObject)
+                            loadLineChart(data)
+                        }
+
+                        3 -> { // "Last 3 months" selected
+                            val data = generateDataForLastDays(90, statusObject)
+                            loadLineChart(data)
+                        }
+
+                        4 -> { // "Last 12 months" selected
+                            val data = generateDataForLastDays(365, statusObject)
+                            loadLineChart(data)
+                        }
+                        // Handle other options if needed
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Another interface callback
+            }
+        }
     }
 
     fun calculateTotalSpent(
@@ -744,18 +865,13 @@ class DataDisplayActivity : ComponentActivity() {
 
         val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
-        // temp
 //        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +784)
+//        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +255)
 //        val currentTime = tenHoursAgo.time
-        //temp
 
         if (currentTime.after(nextAwardDateTime)) {
             // Perform actions if current time in UTC is greater than next_award_datetime
-//            println("Current time in UTC is greater than next_award_datetime.")
-            // Add your additional actions here
 
-            // only update next award in form json
             var oneTimeUpdate = false;
 
             val progressArray = dataSet.quitSmokingProgress()
@@ -767,36 +883,75 @@ class DataDisplayActivity : ComponentActivity() {
                 val minutesDuration = hourDuration * 60L
                 val nextProspectAwardDatetimeString =
                     setGetData.addMinutesToDateTime(varCreatedOnString, minutesDuration)
+
                 val nextProspectAwardDatetime = sdf.parse(nextProspectAwardDatetimeString)
+                var currentScore = 100.00
 
                 if (currentTime.after(nextProspectAwardDatetime)) {
+                    if (existingAwardAchievedTimeline == null) {
 
-                    if (existingAwardAchievedTimeline == null || !existingAwardAchievedTimeline.has(
-                            progressId
+                        val jsonObjectAwardAchievedSmoked = JSONObject()
+                        val jsonObjectAwardAchievedSmokedDetail = JSONObject()
+
+                        jsonObjectAwardAchievedSmokedDetail.put(
+                            "datetime",
+                            nextProspectAwardDatetimeString
                         )
-                    ) {
-                        val jsonObjectAwardAchieved = JSONObject()
-                        jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
+                        jsonObjectAwardAchievedSmokedDetail.put("score", currentScore)
 
-                        val totalSmokedCurrentAwardDurationAsPenalty =
-                            statusObject.optInt("total_smoked_current_award_duration", 0)
-                        val perMinuteSmoked = perMinuteSmokedCigarette(varSmokesPerDay)
-                        val totalRangeOfSmokeCurrentAwardDuration =
-                            minutesDuration * perMinuteSmoked
-                        val currentAwardScore = setGetData.calculatePercentage(
-                            (totalRangeOfSmokeCurrentAwardDuration - totalSmokedCurrentAwardDurationAsPenalty),
-                            totalRangeOfSmokeCurrentAwardDuration
-                        )
-                        statusObject.put("total_smoked_current_award_duration", 0)
-
-
-                        // score is on percentage
-                        jsonObjectAwardAchieved.put("score", currentAwardScore)
-                        jsonObjectAwardAchievedProgressId.put(
+                        jsonObjectAwardAchievedSmoked.put(
                             progressId,
-                            jsonObjectAwardAchieved
+                            jsonObjectAwardAchievedSmokedDetail
                         )
 
+                        val jsonObjectAwardAchievedProgressId = setGetData.mergeJsonObjects(
+                            jsonObjectAwardAchievedProgressId,
+                            jsonObjectAwardAchievedSmoked
+                        )
+                    } else {
+
+                        if (existingAwardAchievedTimeline.has(progressId)) {
+                            val award1Object =
+                                existingAwardAchievedTimeline.optJSONObject(progressId)
+
+                            if (award1Object.has("smoked")) {
+                                val smokedCurrentAward =
+                                    (award1Object.optJSONArray("smoked") ?: JSONArray()).length()
+
+                                val perMinuteSmoked = perMinuteSmokedCigarette(varSmokesPerDay)
+                                val totalRangeOfSmokeCurrentAwardDuration =
+                                    minutesDuration * perMinuteSmoked
+                                currentScore = setGetData.calculatePercentage(
+                                    (totalRangeOfSmokeCurrentAwardDuration - smokedCurrentAward),
+                                    totalRangeOfSmokeCurrentAwardDuration
+                                )
+
+                            }
+
+                            val jsonObjectAwardAchieved = JSONObject()
+                            jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
+                            jsonObjectAwardAchieved.put("score", currentScore)
+
+                            val awardAchievedTimelinetemp =
+                                setGetData.mergeJsonObjects(award1Object, jsonObjectAwardAchieved)
+
+                            existingAwardAchievedTimeline.put(
+                                progressId,
+                                awardAchievedTimelinetemp
+                            )
+
+                        } else {
+
+                            val jsonObjectAwardAchieved = JSONObject()
+                            jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
+                            jsonObjectAwardAchieved.put("score", currentScore)
+
+                            existingAwardAchievedTimeline.put(
+                                progressId,
+                                jsonObjectAwardAchieved
+                            )
+
+                        }
                     }
 
                 } else {
@@ -813,7 +968,7 @@ class DataDisplayActivity : ComponentActivity() {
             }
 
             val awardAchievedTimeline = existingAwardAchievedTimeline?.let {
-                mergeJsonObjects(jsonObjectAwardAchievedProgressId, it)
+                setGetData.mergeJsonObjects(jsonObjectAwardAchievedProgressId, it)
             } ?: jsonObjectAwardAchievedProgressId
 
             statusObject.put("award_achieved_timeline", awardAchievedTimeline)
@@ -824,20 +979,6 @@ class DataDisplayActivity : ComponentActivity() {
         } else {
 //            println("Current time in UTC is not greater than next_award_datetime.")
         }
-    }
-
-
-    fun mergeJsonObjects(json1: JSONObject, json2: JSONObject): JSONObject {
-        val mergedJson = JSONObject(json1.toString()) // Create a copy of the first JSON object
-
-        json2.keys().forEach { key ->
-            mergedJson.put(
-                key,
-                json2.get(key)
-            ) // Overwrite or add values from the second JSON object
-        }
-
-        return mergedJson
     }
 
     /**
@@ -902,44 +1043,101 @@ class DataDisplayActivity : ComponentActivity() {
                 // If the current date exists, increment its value
                 smokedTodayValue = smokedTodayObject.getInt(currentDate) + 1
                 smokedTodayObject.put(currentDate, smokedTodayValue)
+                statusObject.put("smoked_today", smokedTodayObject)
             } else {
-                // If the current date does not exist, reset all values to 0 and set the current date to 1
-                smokedTodayObject.keys().forEach { key ->
-                    smokedTodayObject.put(key, 0)
-                }
+                val newSmokedTodayObject = JSONObject()
                 smokedTodayValue = 1
-                statusObject.put("smoked_today", null)
-                smokedTodayObject.put(currentDate, smokedTodayValue)
+                newSmokedTodayObject.put(currentDate, smokedTodayValue)
+                statusObject.put("smoked_today", newSmokedTodayObject)
             }
-            statusObject.put("smoked_today", smokedTodayObject)
         }
+
+        val existingAwardAchievedTimeline = statusObject.optJSONObject("award_achieved_timeline")
+
+        val nextAwardDetailNumber = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(
+            jsonObjectFormData,
+            "next_award_detail",
+            "number"
+        );
+
+        if (existingAwardAchievedTimeline == null) {
+
+            val jsonObjectAwardAchievedSmoked = JSONObject()
+            val jsonObjectAwardAchievedSmokedDetail = JSONObject()
+
+            if (!jsonObjectAwardAchievedSmokedDetail.has("smoked")) {
+                jsonObjectAwardAchievedSmokedDetail.put("smoked", JSONArray())
+            }
+
+            val eachSmokeArray =
+                jsonObjectAwardAchievedSmokedDetail.optJSONArray("smoked") ?: JSONArray()
+            eachSmokeArray.put(setGetData.getCurrentDateTime())
+            jsonObjectAwardAchievedSmokedDetail.put("smoked", eachSmokeArray)
+
+            jsonObjectAwardAchievedSmoked.put(
+                nextAwardDetailNumber,
+                jsonObjectAwardAchievedSmokedDetail
+            )
+            statusObject.put("award_achieved_timeline", jsonObjectAwardAchievedSmoked)
+        } else {
+
+            if (existingAwardAchievedTimeline.has(nextAwardDetailNumber)) {
+                val award1Object =
+                    existingAwardAchievedTimeline.optJSONObject(nextAwardDetailNumber)
+
+                if (award1Object.has("smoked")) {
+
+                    val eachSmokeArray = award1Object.optJSONArray("smoked") ?: JSONArray()
+                    eachSmokeArray.put(setGetData.getCurrentDateTime())
+                    award1Object.put("smoked", eachSmokeArray)
+                }
+
+            } else {
+                val jsonObjectAwardAchievedSmoked = JSONObject()
+                val jsonObjectAwardAchievedSmokedDetail = JSONObject()
+
+                if (!jsonObjectAwardAchievedSmokedDetail.has("smoked")) {
+                    jsonObjectAwardAchievedSmokedDetail.put("smoked", JSONArray())
+                }
+
+                val eachSmokeArray =
+                    jsonObjectAwardAchievedSmokedDetail.optJSONArray("smoked") ?: JSONArray()
+                eachSmokeArray.put(setGetData.getCurrentDateTime())
+                jsonObjectAwardAchievedSmokedDetail.put("smoked", eachSmokeArray)
+
+                jsonObjectAwardAchievedSmoked.put(
+                    nextAwardDetailNumber,
+                    jsonObjectAwardAchievedSmokedDetail
+                )
+                statusObject.put(
+                    "award_achieved_timeline",
+                    setGetData.mergeJsonObjects(
+                        existingAwardAchievedTimeline,
+                        jsonObjectAwardAchievedSmoked
+                    )
+                )
+            }
+        }
+
+//        addDateTimeToEachSmoke(statusObject, setGetData.getCurrentDateTime())
 
         // Update 'year_status' with the new data
         updateYearStatus(statusObject, yearStatusObject, currentDate, currentYear, smokedTodayValue)
-
-        // Calculate the number of minutes one cigarette covers based on smokesPerDay
-        val smokesPerDay = varOriginalObject.optInt("smokesPerDay", 0)
-        // one cigarette covers this many minutes
-        val smokeCoversMinute = ((24 / smokesPerDay) * 60).toDouble() // 24 hours * 60 minutes
-
-        // Calculate the final value based on smoked_today and smokeCoversMinute, 2 is penalty
-        val minutesDuration = smokedTodayValue * smokeCoversMinute * 2
-        val currentNextAwardDatetime = statusObject.optString("next_award_datetime") ?: ""
-        val nextProspectAwardDatetimeString =
-            setGetData.addMinutesToDateTime(currentNextAwardDatetime, minutesDuration)
-        statusObject.put("next_award_datetime", nextProspectAwardDatetimeString)
-
-        val existingTotalSmokedCurrentAwardDuration =
-            statusObject.optInt("total_smoked_current_award_duration", 0)
-        statusObject.put(
-            "total_smoked_current_award_duration",
-            existingTotalSmokedCurrentAwardDuration + 1
-        )
 
         // Save the updated data back to the file
         val mainActivity = MainActivity()
         deleteFormDataFile()
         mainActivity.saveDataToFile(jsonObjectFormData, this)
+    }
+
+    private fun addDateTimeToEachSmoke(statusObject: JSONObject, dateTime: String) {
+        if (!statusObject.has("each_smoke")) {
+            statusObject.put("each_smoke", JSONArray())
+        }
+
+        val eachSmokeArray = statusObject.optJSONArray("each_smoke") ?: JSONArray()
+        eachSmokeArray.put(dateTime)
+        statusObject.put("each_smoke", eachSmokeArray)
     }
 
     private fun updateYearStatus(
@@ -1123,5 +1321,15 @@ class DataDisplayActivity : ComponentActivity() {
             Log.d("FileDeleted", "formData.json does not exist")
         }
     }
+
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putInt("myCounter", counterValue)
+//    }
+//
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//        counterValue = savedInstanceState.getInt("myCounter", 0)
+//    }
 
 }

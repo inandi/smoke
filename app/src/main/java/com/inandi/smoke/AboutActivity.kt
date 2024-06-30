@@ -2,13 +2,11 @@
  * AboutActivity is responsible for displaying the information of
  * quit smoking app.
  *
- * This file is part of Quit Smoking Android.
- *
- * Author: Gobinda Nandi
- * Created: 2024
- *
- * Copyright (c) 2024 Gobinda Nandi
- * This software is released under the MIT License.
+ * @author Gobinda Nandi
+ * @version 0.2
+ * @since 2024-04-01
+ * @copyright Copyright (c) 2024
+ * @license This code is licensed under the MIT License.
  * See the LICENSE file for details.
  */
 
@@ -26,6 +24,7 @@ import android.net.Uri
  * AboutActivity is a ComponentActivity that displays information about the project,
  * including the project version. It provides navigation to the home and badge activities
  * and a function to open a "Buy Me a Coffee" link.
+ * @since 0.1
  */
 class AboutActivity : ComponentActivity() {
 
@@ -39,6 +38,7 @@ class AboutActivity : ComponentActivity() {
      * @param savedInstanceState If the activity is being re-initialized after previously being
      *                           shut down then this Bundle contains the data it most recently
      *                           supplied in `onSaveInstanceState`. Note: Otherwise it is null.
+     * @since 0.1
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +65,7 @@ class AboutActivity : ComponentActivity() {
      * Opens the Buy Me a Coffee link in a web browser.
      *
      * @param view The view that triggers the function.
+     * @since 0.2
      */
     fun openCoffeeLink(view: View) {
         val url = "https://www.buymeacoffee.com/iGobinda"

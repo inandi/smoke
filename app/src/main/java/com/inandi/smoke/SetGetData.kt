@@ -222,6 +222,17 @@ class SetGetData {
         return result.toString().trim()
     }
 
+    fun mergeJsonObjects(json1: JSONObject, json2: JSONObject): JSONObject {
+        val mergedJson = JSONObject(json1.toString()) // Create a copy of the first JSON object
+        json2.keys().forEach { key ->
+            mergedJson.put(
+                key,
+                json2.get(key)
+            ) // Overwrite or add values from the second JSON object
+        }
+        return mergedJson
+    }
+
     /**
      * Adds the specified number of minutes to a given datetime string.
      *
@@ -280,13 +291,13 @@ class SetGetData {
         return sdf.format(Date()) // Format the current date and time
     }
 
-//    fun calculatePercentage(part: Int, total: Int): Double {
-//        if (total.toDouble() == 0.0) {
-//            return 0.0
-//        }
-//        val percentage = (part / total) * 100
-//        return ceil(percentage * 10.0.pow(2)) / 10.0.pow(2)
-//    }
+    fun getCurrentDateTimePlusXDays(format: String = "yyyy-MM-dd HH:mm:ss"): String {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.add(Calendar.DAY_OF_YEAR, 1) // Add two days to the current date
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        return sdf.format(calendar.time)
+    }
 
     fun calculatePercentage(part: Double, total: Double): Double {
         if (total.toInt() == 0 || part < 0) {

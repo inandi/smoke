@@ -1,11 +1,16 @@
 /**
- * This file is part of Quit Smoking Android.
+ * This file contains the main activity of the smoking habits tracking application.
  *
- * Author: Gobinda Nandi
- * Created: 2024
+ * It initializes UI components, handles user input, and manages data storage and navigation.
+ * The activity allows users to select a country, input smoking habits, and save the data
+ * to a JSON file in the internal storage. It also provides navigation to other activities
+ * for additional features.
  *
- * Copyright (c) 2024 Gobinda Nandi
- * This software is released under the MIT License.
+ * @author Gobinda Nandi
+ * @version 0.2
+ * @since 2024-04-01
+ * @copyright Copyright (c) 2024
+ * @license This code is licensed under the MIT License.
  * See the LICENSE file for details.
  */
 
@@ -52,6 +57,7 @@ class MainActivity : ComponentActivity() {
      * the submit button is clicked.
      *
      * @param savedInstanceState The saved instance state bundle.
+     * @since 0.1
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,15 +97,25 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Sets up an OnClickListener for the submit button to handle user input and save it to a file.
-     * Retrieves user input from EditText fields, creates a JSON object, and saves it to a file.
+     * Retrieves user input from EditText fields, validates and converts them to appropriate data types,
+     * constructs a JSON object with the collected data, and saves it to a file. Also calculates and
+     * includes additional data such as total money spent on cigarettes and total cigarettes smoked.
+     *
+     * @param countryObject The JSONObject containing details about the selected country, including
+     *                      country name, currency name, and currency symbol.
+     * @since 0.1
      */
     private fun setupSubmitButtonListener(countryObject: JSONObject) {
+        // Find the submit button by its ID
         val buttonSubmit = findViewById<Button>(R.id.buttonSubmit)
+
+        // Set an OnClickListener to handle button clicks
         buttonSubmit.setOnClickListener {
             // Check if countryObject is null or empty
             if (countryObject.length() == 0) {
                 val context = this
-                val toast = Toast.makeText(context, "Please provide country details", Toast.LENGTH_SHORT)
+                val toast =
+                    Toast.makeText(context, "Please provide country details", Toast.LENGTH_SHORT)
                 toast.show()
                 return@setOnClickListener // Exit the click listener if countryObject is empty
             }
@@ -107,7 +123,8 @@ class MainActivity : ComponentActivity() {
             // Retrieve user input from EditText fields
             val startYearText = findViewById<EditText>(R.id.editTextStartYear).text.toString()
             val smokesPerDayText = findViewById<EditText>(R.id.editTextSmokesPerDay).text.toString()
-            val cigarettePriceText = findViewById<EditText>(R.id.editTextCigarettePrice).text.toString()
+            val cigarettePriceText =
+                findViewById<EditText>(R.id.editTextCigarettePrice).text.toString()
 
             // Check for empty fields and show toast message
             if (startYearText.isEmpty() || smokesPerDayText.isEmpty() || cigarettePriceText.isEmpty()) {
@@ -130,35 +147,71 @@ class MainActivity : ComponentActivity() {
             val jsonObjectOriginal = JSONObject()
             jsonObjectOriginal.put("country", countryObject) // Include country details
             jsonObjectOriginal.put("cigarettePrice", cigarettePrice) // Price per cigarette
-            jsonObjectOriginal.put("smokesPerDay", smokesPerDay) // Number of cigarettes smoked per day
+            jsonObjectOriginal.put(
+                "smokesPerDay",
+                smokesPerDay
+            ) // Number of cigarettes smoked per day
             jsonObjectOriginal.put("startYear", startYear) // Year the user started smoking
-            jsonObjectOriginal.put("created_on", getCurrentTimestamp) // Timestamp of when the data is created
+            jsonObjectOriginal.put(
+                "created_on",
+                getCurrentTimestamp
+            ) // Timestamp of when the data is created
 
             val dataDisplayActivity = DataDisplayActivity()
 
-            val perMinuteSpent = dataDisplayActivity.perMinuteSpentMoney(smokesPerDay, cigarettePrice)
+            // Calculate money spent per minute and total money spent on cigarettes
+            val perMinuteSpent =
+                dataDisplayActivity.perMinuteSpentMoney(smokesPerDay, cigarettePrice)
             val perMinuteSmoked = dataDisplayActivity.perMinuteSmokedCigarette(smokesPerDay)
-            val calculateTotalMoneySpentVar = dataDisplayActivity.calculateTotalSpent(perMinuteSpent, startYear, getCurrentTimestamp)
-            val calculateTotalSmokedVar = dataDisplayActivity.calculateTotalSpent(perMinuteSmoked, startYear, getCurrentTimestamp)
-            jsonObjectOriginal.put("total_money_spent", setGetData.formatNumberWithCommas(calculateTotalMoneySpentVar)) // Timestamp of when the data is created
-            jsonObjectOriginal.put("total_smoked", setGetData.formatNumberWithCommas(calculateTotalSmokedVar)) // Timestamp of when the data is created
+
+            // total money spent till user starts using app from start year
+            val calculateTotalMoneySpentVar = dataDisplayActivity.calculateTotalSpent(
+                perMinuteSpent,
+                startYear,
+                getCurrentTimestamp
+            )
+            // total cig smoked till user starts using app from start year
+            val calculateTotalSmokedVar = dataDisplayActivity.calculateTotalSpent(
+                perMinuteSmoked,
+                startYear,
+                getCurrentTimestamp
+            )
+
+            jsonObjectOriginal.put(
+                "total_money_spent",
+                setGetData.formatNumberWithCommas(calculateTotalMoneySpentVar)
+            )
+            jsonObjectOriginal.put(
+                "total_smoked",
+                setGetData.formatNumberWithCommas(calculateTotalSmokedVar)
+            )
 
             // store in main JSON
             jsonObjectForForm.put("original", jsonObjectOriginal)
 
             // Create a JSON object to hold the update status, in "status" key
             val jsonObjectStatus = JSONObject()
+
+            // Retrieve and include next award details from setGetData
             val firstAwardDetail = setGetData.getSmokingProgressById("1")
             jsonObjectStatus.put("next_award_detail", firstAwardDetail)
 
-            // get the time to achieve the award in minutes
+            // Calculate the time to achieve the award in minutes
             val hourDurationStr = firstAwardDetail?.get("hourDuration") as? String
-            val hourDuration = hourDurationStr?.toDouble() ?: 0.0 // Convert to Int or use 0 if invalid
+            val hourDuration =
+                hourDurationStr?.toDouble() ?: 0.0 // Convert to Int or use 0 if invalid
             val minutesToAdd = hourDuration * 60L
 
+            // Calculate the datetime for achieving the next award and include it in the status JSON
             // add minutes to the current timestamp
-            val nextAwardDatetime = setGetData.addMinutesToDateTime(getCurrentTimestamp, minutesToAdd)
-            jsonObjectStatus.put("next_award_datetime", nextAwardDatetime) // Include country details
+            val nextAwardDatetime =
+                setGetData.addMinutesToDateTime(getCurrentTimestamp, minutesToAdd)
+
+            // To store in "status" key
+            jsonObjectStatus.put(
+                "next_award_datetime",
+                nextAwardDatetime
+            )
 
             // store in main JSON
             jsonObjectForForm.put("status", jsonObjectStatus)
@@ -166,11 +219,22 @@ class MainActivity : ComponentActivity() {
             // Save the data to a file
             saveDataToFile(jsonObjectForForm, this)
             navigateToDataDisplayScreen()
-
         }
     }
 
+    /**
+     * Initializes a Spinner with a list of countries and handles country selection events.
+     *
+     * This function sets up a Spinner to display a list of countries along with their currency symbols,
+     * including a placeholder entry for initial selection. When a country is selected, it updates a
+     * provided JSONObject with the selected country's name, currency name, and currency symbol.
+     *
+     * @param countryObject The JSONObject to store the selected country's details (country name,
+     *                      currency name, currency symbol).
+     * @since 0.1
+     */
     private fun initializeCountrySpinner(countryObject: JSONObject) {
+        // Find the Spinner view by its ID
         spinnerCountry = findViewById(R.id.spinnerCountry)
 
         // Initialize the country list
@@ -181,9 +245,12 @@ class MainActivity : ComponentActivity() {
         countryNames.add(0, getString(R.string.placeholder_select_country))
 
         // Create a custom ArrayAdapter
-        val adapter = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, countryNames) {
+        val adapter = object :
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, countryNames) {
+
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getView(position, convertView, parent) as TextView
+                // Customize text color for the selected item
                 if (position == 0) {
                     view.setTextColor(resources.getColor(android.R.color.darker_gray))
                 } else {
@@ -192,8 +259,13 @@ class MainActivity : ComponentActivity() {
                 return view
             }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup,
+            ): View {
                 val view = super.getDropDownView(position, convertView, parent) as TextView
+                // Customize text color for dropdown items
                 if (position == 0) {
                     view.setTextColor(resources.getColor(android.R.color.darker_gray))
                 } else {
@@ -203,17 +275,30 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // Set the dropdown layout style
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        // Set the adapter to the Spinner
         spinnerCountry.adapter = adapter
+
+        // Set initial selection to the placeholder item
         spinnerCountry.setSelection(0, false) // Ensure the placeholder is shown initially
 
+        // Handle item selection events
         spinnerCountry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
                 if (position > 0) { // Ignore the placeholder selection
                     val selectedCountry = countries[position - 1]
                     val selectedCountryName = selectedCountry[0]
                     val selectedCurrencyName = selectedCountry[1]
                     val selectedCurrencySymbol = selectedCountry[2]
+
+                    // Update the JSONObject with selected country details
                     countryObject.put("country_name", selectedCountryName)
                     countryObject.put("currency_name", selectedCurrencyName)
                     countryObject.put("currency_symbol", selectedCurrencySymbol)
@@ -237,6 +322,7 @@ class MainActivity : ComponentActivity() {
      * This function creates an intent to start the `DataDisplayActivity` and then
      * starts the activity, transitioning the user from the current activity to
      * the DataDisplayActivity.
+     * @since 0.1
      */
     private fun navigateToDataDisplayScreen() {
         startActivity(Intent(this@MainActivity, DataDisplayActivity::class.java))
@@ -247,13 +333,13 @@ class MainActivity : ComponentActivity() {
      *
      * This function takes a `JSONObject` and a `Context`, converts the JSON object to a string,
      * and writes it to a file named `FORM_DATA_FILENAME` in the application's internal storage.
-     * If the data is saved successfully, a toast message indicating success is shown.
      * If an error occurs, a toast message indicating failure is shown and the exception is printed.
      *
      * @param jsonObject The `JSONObject` to be saved to the file.
      * @param context The `Context` used to open the file output stream.
+     * @since 0.2
      */
-     fun saveDataToFile(jsonObject: JSONObject, context: Context) {
+    fun saveDataToFile(jsonObject: JSONObject, context: Context) {
         val fileOutputStream: FileOutputStream
         try {
             // Open the file output stream in private mode
@@ -269,5 +355,4 @@ class MainActivity : ComponentActivity() {
             Toast.makeText(context, "Failed to save data", Toast.LENGTH_SHORT).show()
         }
     }
-
 }
