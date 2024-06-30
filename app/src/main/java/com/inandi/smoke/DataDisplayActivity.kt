@@ -81,6 +81,7 @@ class DataDisplayActivity : ComponentActivity() {
 
     private lateinit var dataSet: DataSet
     private lateinit var setGetData: SetGetData
+    private lateinit var chartOptionsSpinner: Spinner
 
     /**
      * This property calculates the appropriate AdSize for an adaptive banner ad
@@ -242,6 +243,7 @@ class DataDisplayActivity : ComponentActivity() {
         // Find the LineChartView and TextView for displaying chart data
         val lineChart = findViewById<LineChartView>(R.id.lineChart)
         val tvChartData = findViewById<TextView>(R.id.tvChartData)
+        tvChartData.text = null
 
         // Set gradient fill colors for the line chart
         lineChart.gradientFillColors =
@@ -784,10 +786,53 @@ class DataDisplayActivity : ComponentActivity() {
         // Update penalty button UI and setup chart dropdown if statusObject is not null.
         if (varStatusObject != null) {
             updatePenaltyButtonUI(varStatusObject)
+
+            // Find the spinner view in the layout.
+            chartOptionsSpinner = findViewById(R.id.spinnerOptions)
             // set up chart dropdown
             setupChartSpinner(varStatusObject)
         };
 
+    }
+
+    /**
+     * Restores the state of the activity after it has been destroyed and recreated.
+     *
+     * This method is called after the activity has been stopped and then restarted, such as
+     * when the screen orientation changes. It is responsible for restoring any UI state that
+     * was previously saved in the savedInstanceState bundle.
+     *
+     * @param savedInstanceState - The bundle containing the saved state of the activity.
+     * @since 0.2
+     */
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        restoreInitialChartState()
+    }
+
+    /**
+     * Restores the initial state of the chart.
+     * This function resets the chart options spinner to its default selection, reads form data
+     * from a file, extracts the relevant status information, generates chart data for the
+     * last 7 days, and loads the data into the chart.
+     * @since 0.2
+     */
+    private fun restoreInitialChartState() {
+        // Reset chart options spinner to the first option
+        chartOptionsSpinner.setSelection(0)
+
+        // Read form data, create JSONObject, and extract status
+        val formData = readDataFromFile()
+        val jsonObjectFormData = createJsonObjectFromFormData(formData)
+        val varStatusObject = jsonObjectFormData.optJSONObject("status")
+
+        // Generate chart data for the last 7 days using the status object
+        val chartData = varStatusObject?.let { generateDataForLastDays(7, it) }
+
+        // Load the chart data if it was successfully generated
+        if (chartData != null) {
+            loadLineChart(chartData)
+        }
     }
 
     /**
@@ -800,11 +845,6 @@ class DataDisplayActivity : ComponentActivity() {
      * @since 0.2
      */
     private fun setupChartSpinner(statusObject: JSONObject) {
-        // Find the spinner view in the layout.
-        val spinner: Spinner = findViewById(R.id.spinnerOptions)
-
-//        val chartDataTextView: TextView = findViewById(R.id.tvChartData)
-
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter.createFromResource(
             this,
@@ -814,11 +854,11 @@ class DataDisplayActivity : ComponentActivity() {
             // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             // Apply the adapter to the spinner
-            spinner.adapter = adapter
+            chartOptionsSpinner.adapter = adapter
         }
 
         // Set the listener for the spinner
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        chartOptionsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onItemSelected(
                 parent: AdapterView<*>?,
