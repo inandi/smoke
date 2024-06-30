@@ -1,13 +1,11 @@
 /**
  * DataDisplayActivity is responsible for displaying user's progress
  *
- * This file is part of Quit Smoking Android.
- *
- * Author: Gobinda Nandi
- * Created: 2024
- *
- * Copyright (c) 2024 Gobinda Nandi
- * This software is released under the MIT License.
+ * @author Gobinda Nandi
+ * @version 0.2
+ * @since 2024-04-01
+ * @copyright Copyright (c) 2024
+ * @license This code is licensed under the MIT License.
  * See the LICENSE file for details.
  */
 
@@ -84,19 +82,34 @@ class DataDisplayActivity : ComponentActivity() {
     private lateinit var dataSet: DataSet
     private lateinit var setGetData: SetGetData
 
-    // Get the ad size with screen width.
+    /**
+     * This property calculates the appropriate AdSize for an adaptive banner ad
+     * based on the current screen width and orientation.
+     * Get the ad size with screen width.
+     */
     private val adSize: AdSize
         get() {
+            // Get display metrics of the device screen
             val displayMetrics = resources.displayMetrics
+            // Calculate the width of the ad in pixels
             val adWidthPixels =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    // For Android R (API level 30) and above, use WindowMetrics to get the current window width
                     val windowMetrics: WindowMetrics = this.windowManager.currentWindowMetrics
+                    // Width in pixels
                     windowMetrics.bounds.width()
                 } else {
+                    // For Android versions below R, use DisplayMetrics to get the screen width
                     displayMetrics.widthPixels
                 }
+
+            // Get the screen density (e.g., 2.0 for 320 dpi)
             val density = displayMetrics.density
+
+            // Convert the ad width from pixels to density-independent pixels (dp)
             val adWidth = (adWidthPixels / density).toInt()
+
+            // Return the AdSize for the current orientation with the calculated ad width
             return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
         }
 
@@ -112,7 +125,7 @@ class DataDisplayActivity : ComponentActivity() {
      *   down, this contains the data it most recently supplied in `onSaveInstanceState`.
      * @since 0.1
      */
-    @OptIn(ExperimentalFeature::class)
+//    @OptIn(ExperimentalFeature::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_display)
@@ -161,20 +174,46 @@ class DataDisplayActivity : ComponentActivity() {
 
     }
 
+    /**
+     * Generates a list of data points for the last specified number of days from the status JSON object.
+     *
+     * This method retrieves smoking data for the past specified number of days from the provided JSON object
+     * and returns a list of date-value pairs to be used for displaying a line chart.
+     *
+     * @param days The number of days for which to generate the data points.
+     * @param statusObject The JSON object containing the status data, including smoking records by date.
+     * @return A sorted list of pairs where the first element is a string representing the date
+     *         and the second element is a float representing the value for that date.
+     * @since 0.2
+     */
     private fun generateDataForLastDays(
         days: Int,
         statusObject: JSONObject,
     ): List<Pair<String, Float>> {
+        // Define date format for parsing and formatting dates
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+        // Initialize calendar to the current date
         val calendar = Calendar.getInstance()
+
+        // List to store the generated data points
         val lineChartData = mutableListOf<Pair<String, Float>>()
 
         // Generate records for the specified number of days
         for (i in 0 until days) {
+            // Format the current date as a string
             val date = dateFormat.format(calendar.time)
+
+            // Extract the year from the date string
             val year = date.split("-")[0]
+
+            // Retrieve the year data from the status JSON object
             val yearData = statusObject.optJSONObject("year_status")?.optJSONObject(year)
+
+            // Retrieve the value for the current date, defaulting to 0 if not present
             val value = yearData?.optInt(date, 0)?.toFloat() ?: 0f
+
+            // Add the date-value pair to the list
             lineChartData.add(date to value)
 
             // Move to the previous day
@@ -185,58 +224,70 @@ class DataDisplayActivity : ComponentActivity() {
         return lineChartData.sortedBy { it.first }
     }
 
-
+    /**
+     * Loads and displays a line chart with the provided data set.
+     *
+     * This method configures a `LineChartView` with a given list of data points, sets up animation,
+     * and handles data point touch events to display the selected data point information.
+     *
+     * @param lineSet A list of pairs where the first element is a string representing the label
+     *                and the second element is a float representing the value for the line chart.
+     * @since 0.2
+     */
     @OptIn(ExperimentalFeature::class)
     private fun loadLineChart(lineSet: List<Pair<String, Float>>) {
+        // Duration of the chart animation in milliseconds
         val animationDuration = 1000L
+
+        // Find the LineChartView and TextView for displaying chart data
         val lineChart = findViewById<LineChartView>(R.id.lineChart)
         val tvChartData = findViewById<TextView>(R.id.tvChartData)
+
+        // Set gradient fill colors for the line chart
         lineChart.gradientFillColors =
             intArrayOf(
-                Color.parseColor("#70E805"),
-                Color.TRANSPARENT
+                Color.parseColor("#70E805"),  // Start color
+                Color.TRANSPARENT                       // End color
             )
+
+        // Set the duration of the animation
         lineChart.animation.duration = animationDuration
+
+        // Set the listener for data point touch events
         lineChart.onDataPointTouchListener = { index, _, _ ->
+            // Display the data point information in the TextView
             tvChartData.text =
                 "${lineSet.toList()[index].first}:  ${lineSet.toList()[index].second}"
         }
+
+        // Animate the line chart with the provided data set
         lineChart.animate(lineSet)
     }
 
+    /**
+     * Shares the user's progress using a share intent.
+     *
+     * This method retrieves text from a hidden EditText field, formats it into a shareable template,
+     * and initiates a share intent to allow the user to share their progress via available apps.
+     * @since 0.2
+     */
     private fun share() {
+        // Retrieve the hidden field where the shareable information is stored
         val hiddenField: EditText = findViewById(R.id.hidden_field_share)
         val hiddenInfo = hiddenField.text.toString()
+
+        // Create a template message including the user's progress and a download link for the app
         val template =
             "Check out my progress:\n\n$hiddenInfo\n\nDownload our app here: https://play.google.com/store/apps/details?id=com.inandi.smoke"
 
-        // Prepare the share intent
+        // Prepare the share intent with the formatted template
         val shareIntent = Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
         shareIntent.putExtra(Intent.EXTRA_TEXT, template)
 
-        // Start the share activity
+        // Start the share activity using an intent chooser
         startActivity(Intent.createChooser(shareIntent, "Share"))
     }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray,
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == PERMISSION_REQUEST_CODE) {
-//            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-//                downloadUserDataFile()
-//            } else {
-//                Toast.makeText(
-//                    this,
-//                    "Permission denied. Unable to download file.",
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            }
-//        }
-//    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -265,8 +316,18 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Displays the penalty dialog by updating the penalty JSON and loading the necessary data.
+     *
+     * This method first updates the penalty JSON data and then loads the relevant data required
+     * to show the penalty dialog.
+     * @since 0.2
+     */
     private fun showPenaltyDialog() {
+        // Update the penalty JSON data.
         updatePenaltyJson()
+
+        // Load the necessary data to display the penalty dialog.
         loadData()
     }
 
@@ -313,9 +374,10 @@ class DataDisplayActivity : ComponentActivity() {
      * Handles the click events for the popup menu items.
      *
      * This function processes the click events for the popup menu items based on their IDs.
-     * It performs different actions depending on which menu item was clicked. If the "Reload" menu
-     * item is clicked, it calls `loadData()`. If the "Reset" menu item is clicked, it shows a
-     * confirmation dialog for resetting.
+     * It performs different actions depending on which menu item was clicked.
+     * If the "Reload" menu item is clicked, it calls `loadData()`.
+     * If the "Reset" menu item is clicked, it shows a confirmation dialog for resetting.
+     * If the "Download Progress" menu item is clicked, it `fromdata.json` will be downloaded to the device.
      *
      * @param menuItem The menu item that was clicked.
      * @return `true` if the menu item click was handled, `false` otherwise.
@@ -361,20 +423,6 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
-//    private fun checkPermissionsAndDownload() {
-//        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(
-//                arrayOf(
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                    Manifest.permission.READ_EXTERNAL_STORAGE
-//                ),
-//                PERMISSION_REQUEST_CODE
-//            )
-//        } else {
-//            downloadUserDataFile()
-//        }
-//    }
-
     private fun downloadUserDataFile() {
         val fileName = MainActivity.FORM_DATA_FILENAME
         try {
@@ -403,14 +451,15 @@ class DataDisplayActivity : ComponentActivity() {
      * This function shows an AlertDialog to confirm whether the user wants to perform a reset action.
      * If the user selects "Yes", the `performResetAction` function is called. If the user selects "No",
      * the dialog is dismissed without taking any action.
+     * @since 0.1
      */
     private fun showResetConfirmationDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Are you sure you want to do it?")
-            .setPositiveButton("Yes") { dialog, id ->
+            .setPositiveButton("Yes") { _, _ ->
                 performResetAction()
             }
-            .setNegativeButton("No") { dialog, id ->
+            .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
         builder.create().show()
@@ -421,6 +470,7 @@ class DataDisplayActivity : ComponentActivity() {
      *
      * This function first deletes the form data file by calling `deleteFormDataFile()`.
      * After the file is deleted, it navigates to the main screen by calling `navigateToMainScreen()`.
+     * @since 0.1
      */
     private fun performResetAction() {
         deleteFormDataFile()
@@ -433,6 +483,7 @@ class DataDisplayActivity : ComponentActivity() {
      * This function starts the `MainActivity` by creating an intent and passing the current activity
      * context. It effectively transitions the user from the current `DataDisplayActivity` to the main
      * screen of the application.
+     * @since 0.1
      */
     private fun navigateToMainScreen() {
         startActivity(Intent(this@DataDisplayActivity, MainActivity::class.java))
@@ -440,11 +491,9 @@ class DataDisplayActivity : ComponentActivity() {
 
     /**
      * Loads Google ads, sets up the consent manager, and initializes the Mobile Ads SDK.
+     * @since 0.1
      */
     private fun loadGoogleAds() {
-//        binding = ActivityDataDisplayBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-
         adView = AdView(this)
         binding.activityAboutBody.adViewContainer.addView(adView)
 
@@ -494,11 +543,28 @@ class DataDisplayActivity : ComponentActivity() {
         )
     }
 
+    /**
+     * Initializes the TextView elements used for displaying various data on the screen.
+     *
+     * This method finds the TextView elements by their IDs and assigns them to the corresponding variables.
+     * These TextView elements are used to display the count, money, day, total cigarettes smoked,
+     * and total money spent in the UI.
+     * @since 0.1
+     */
     private fun initializeDataDisplayTextView() {
+        // Find and assign the TextView for displaying the count
         textViewDisplayCount = findViewById(R.id.displayCount)
+
+        // Find and assign the TextView for displaying the money
         textViewDisplayMoney = findViewById(R.id.displayMoney)
+
+        // Find and assign the TextView for displaying the day
         textViewDisplayDay = findViewById(R.id.displayDay)
+
+        // Find and assign the TextView for displaying the total number of cigarettes smoked
         textViewDisplayTotalHowManyCigSmoked = findViewById(R.id.displayTotalHowManyCigSmoked)
+
+        // Find and assign the TextView for displaying the total money spent
         textViewDisplayTotalHowMuchMoneySpent = findViewById(R.id.displayTotalHowMuchMoneySpent)
     }
 
@@ -520,7 +586,15 @@ class DataDisplayActivity : ComponentActivity() {
         super.onDestroy()
     }
 
+    /**
+     * Loads a banner ad into the AdView.
+     *
+     * This method configures the AdView with the appropriate ad unit ID and ad size,
+     * creates an ad request, and starts loading the ad.
+     * @since 0.1
+     */
     private fun loadBanner() {
+        // Set the ad unit ID for the AdView.
         // This is an ad unit ID for a test ad. Replace with your own banner ad unit ID.
         adView.adUnitId = "ca-app-pub-3940256099942544/9214589741"
         adView.setAdSize(adSize)
@@ -532,42 +606,35 @@ class DataDisplayActivity : ComponentActivity() {
         adView.loadAd(adRequest)
     }
 
+    /**
+     * Initializes the Google Mobile Ads SDK and loads a banner ad.
+     *
+     * This method ensures that the Mobile Ads SDK is initialized only once.
+     * If the SDK is already initialized, the method returns immediately.
+     * After initialization, it attempts to load a banner ad if the initial layout is complete.
+     * @since 0.1
+     */
     private fun initializeMobileAdsSdk() {
+        // Check if the Mobile Ads SDK has already been initialized.
+        // If it has, return immediately to avoid re-initializing.
         if (isMobileAdsInitializeCalled.getAndSet(true)) {
             return
         }
         // Initialize the Mobile Ads SDK.
         MobileAds.initialize(this) {}
         // Load an ad.
+        // Check if the initial layout is complete.
+        // If it is, load a banner ad.
         if (initialLayoutComplete.get()) {
             loadBanner()
         }
     }
 
     /**
-     * Loads data from various sources and updates TextView elements with formatted information.
+     * Loads and processes data for displaying various statistics and information in the UI.
      *
-     * This function performs the following tasks:
-     * 1. Refreshes the JSON data.
-     * 2. Initializes TextView elements for displaying data.
-     * 3. Reads form data from a file and creates a JSONObject.
-     * 4. Retrieves upcoming award name.
-     * 5. Initializes variables and extracts relevant data from the JSON object.
-     * 6. Calculates per minute metrics for money spent and cigarettes smoked.
-     * 7. Prepares display data including total cigarettes smoked, total money spent, and formatted time strings.
-     * 8. Updates TextView elements with the calculated and formatted information.
-     *
-     * @see updateJson
-     * @see initializeDataDisplayTextView
-     * @see readDataFromFile
-     * @see createJsonObjectFromFormData
-     * @see setGetData.getNextAwardDetailFromStatusKeyOfJsonObject
-     * @see prepareDisplayData
-     * @see perMinuteSpentMoney
-     * @see perMinuteSmokedCigarette
-     *
-     * @throws IllegalArgumentException If there is an error parsing the JSON data or if the start date or
-     * next award date has an invalid format.
+     * This method refreshes JSON data, initializes TextView elements, reads and processes form
+     * data, and updates the UI with calculated and formatted information.
      * @since 0.1
      */
     private fun loadData() {
@@ -591,9 +658,11 @@ class DataDisplayActivity : ComponentActivity() {
         // Initialize variables
         var finalCountrySymbol: String? = null
 
+        // Extract original and status JSONObjects from formData.
         val varOriginalObject = jsonObjectFormData.optJSONObject("original")
         val varStatusObject = jsonObjectFormData.optJSONObject("status")
 
+        // Retrieve cigarette price and country details.
         val varCigarettePrice = varOriginalObject?.optDouble("cigarettePrice") ?: 0.0
         val varCountryObject = varOriginalObject?.optJSONObject("country")
 
@@ -611,13 +680,14 @@ class DataDisplayActivity : ComponentActivity() {
                 varCountrySymbol
             }
 
+        // Extract additional data from original JSONObject.
         val varCreatedOn = varOriginalObject?.optString("created_on") ?: ""
         val varSmokesPerDay = varOriginalObject?.optInt("smokesPerDay") ?: 0
         val varStartYear = varOriginalObject?.optString("startYear")
         val varTotalMoneySpent = varOriginalObject?.optString("total_money_spent")
         val varTotalSmoked = varOriginalObject?.optString("total_smoked")
 
-        // Calculate per minute spent money & cigarette smoked
+        // Calculate per minute spent money & cigarette smoked based on the input
         val perMinuteSpent = perMinuteSpentMoney(varSmokesPerDay, varCigarettePrice)
         val perMinuteSmoked = perMinuteSmokedCigarette(varSmokesPerDay)
 
@@ -677,6 +747,7 @@ class DataDisplayActivity : ComponentActivity() {
                 upComingAwardName
             )
 
+        // Prepare and set the share message.
         val shareMsg = getString(
             R.string.shareMsgTemplate,
             totalCigarettesSmoked?.let { setGetData.formatNumberWithCommas(it) },
@@ -687,6 +758,7 @@ class DataDisplayActivity : ComponentActivity() {
         val hiddenField: EditText = findViewById(R.id.hidden_field_share)
         hiddenField.setText(shareMsg)
 
+        // Update additional TextView elements with total smoked and money spent data.
         textViewDisplayTotalHowManyCigSmoked.text = getString(
             R.string.displayTotalHowManyCigSmokedMsgTemplate,
             varTotalSmoked
@@ -698,7 +770,7 @@ class DataDisplayActivity : ComponentActivity() {
             varTotalMoneySpent
         )
 
-        // load image
+        // Load image for the next award.
         val nextAwardPath: String? = setGetData.getNextAwardDetailFromStatusKeyOfJsonObject(
             jsonObjectFormData,
             "next_award_detail",
@@ -709,6 +781,7 @@ class DataDisplayActivity : ComponentActivity() {
             loadImageFromAssets(strippedAssetPath)
         }
 
+        // Update penalty button UI and setup chart dropdown if statusObject is not null.
         if (varStatusObject != null) {
             updatePenaltyButtonUI(varStatusObject)
             // set up chart dropdown
@@ -717,9 +790,21 @@ class DataDisplayActivity : ComponentActivity() {
 
     }
 
+    /**
+     * Sets up the chart options spinner and loads chart data based on the selected option.
+     *
+     * This method initializes the spinner with predefined options, sets an item selected listener
+     * to handle user selection, and loads the corresponding chart data.
+     *
+     * @param statusObject The JSON object containing the status data for generating chart data.
+     * @since 0.2
+     */
     private fun setupChartSpinner(statusObject: JSONObject) {
+        // Find the spinner view in the layout.
         val spinner: Spinner = findViewById(R.id.spinnerOptions)
+
 //        val chartDataTextView: TextView = findViewById(R.id.tvChartData)
+
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter.createFromResource(
             this,
@@ -778,6 +863,21 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Calculates the total money spent and cigarette smoked based on the rate of spending per minute and the duration
+     * between a start year and a created date.
+     *
+     * This function computes the total money spent by determining the difference in time between the
+     * start of the specified year and the creation date, then multiplying the difference by the per
+     * minute spending rate.
+     *
+     * @param perMinuteSpent The rate of spending per minute.
+     * @param varStartYear The starting year as an integer.
+     * @param varCreatedOn The creation date as a string in the format "yyyy-MM-dd HH:mm:ss".
+     * @return The total money spent, formatted as a string with 2 decimal places.
+     * @throws IllegalArgumentException if the date format is invalid.
+     * @since 0.2
+     */
     fun calculateTotalSpent(
         perMinuteSpent: Double,
         varStartYear: Int,
@@ -814,7 +914,8 @@ class DataDisplayActivity : ComponentActivity() {
      * Strips the "file:///android_asset/" prefix from the given file path.
      *
      * @param filePath The file path to be processed. Must not be null.
-     * @return The file path with the "file:///android_asset/" prefix removed. Returns the input filePath if the prefix is not present.
+     * @return The file path with the "file:///android_asset/" prefix removed. Returns the input
+     * filePath if the prefix is not present.
      * @since 0.1
      */
     private fun stripAssetPrefix(filePath: String): String {
@@ -846,10 +947,20 @@ class DataDisplayActivity : ComponentActivity() {
         } ?: false
     }
 
+    /**
+     * Updates the JSON data based on current conditions and status parameters.
+     *
+     * This method reads data from a file, processes it into a JSON object, and updates various
+     * parameters such as next award date/time, progress timelines, and scores based on current time
+     * conditions.
+     * @since 0.1
+     */
     private fun updateJson() {
+        // Read form data from file and create JSONObject
         val formData = readDataFromFile()
         val jsonObjectFormData = createJsonObjectFromFormData(formData)
 
+        // Extract necessary objects and values from the JSON data
         val statusObject = jsonObjectFormData.getJSONObject("status")
         val nextAwardDateTimeString = statusObject.getString("next_award_datetime")
         val existingAwardAchievedTimeline = statusObject.optJSONObject("award_achieved_timeline")
@@ -858,38 +969,41 @@ class DataDisplayActivity : ComponentActivity() {
         val varCreatedOnString = varOriginalObject?.optString("created_on") ?: ""
         val varSmokesPerDay = varOriginalObject?.optInt("smokesPerDay") ?: 0
 
-
+        // Define date format and parse next award date/time
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         sdf.timeZone = TimeZone.getTimeZone("UTC")
         val nextAwardDateTime = sdf.parse(nextAwardDateTimeString)
 
+        // Get current UTC time
         val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
 //        val tenHoursAgo = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 //        tenHoursAgo.add(Calendar.HOUR_OF_DAY, +255)
 //        val currentTime = tenHoursAgo.time
 
+        // Perform actions if current time in UTC is greater than next_award_datetime
         if (currentTime.after(nextAwardDateTime)) {
-            // Perform actions if current time in UTC is greater than next_award_datetime
-
             var oneTimeUpdate = false;
-
             val progressArray = dataSet.quitSmokingProgress()
             val jsonObjectAwardAchievedProgressId = JSONObject()
 
+            // Iterate through each smoking progress item
             for (item in progressArray) {
                 val progressId = item[0]
                 val hourDuration = item[5].toDouble()
                 val minutesDuration = hourDuration * 60L
+
+                // Calculate the prospective next award datetime based on smoking progress
                 val nextProspectAwardDatetimeString =
                     setGetData.addMinutesToDateTime(varCreatedOnString, minutesDuration)
-
                 val nextProspectAwardDatetime = sdf.parse(nextProspectAwardDatetimeString)
                 var currentScore = 100.00
 
+                // Check if current time exceeds the next prospective award datetime
                 if (currentTime.after(nextProspectAwardDatetime)) {
+                    // Initialize or update award achievement details
                     if (existingAwardAchievedTimeline == null) {
-
+                        // Initialize new award achieved timeline if not present
                         val jsonObjectAwardAchievedSmoked = JSONObject()
                         val jsonObjectAwardAchievedSmokedDetail = JSONObject()
 
@@ -898,7 +1012,6 @@ class DataDisplayActivity : ComponentActivity() {
                             nextProspectAwardDatetimeString
                         )
                         jsonObjectAwardAchievedSmokedDetail.put("score", currentScore)
-
                         jsonObjectAwardAchievedSmoked.put(
                             progressId,
                             jsonObjectAwardAchievedSmokedDetail
@@ -909,18 +1022,21 @@ class DataDisplayActivity : ComponentActivity() {
                             jsonObjectAwardAchievedSmoked
                         )
                     } else {
-
+                        // Update existing award achieved timeline if present
                         if (existingAwardAchievedTimeline.has(progressId)) {
                             val award1Object =
                                 existingAwardAchievedTimeline.optJSONObject(progressId)
 
                             if (award1Object.has("smoked")) {
+                                // Calculate the number of cigarettes smoked for the current award
                                 val smokedCurrentAward =
                                     (award1Object.optJSONArray("smoked") ?: JSONArray()).length()
 
                                 val perMinuteSmoked = perMinuteSmokedCigarette(varSmokesPerDay)
                                 val totalRangeOfSmokeCurrentAwardDuration =
                                     minutesDuration * perMinuteSmoked
+
+                                // Calculate the current score based on smoking progress
                                 currentScore = setGetData.calculatePercentage(
                                     (totalRangeOfSmokeCurrentAwardDuration - smokedCurrentAward),
                                     totalRangeOfSmokeCurrentAwardDuration
@@ -928,10 +1044,12 @@ class DataDisplayActivity : ComponentActivity() {
 
                             }
 
+                            // Prepare JSON object for the achieved award
                             val jsonObjectAwardAchieved = JSONObject()
                             jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
                             jsonObjectAwardAchieved.put("score", currentScore)
 
+                            // Merge existing award data with the new award details
                             val awardAchievedTimelinetemp =
                                 setGetData.mergeJsonObjects(award1Object, jsonObjectAwardAchieved)
 
@@ -941,22 +1059,19 @@ class DataDisplayActivity : ComponentActivity() {
                             )
 
                         } else {
-
+                            // Add new award achieved if progressId not present
                             val jsonObjectAwardAchieved = JSONObject()
                             jsonObjectAwardAchieved.put("datetime", nextProspectAwardDatetimeString)
                             jsonObjectAwardAchieved.put("score", currentScore)
-
                             existingAwardAchievedTimeline.put(
                                 progressId,
                                 jsonObjectAwardAchieved
                             )
-
                         }
                     }
-
                 } else {
+                    // Update next award details if not already updated
                     if (!oneTimeUpdate) {
-//                        val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         statusObject.put(
                             "next_award_detail",
                             setGetData.getSmokingProgressById(progressId)
@@ -967,17 +1082,19 @@ class DataDisplayActivity : ComponentActivity() {
                 }
             }
 
+            // Merge and update the award achieved timeline in the main status object
             val awardAchievedTimeline = existingAwardAchievedTimeline?.let {
                 setGetData.mergeJsonObjects(jsonObjectAwardAchievedProgressId, it)
             } ?: jsonObjectAwardAchievedProgressId
 
             statusObject.put("award_achieved_timeline", awardAchievedTimeline)
 
+            // Save updated JSON data back to file
             val mainActivity = MainActivity()
             deleteFormDataFile()
             mainActivity.saveDataToFile(jsonObjectFormData, this)
         } else {
-//            println("Current time in UTC is not greater than next_award_datetime.")
+            // Handle case where current time in UTC is not greater than next_award_datetime
         }
     }
 
@@ -985,6 +1102,7 @@ class DataDisplayActivity : ComponentActivity() {
      * Updates the UI of the penalty button based on the number of cigarettes smoked today.
      *
      * @param statusObject The status JSON object containing information about cigarettes smoked today.
+     * @since 0.1
      */
     private fun updatePenaltyButtonUI(statusObject: JSONObject) {
         // Get current date in UTC format
@@ -1130,16 +1248,46 @@ class DataDisplayActivity : ComponentActivity() {
         mainActivity.saveDataToFile(jsonObjectFormData, this)
     }
 
+    /**
+     * @deprecated 0.2 - This function is no longer in use.
+     *
+     * Adds a date and time entry to the "each_smoke" array within the given JSON object.
+     *
+     * This method ensures that the "each_smoke" array exists in the provided JSON object, then adds
+     * the specified date and time to this array.
+     *
+     * @param statusObject The JSON object representing the status data.
+     * @param dateTime The date and time to add, as a string.
+     * @since 0.2
+     */
     private fun addDateTimeToEachSmoke(statusObject: JSONObject, dateTime: String) {
+        // Check if the "each_smoke" array exists in the JSON object; if not, create it.
         if (!statusObject.has("each_smoke")) {
             statusObject.put("each_smoke", JSONArray())
         }
 
+        // Retrieve the "each_smoke" array from the JSON object, or create a new one if it doesn't exist.
         val eachSmokeArray = statusObject.optJSONArray("each_smoke") ?: JSONArray()
+        // Add the dateTime string to the "each_smoke" array.
         eachSmokeArray.put(dateTime)
+        // Update the "each_smoke" array in the JSON object with the new array.
         statusObject.put("each_smoke", eachSmokeArray)
     }
 
+    /**
+     * Updates the year status within the provided JSON objects by adding or updating the number of
+     * smokes for the current date and year.
+     *
+     * This method ensures that the year status is accurately maintained within the status JSON object,
+     * either by updating existing entries or creating new ones as necessary.
+     *
+     * @param statusObject The main status JSON object which may contain the "year_status".
+     * @param yearStatusObject The JSON object representing the year status within the main status object.
+     * @param currentDate The current date as a string, formatted as "yyyy-MM-dd".
+     * @param currentYear The current year as a string, formatted as "yyyy".
+     * @param smokedTodayValue The number of smokes recorded for the current date.
+     * @since 0.2
+     */
     private fun updateYearStatus(
         statusObject: JSONObject?,
         yearStatusObject: JSONObject?,
@@ -1148,6 +1296,7 @@ class DataDisplayActivity : ComponentActivity() {
         smokedTodayValue: Int,
     ) {
         if (yearStatusObject == null) {
+            // If yearStatusObject is null, create a new year status for the current year.
             val smokeCurrentYear = JSONObject()
             val smokeCurrentDay = JSONObject()
             smokeCurrentDay.put(currentDate, smokedTodayValue)
@@ -1155,6 +1304,7 @@ class DataDisplayActivity : ComponentActivity() {
             statusObject?.put("year_status", smokeCurrentYear)
         } else {
             if (yearStatusObject.has(currentYear)) {
+                // If the current year already exists, update or add the current date within that year.
                 val smokeCurrentYear = yearStatusObject.getJSONObject(currentYear)
                 if (smokeCurrentYear.has(currentDate)) {
                     // Update the value for the current date
@@ -1321,15 +1471,5 @@ class DataDisplayActivity : ComponentActivity() {
             Log.d("FileDeleted", "formData.json does not exist")
         }
     }
-
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putInt("myCounter", counterValue)
-//    }
-//
-//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-//        super.onRestoreInstanceState(savedInstanceState)
-//        counterValue = savedInstanceState.getInt("myCounter", 0)
-//    }
 
 }

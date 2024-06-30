@@ -1,3 +1,14 @@
+/**
+ * common functions
+ *
+ * @author Gobinda Nandi
+ * @version 0.2
+ * @since 2024-04-01
+ * @copyright Copyright (c) 2024
+ * @license This code is licensed under the MIT License.
+ * See the LICENSE file for details.
+ */
+
 package com.inandi.smoke
 
 import org.json.JSONException
