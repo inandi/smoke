@@ -121,7 +121,7 @@ class BadgeActivity : ComponentActivity() {
     /**
      * Reads data from the form data file and returns it as a string.
      *
-     * This function opens the file named `formData.json` from the application's internal storage,
+     * This function opens the file named `quit_smoking_progress.json` from the application's internal storage,
      * reads its contents line by line, and returns the entire content as a single string.
      *
      * @return A `String` containing the contents of the form data file.

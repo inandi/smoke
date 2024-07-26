@@ -36,8 +36,8 @@ import android.widget.TextView
 class MainActivity : ComponentActivity() {
 
     companion object {
-        const val FORM_DATA_FILENAME = "formData.json"
-        const val PROJECT_VERSION = "v0.2"
+        const val FORM_DATA_FILENAME = "quit_smoking_progress.json"
+        const val PROJECT_VERSION = "v0.3"
     }
 
     private lateinit var spinnerCountry: Spinner
