@@ -15,6 +15,9 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.Manifest
+import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -54,10 +57,14 @@ import com.db.williamchart.view.LineChartView
 import org.json.JSONArray
 import java.io.FileOutputStream
 import android.graphics.Color
+import android.provider.MediaStore
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.core.content.ContextCompat
 import com.db.williamchart.ExperimentalFeature
+import java.io.InputStream
+import java.io.OutputStream
 import kotlin.random.Random
 
 private const val TAG = "DataDisplayActivity"
@@ -72,7 +79,7 @@ class DataDisplayActivity : ComponentActivity() {
     private lateinit var textViewDisplayDay: TextView
     private lateinit var textViewDisplayTotalHowManyCigSmoked: TextView
     private lateinit var textViewDisplayTotalHowMuchMoneySpent: TextView
-    private val PERMISSION_REQUEST_CODE = 1001
+    private val REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1
     private val isMobileAdsInitializeCalled = AtomicBoolean(false)
     private val initialLayoutComplete = AtomicBoolean(false)
     private lateinit var binding: ActivityDataDisplayBinding
@@ -291,33 +298,6 @@ class DataDisplayActivity : ComponentActivity() {
         startActivity(Intent.createChooser(shareIntent, "Share"))
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            var allPermissionsGranted = true
-            for (result in grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false
-                    break
-                }
-            }
-
-            if (allPermissionsGranted) {
-                downloadUserDataFile()
-            } else {
-                Toast.makeText(
-                    this,
-                    "Permission denied. Unable to download file.",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-    }
-
     /**
      * Displays the penalty dialog by updating the penalty JSON and loading the necessary data.
      *
@@ -398,7 +378,7 @@ class DataDisplayActivity : ComponentActivity() {
             }
 
             R.id.menu_option_download -> {
-                checkPermissionsAndDownload()
+                downloadProgressFile()
                 true
             }
 
@@ -406,44 +386,148 @@ class DataDisplayActivity : ComponentActivity() {
         }
     }
 
-    private fun checkPermissionsAndDownload() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ),
-                PERMISSION_REQUEST_CODE
-            )
+    /**
+     * Initiates the process to download the progress file to the Downloads directory.
+     * For Android 10 and above, no runtime permission is required.
+     * For Android 9 and below, it requests WRITE_EXTERNAL_STORAGE permission.
+     * @since 0.3
+     */
+    private fun downloadProgressFile() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            // Requests WRITE_EXTERNAL_STORAGE permission if the Android version is less than 10 (Q)
+            requestWriteExternalStoragePermission(this)
         } else {
-            downloadUserDataFile()
+            // Directly copies the file to the Downloads directory for Android 10 (Q) and above
+            // No runtime permission required for Android 10 and above
+            copyFileToDownloads(this, MainActivity.FORM_DATA_FILENAME)
         }
     }
 
-    private fun downloadUserDataFile() {
-        val fileName = MainActivity.FORM_DATA_FILENAME
-        try {
-            val fileInputStream = openFileInput(fileName)
-            val fileContent = fileInputStream.bufferedReader().use { it.readText() }
-            fileInputStream.close()
+    /**
+     * Requests the WRITE_EXTERNAL_STORAGE permission from the user.
+     * If permission is granted, proceeds to copy the file to the Downloads directory.
+     *
+     * @param activity The current activity context.
+     * @since 0.3
+     */
+    private fun requestWriteExternalStoragePermission(activity: Activity) {
+        // Checks if the WRITE_EXTERNAL_STORAGE permission has been granted
+        if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
 
-            val downloadsFolder =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val outFile = File(downloadsFolder, fileName)
-            val fileOutputStream = FileOutputStream(outFile)
-            fileOutputStream.use {
-                it.write(fileContent.toByteArray())
+            // If not, requests the WRITE_EXTERNAL_STORAGE permission from the user
+            ActivityCompat.requestPermissions(activity,
+                arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                REQUEST_CODE_WRITE_EXTERNAL_STORAGE)
+        } else {
+            // If permission is already granted, proceed with copying the file to the Downloads directory
+            // Permission already granted, proceed with file copy
+            copyFileToDownloads(activity, MainActivity.FORM_DATA_FILENAME)
+        }
+    }
+
+    /**
+     * Handles the result of a permission request.
+     * This method is called when the user responds to a permission request.
+     *
+     * @param requestCode The request code passed in `requestPermissions()`.
+     * @param permissions The requested permissions.
+     * @param grantResults The grant results for the corresponding permissions.
+     * @since 0.3
+     */
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        // Checks if the request code matches the one used for WRITE_EXTERNAL_STORAGE permission
+        if (requestCode == REQUEST_CODE_WRITE_EXTERNAL_STORAGE) {
+            // Checks if the permission was granted
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // Permission granted, proceed with file copy
+                // Permission granted, proceed with copying the file to the Downloads directory
+                copyFileToDownloads(this, MainActivity.FORM_DATA_FILENAME)
+            } else {
+                // Permission denied, show a message to the user
+                Toast.makeText(this, "Permission denied. Unable to download file.", Toast.LENGTH_LONG).show()
             }
-            Toast.makeText(this, "File downloaded to: ${outFile.absolutePath}", Toast.LENGTH_LONG)
-                .show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Download failed: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    /**
+     * Copies a file from the app's internal storage to the Downloads directory.
+     * Handles different Android versions to ensure compatibility with storage access restrictions.
+     *
+     * @param context The context of the current activity or application.
+     * @param fileName The name of the file to be copied.
+     * @since 0.3
+     */
+    private fun copyFileToDownloads(context: Context, fileName: String) {
+        // Define the file to be copied from the app's internal storage
+        val file = File(context.filesDir, fileName)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // For Android 10 (Q) and above, use the MediaStore API to handle file operations
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
+                put(MediaStore.MediaColumns.MIME_TYPE, "application/octet-stream")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+            }
+            // Insert the file into the MediaStore and get its URI
+            val uri = context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+
+            uri?.let {
+                // Open an OutputStream for the URI and copy the file content
+                context.contentResolver.openOutputStream(it)?.use { outputStream ->
+                    file.inputStream().use { inputStream ->
+                        copyStream(inputStream, outputStream) // Copy data from input stream to output stream
+                    }
+                    // Show a toast message to indicate the download is complete
+                    showDownloadCompleteToast(context, fileName)
+                }
+            }
+        } else {
+            // For Android 9 (Pie) and below, use the traditional file system approach
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val destFile = File(downloadsDir, file.name)
+
+            // Copy the file content to the destination file
+            file.inputStream().use { inputStream ->
+                FileOutputStream(destFile).use { outputStream ->
+                    copyStream(inputStream, outputStream) // Copy data from input stream to output stream
+                }
+            }
+            // Show a toast message to indicate the download is complete
+            showDownloadCompleteToast(context, fileName)
+        }
+    }
+
+    /**
+     * Displays a toast message indicating that the file download is complete and the file is stored
+     * in the Downloads directory.
+     *
+     * @param context The context of the current activity or application, used to create and display the toast message.
+     * @param fileName The name of the file that was downloaded.
+     * @since 0.3
+     */
+    private fun showDownloadCompleteToast(context: Context, fileName: String) {
+        // Create a message string to inform the user of the download completion and file location
+        val message = "Download complete: $fileName is stored in Downloads"
+
+        // Display the toast message to the user
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Copies data from an input stream to an output stream.
+     *
+     * @param inputStream The input stream from which data is read.
+     * @param outputStream The output stream to which data is written.
+     * @since 0.3
+     */
+    private fun copyStream(inputStream: InputStream, outputStream: OutputStream) {
+        val buffer = ByteArray(1024)
+        var length: Int
+        while (inputStream.read(buffer).also { length = it } > 0) {
+            outputStream.write(buffer, 0, length)
         }
     }
 
@@ -1469,7 +1553,7 @@ class DataDisplayActivity : ComponentActivity() {
     /**
      * Reads data from the form data file and returns it as a string.
      *
-     * This function opens the file named `formData.json` from the application's internal storage,
+     * This function opens the file named `quit_smoking_progress.json` from the application's internal storage,
      * reads its contents line by line, and returns the entire content as a single string.
      *
      * @return A `String` containing the contents of the form data file.
@@ -1489,9 +1573,9 @@ class DataDisplayActivity : ComponentActivity() {
     }
 
     /**
-     * Deletes the form data file (formData.json) if it exists.
+     * Deletes the form data file (quit_smoking_progress.json) if it exists.
      *
-     * This function checks if a file named `formData.json` exists in the application's files
+     * This function checks if a file named `quit_smoking_progress.json` exists in the application's files
      * directory. If the file exists, it attempts to delete it and logs the result.
      * - If the file is successfully deleted, it logs a success message.
      * - If the file fails to delete, it logs an error message.
@@ -1503,12 +1587,12 @@ class DataDisplayActivity : ComponentActivity() {
         if (file.exists()) {
             val deleted = file.delete()
             if (deleted) {
-                Log.d("FileDeleted", "formData.json deleted successfully")
+                Log.d("FileDeleted", "${MainActivity.FORM_DATA_FILENAME} deleted successfully")
             } else {
-                Log.e("FileDeleted", "Failed to delete formData.json")
+                Log.e("FileDeleted", "Failed to delete ${MainActivity.FORM_DATA_FILENAME}")
             }
         } else {
-            Log.d("FileDeleted", "formData.json does not exist")
+            Log.d("FileDeleted", "${MainActivity.FORM_DATA_FILENAME} does not exist")
         }
     }
 
